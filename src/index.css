@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  --color-bg: #FCFCFB;
+  --color-foreground: #0B0F19;
+  --color-ink: #111827;
+  --color-accent: #111827; /* Sophisticated Deep Graphite */
+  --color-accent-dark: #030712;
+  --color-slate-dark: #111827; /* Rich Ink */
+  --color-subtle: #F4F4F5;
+  --color-border: #E4E4E7;
+  --color-muted: #71717A;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-ink font-sans antialiased overflow-x-hidden selection:bg-accent/10 selection:text-accent;
+  }
+}
+
+@utility glass-panel {
+  @apply bg-white border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden;
+}
+
+@utility glass-card {
+  @apply bg-white border border-slate-200/60 shadow-[0_4px_20px_rgb(0,0,0,0.03)] rounded-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgb(0,0,0,0.08)] hover:-translate-y-1 overflow-hidden;
+}
+
+@utility text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-slate-dark via-slate-800 to-accent;
+}
+
+@utility score-display {
+  @apply text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black font-display leading-[1.1] sm:leading-none tracking-tighter text-slate-dark;
+}
+
+@utility mono-tag {
+  @apply font-mono text-[9px] uppercase tracking-[0.2em] font-black py-1 px-3 border border-slate-200 rounded-full bg-slate-50 text-slate-500 flex items-center gap-1.5;
+}
+
+@utility section-heading {
+  @apply text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-6 flex items-center gap-3;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+

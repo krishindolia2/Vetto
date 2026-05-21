@@ -1,0 +1,148 @@
+{
+  "entities": {
+    "Asset": {
+      "title": "Asset",
+      "description": "A vetted product stored in the user's personal garage.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the owner." },
+        "name": { "type": "string", "description": "Name of the product." },
+        "paisaVasoolIndex": { "type": "number", "description": "The value score at time of vetting." },
+        "finalDecision": { "type": "string", "description": "The verdict (BUY, WAIT, RUN)." },
+        "exitStrategy": { "type": "string", "description": "The III Phase exit guidance." },
+        "currentPrice": { "type": "string" },
+        "targetPrice": { "type": "string" },
+        "priceAlertActive": { "type": "boolean" },
+        "lastPriceCheck": { "type": "string", "format": "date-time" },
+        "vettedAt": { "type": "string", "format": "date-time" },
+        "originalRecId": { "type": "string", "description": "Reference to the original recommendation." }
+      },
+      "required": ["userId", "name", "paisaVasoolIndex", "finalDecision", "vettedAt"]
+    },
+    "FeedItem": {
+      "title": "FeedItem",
+      "description": "A public record of a vetting event.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userDisplayName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "productName": { "type": "string" },
+        "paisaVasoolIndex": { "type": "number" },
+        "verdict": { "type": "string" },
+        "socialHook": { "type": "string", "description": "AI generated clinical punchline." },
+        "likes": { "type": "number", "default": 0 },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productName", "paisaVasoolIndex", "verdict", "timestamp", "socialHook"]
+    },
+    "Trend": {
+      "title": "Market Trend",
+      "description": "Weekly market timing node.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "impact": { "type": "string", "enum": ["BUY", "WAIT", "RUN"] },
+        "desc": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "impact", "desc"]
+    },
+    "GlobalStats": {
+      "title": "Global Stats",
+      "description": "Real-time capital preservation metrics.",
+      "type": "object",
+      "properties": {
+        "totalCapitalAudit": { "type": "number" },
+        "activeUsers": { "type": "number" },
+        "savingsSecured": { "type": "number" }
+      }
+    },
+    "WaitlistEntry": {
+      "title": "Waitlist Entry",
+      "description": "Early adopter reservation.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "referralSource": { "type": "string" },
+        "rank": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "rank", "timestamp"]
+    },
+    "AuditFeedback": {
+      "title": "Audit Feedback",
+      "description": "User verification of audit accuracy.",
+      "type": "object",
+      "properties": {
+        "recId": { "type": "string" },
+        "accuracyScore": { "type": "number", "minimum": 1, "maximum": 5 },
+        "comment": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["recId", "accuracyScore", "timestamp"]
+    },
+    "HotlineMessage": {
+      "title": "Founder Hotline Message",
+      "description": "Direct communication from Founder Edition nodes.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "message": { "type": "string" },
+        "priorityStatus": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "message", "timestamp"]
+    },
+    "VisitorLog": {
+      "title": "Visitor Log",
+      "description": "Deep audit of system access events.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "userAgent": { "type": "string" },
+        "location": { "type": "string" },
+        "referrer": { "type": "string" },
+        "screen": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["timestamp"]
+    }
+  },
+  "firestore": {
+    "/assets/{assetId}": {
+      "schema": "Asset",
+      "description": "Collection of user-vetted assets."
+    },
+    "/feed/{feedId}": {
+      "schema": "FeedItem",
+      "description": "Global flow of vetting intelligence."
+    },
+    "/trends/{trendId}": {
+      "schema": "Trend",
+      "description": "Weekly market trends."
+    },
+    "/stats/global": {
+      "schema": "GlobalStats",
+      "description": "Global engine metrics."
+    },
+    "/waitlist/{entryId}": {
+      "schema": "WaitlistEntry",
+      "description": "Founder edition queue."
+    },
+    "/audit_feedback/{feedbackId}": {
+      "schema": "AuditFeedback",
+      "description": "Verified signals from the field."
+    },
+    "/hotline/{messageId}": {
+      "schema": "HotlineMessage",
+      "description": "High-priority founder channel."
+    },
+    "/analytics_v1/{logId}": {
+      "schema": "VisitorLog",
+      "description": "System access logs."
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "react-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "start": "node dist/server.cjs",
+    "clean": "rm -rf dist",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "@tailwindcss/vite": "latest",
+    "@vitejs/plugin-react": "latest",
+    "clsx": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "firebase": "latest",
+    "jsonrepair": "^3.14.0",
+    "lucide-react": "latest",
+    "motion": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-markdown": "latest",
+    "recharts": "latest",
+    "tailwind-merge": "latest",
+    "vite": "latest"
+  },
+  "overrides": {
+    "node-domexception": "file:./src/lib/node-domexception-mock"
+  },
+  "devDependencies": {
+    "@firebase/eslint-plugin-security-rules": "^0.0.2",
+    "@types/express": "latest",
+    "@types/node": "latest",
+    "autoprefixer": "latest",
+    "esbuild": "^0.28.0",
+    "tailwindcss": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vite": "latest"
+  }
+}
