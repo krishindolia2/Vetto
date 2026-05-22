@@ -754,6 +754,12 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       });
     }
 
+    // Decide if we need slow but super accurate Google Search Grounding, or ultra-fast instant audit
+    const hasSearchKeywords = /(price|deal|sale|discount|buy|vs|versus|comparison|cost|market|latest|new|release|launch|where to|amazon|flipkart|reliance|croma)/i.test(parsedQuery);
+    const useSearchGrounding = hasUrl || hasSearchKeywords;
+    
+    console.log(`[Cache Engine] Speed Mode Chosen: ${useSearchGrounding ? "Live Google Search Grounding (Accurate/High Latency)" : "Instant Knowledge Engine (Ultra Fast/Low Latency)"}`);
+
     const genResponse = await callGeminiWithRetry({
       model: modelToUse,
       contents: [{ role: "user", parts }],
@@ -762,7 +768,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           "\n\nCRITICAL REQUIREMENT FOR ZERO LATENCY & SPEED:\n" +
           "Your response must comply 100% with the strict JSON structure. Because the structure is extensive, YOU MUST keep every text value extremely short, terse, and punchy. " +
           "Each text field (definitions, details, summaries, reasons) must be at most 1 short sentence or quick phrase. Do not generate multi-sentence text. This is absolutely essential to achieve ultra-fast generation and low latency.",
-        tools: [{ googleSearch: {} }],
+        ...(useSearchGrounding ? { tools: [{ googleSearch: {} }] } : {}),
         responseMimeType: "application/json",
         responseSchema: auditResponseSchema,
         temperature: 0.0,
