@@ -773,6 +773,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         responseSchema: auditResponseSchema,
         temperature: 0.0,
         maxOutputTokens: 8192,
+        thinkingConfig: {
+          thinkingLevel: ThinkingLevel.LOW,
+        },
       }
     });
 
