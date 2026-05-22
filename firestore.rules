@@ -108,6 +108,16 @@ service cloud.firestore {
       allow create: if (isValidId(entryId) && isValidWaitlistEntry(incoming()) && incoming().timestamp == request.time) || isAdmin();
     }
 
+    match /audit_cache/{cacheId} {
+      allow read: if true; // Cache is public for all app nodes
+      allow create, update: if isValidId(cacheId)
+                            && incoming().keys().hasAll(['data', 'timestamp', 'query', 'createdAt'])
+                            && incoming().query is string
+                            && incoming().timestamp is number
+                            && incoming().createdAt == request.time;
+      allow delete: if false;
+    }
+
     match /audit_feedback/{feedbackId} {
       allow read: if true;
       allow list: if isAdmin();

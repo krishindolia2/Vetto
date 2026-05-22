@@ -4,11 +4,79 @@ import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
+import { initializeApp as initializeFirebase } from "firebase/app";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
+
+// Initialize Firebase for Backend Caching and Bot Protection
+const CONFIG_PATH = path.join(process.cwd(), "firebase-applet-config.json");
+let backendDb: any = null;
+
+if (fs.existsSync(CONFIG_PATH)) {
+  try {
+    const firebaseConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+    const firebaseApp = initializeFirebase(firebaseConfig);
+    backendDb = getFirestore(firebaseApp);
+    console.log("[Launch Guard] Server-side Firestore Cache initialized successfully.");
+  } catch (err) {
+    console.error("[Launch Guard] Failed to initialize backend firestore:", err);
+  }
+} else {
+  console.warn("[Launch Guard] firebase-applet-config.json not found on backend. Persistence disabled.");
+}
+
+// Custom in-memory rate limit Map
+const ipRequestHistory = new Map<string, { count: number; lastReset: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute window
+const MAX_REQUESTS_PER_MINUTE = 6;  // limit requests to 6 per minute (extremely reasonable for high-stakes audits)
+
+function securityGuard(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const ip = (req.headers["x-forwarded-for"] as string || req.socket.remoteAddress || "unknown-ip").split(',')[0].trim();
+  
+  // 1. Check Rate Limit
+  const now = Date.now();
+  const history = ipRequestHistory.get(ip);
+
+  if (!history || (now - history.lastReset > RATE_LIMIT_WINDOW)) {
+    ipRequestHistory.set(ip, { count: 1, lastReset: now });
+  } else {
+    history.count += 1;
+    if (history.count > MAX_REQUESTS_PER_MINUTE) {
+      console.warn(`[Launch Guard] Rate limit triggered for IP ${ip} (Requests: ${history.count})`);
+      return res.status(429).json({
+        error: "Quota Exceeded: Too many audit requests. Please wait a minute before running another scan."
+      });
+    }
+  }
+
+  // 2. Anti-bot / Referer checking to block straight crawler probes to /api/audit
+  const referer = req.headers["referer"] || "";
+  const origin = req.headers["origin"] || "";
+  const host = req.headers["host"] || "";
+
+  // Crawlers usually send requests with empty referer, empty origin, or mismatched Host.
+  // Standard user requests from the application will carry origin or referer matching our host or 'run.app'.
+  const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1") || host.includes("0.0.0.0");
+  const isRunApp = host.includes("run.app") || referer.includes("run.app") || origin.includes("run.app") || referer.includes("vetto.in") || origin.includes("vetto.in");
+
+  if (!isLocalhost && !isRunApp) {
+    // Under Cloud Run deployment, if a request has neither referer nor origin matching the cloud run ecosystem or our app,
+    // and they aren't localhost, it's very likely a security probe, bot, or automated script.
+    // Let's filter it by verifying at least some browser-specific headers or presence of typical referer.
+    if (!referer && !origin) {
+      console.warn(`[Launch Guard] Filtered suspicious bot request from IP ${ip} with no referer/origin headers.`);
+      return res.status(403).json({
+        error: "Access Denied: Request context is unauthorized. Please visit the app via your browser."
+      });
+    }
+  }
+
+  next();
+}
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -496,7 +564,7 @@ function extractProductNameFromUrl(inputUrl: string): string | null {
   }
 }
 
-app.post("/api/audit", async (req, res) => {
+app.post("/api/audit", securityGuard, async (req, res) => {
   if (!ai) {
     return res.status(401).json({ 
       error: "Vetto Engine Core not initialized. Please ensure GEMINI_API_KEY is set." 
@@ -597,18 +665,39 @@ app.post("/api/audit", async (req, res) => {
   const normBudget = budgetDigits ? budgetDigits : (budget || "").toLowerCase().trim();
   const normUseCase = (useCase || "").toLowerCase().replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim();
 
+  // Create a safe, standardized Firestore-compatible document ID from the normalized key
   const cacheKey = !images || images.length === 0 
-    ? Buffer.from(`${normQuery}-${normBudget}-${normUseCase}`).toString('base64')
+    ? Buffer.from(`${normQuery}-${normBudget}-${normUseCase}`).toString('base64').replace(/[/+=]/g, '_')
     : null;
 
-  if (cacheKey && auditCache.has(cacheKey)) {
-    const cached = auditCache.get(cacheKey)!;
-    if (Date.now() - cached.timestamp < CACHE_TTL) {
-      console.log(`[Engine] Serving persistent cached verdict for: ${query} (Key: ${cacheKey})`);
-      return res.json(cached.data);
+  if (cacheKey) {
+    // 1. First attempt to fetch from persistent, global Firestore-based Shared Cache
+    if (backendDb) {
+      try {
+        const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
+        const cacheSnap = await getDoc(cacheDocRef);
+        if (cacheSnap.exists()) {
+          const cached = cacheSnap.data();
+          if (Date.now() - (cached.timestamp || 0) < CACHE_TTL) {
+            console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
+            return res.json(cached.data);
+          }
+        }
+      } catch (cacheErr) {
+        console.error("[Cache Engine] Firestore read failure. Falling back to in-memory local cache.", cacheErr);
+      }
     }
-    auditCache.delete(cacheKey);
-    saveCacheToDisk();
+
+    // 2. Fall back to local in-memory container cache (essential if Firestore is offline or slow)
+    if (auditCache.has(cacheKey)) {
+      const cached = auditCache.get(cacheKey)!;
+      if (Date.now() - cached.timestamp < CACHE_TTL) {
+        console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
+        return res.json(cached.data);
+      }
+      auditCache.delete(cacheKey);
+      saveCacheToDisk();
+    }
   }
 
   try {
@@ -723,6 +812,23 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
     // Store in cache if applicable
     if (cacheKey) {
+      // 1. Save to global persistent Firestore Cache
+      if (backendDb) {
+        try {
+          const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
+          await setDoc(cacheDocRef, {
+            data: auditData,
+            timestamp: Date.now(),
+            query: parsedQuery,
+            createdAt: serverTimestamp()
+          });
+          console.log(`[Cache Engine] Successfully stored audit in Firestore for query: ${parsedQuery} (ID: ${cacheKey})`);
+        } catch (cacheStoreErr) {
+          console.error("[Cache Engine] Firestore write failure:", cacheStoreErr);
+        }
+      }
+
+      // 2. Save to local in-memory container fallback
       auditCache.set(cacheKey, { data: auditData, timestamp: Date.now() });
       saveCacheToDisk();
     }

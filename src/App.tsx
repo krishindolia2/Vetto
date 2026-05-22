@@ -523,8 +523,22 @@ export default function App() {
   const handleSignIn = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (err) {
+      showToast('Successfully signed in!', 'success');
+    } catch (err: any) {
       console.error('Auth failed:', err);
+      const errMsg = err?.message || String(err);
+      const errCode = err?.code || '';
+      
+      if (errCode === 'auth/unauthorized-domain' || errMsg.includes('unauthorized-domain') || errMsg.includes('authorized domain')) {
+        showToast('Authorized Domain mismatch! Let\'s add vetto.in to Authorized Domains in the Firebase Console.', 'error');
+      } else if (errCode === 'auth/popup-blocked') {
+        showToast('Sign-in popup blocked by browser. Please allow popups for this site.', 'error');
+      } else if (errCode === 'auth/cancelled-popup-request') {
+        // Safe to ignore or show subtle info
+        showToast('Sign-in flow cancelled.', 'info');
+      } else {
+        showToast(errCode ? `Sign-in error: ${errCode}` : `Authentication failed.`, 'error');
+      }
     }
   };
 
