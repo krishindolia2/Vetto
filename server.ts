@@ -20,7 +20,7 @@ if (fs.existsSync(CONFIG_PATH)) {
   try {
     const firebaseConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
     const firebaseApp = initializeFirebase(firebaseConfig);
-    backendDb = getFirestore(firebaseApp);
+    backendDb = getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId);
     console.log("[Launch Guard] Server-side Firestore Cache initialized successfully.");
   } catch (err) {
     console.error("[Launch Guard] Failed to initialize backend firestore:", err);
