@@ -772,7 +772,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         responseMimeType: "application/json",
         responseSchema: auditResponseSchema,
         temperature: 0.0,
-        maxOutputTokens: 8192,
+        maxOutputTokens: 3000,
         thinkingConfig: {
           thinkingLevel: ThinkingLevel.LOW,
         },
