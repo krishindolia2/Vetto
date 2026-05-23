@@ -2608,10 +2608,47 @@ export default function App() {
                         <span className="section-heading">Price Comparison</span>
                         <div className="space-y-4">
                           {result.priceIntegrity.procurementLinks.map((link, i) => {
-                            const isAnchor = !!link.url;
+                            // Client-side link self-healing and resolving mechanism for absolute reliability
+                            let resolvedUrl = link.url || "";
+                            const prodName = result.productName || "product";
+                            const encodedProdName = encodeURIComponent(prodName);
+                            
+                            if (resolvedUrl.includes("[urlencoded_product_name]")) {
+                              resolvedUrl = resolvedUrl.replace(/\[urlencoded_product_name\]/g, encodedProdName);
+                            } else if (resolvedUrl.includes("urlencoded_product_name")) {
+                              resolvedUrl = resolvedUrl.replace(/urlencoded_product_name/g, encodedProdName);
+                            }
+                            
+                            const platformLower = (link.platform || "").toLowerCase();
+                            const isGeneric = !resolvedUrl || 
+                                              resolvedUrl === "https://www.amazon.in" || 
+                                              resolvedUrl === "https://www.flipkart.com" || 
+                                              resolvedUrl === "https://www.croma.com" || 
+                                              resolvedUrl === "https://www.reliancedigital.in" ||
+                                              (!resolvedUrl.includes("?") && !resolvedUrl.includes("/p/") && !resolvedUrl.includes("/s?"));
+                            
+                            if (isGeneric) {
+                              if (platformLower.includes("amazon")) {
+                                resolvedUrl = `https://www.amazon.in/s?k=${encodedProdName}`;
+                              } else if (platformLower.includes("flipkart")) {
+                                resolvedUrl = `https://www.flipkart.com/search?q=${encodedProdName}`;
+                              } else if (platformLower.includes("croma")) {
+                                resolvedUrl = `https://www.croma.com/search/?text=${encodedProdName}`;
+                              } else if (platformLower.includes("reliance")) {
+                                resolvedUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
+                              } else if (!resolvedUrl) {
+                                resolvedUrl = `https://www.google.com/search?q=${encodedProdName}`;
+                              }
+                            }
+                            
+                            if (resolvedUrl && !resolvedUrl.startsWith("http://") && !resolvedUrl.startsWith("https://")) {
+                              resolvedUrl = "https://" + resolvedUrl;
+                            }
+
+                            const isAnchor = !!resolvedUrl;
                             const Comp = isAnchor ? 'a' : 'div';
                             const extraProps = isAnchor ? {
-                              href: link.url,
+                              href: resolvedUrl,
                               target: "_blank",
                               rel: "noopener noreferrer",
                               title: `Open product or search live on ${link.platform}`

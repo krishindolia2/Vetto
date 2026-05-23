@@ -768,11 +768,10 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       });
     }
 
-    // Decide if we need slow but super accurate Google Search Grounding, or ultra-fast instant audit
-    const hasSearchKeywords = /(price|deal|sale|discount|buy|vs|versus|comparison|cost|market|latest|new|release|launch|where to|amazon|flipkart|reliance|croma)/i.test(parsedQuery);
-    const useSearchGrounding = hasUrl || hasSearchKeywords;
+    // Always enable Google Search grounding for all queries to ensure 100% accurate, real-time price comparisons & stock diagnostics
+    const useSearchGrounding = true;
     
-    console.log(`[Cache Engine] Speed Mode Chosen: ${useSearchGrounding ? "Live Google Search Grounding (Accurate/High Latency)" : "Instant Knowledge Engine (Ultra Fast/Low Latency)"}`);
+    console.log(`[Cache Engine] Active Mode: Live Google Search Grounding for maximum platform price integrity`);
 
     const genResponse = await callGeminiWithRetry({
       model: modelToUse,
@@ -786,7 +785,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         responseMimeType: "application/json",
         responseSchema: auditResponseSchema,
         temperature: 0.0,
-        maxOutputTokens: 3000,
+        maxOutputTokens: 8192,
         thinkingConfig: {
           thinkingLevel: ThinkingLevel.LOW,
         },
@@ -827,6 +826,56 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       const repairedJsonString = repairJson(rawJson);
       const parsed = JSON.parse(repairedJsonString);
       auditData = deepMerge(defaultAuditData, parsed);
+
+      // Post-process to guarantee direct, working, user-friendly live links on Indian platforms
+      if (auditData?.priceIntegrity?.procurementLinks && Array.isArray(auditData.priceIntegrity.procurementLinks)) {
+        const prodName = auditData.productName || parsedQuery || "product";
+        const encodedProdName = encodeURIComponent(prodName);
+        auditData.priceIntegrity.procurementLinks = auditData.priceIntegrity.procurementLinks.map((link: any) => {
+          let rawUrl = link.url || "";
+          
+          // Clean up model-generated placeholder tags
+          if (rawUrl.includes("[urlencoded_product_name]")) {
+            rawUrl = rawUrl.replace(/\[urlencoded_product_name\]/g, encodedProdName);
+          } else if (rawUrl.includes("urlencoded_product_name")) {
+            rawUrl = rawUrl.replace(/urlencoded_product_name/g, encodedProdName);
+          }
+          
+          const platformLower = (link.platform || "").toLowerCase();
+          
+          // If URL is missing, invalid, or just highlights a generic root domain, reconstruct a proper direct search link
+          const isGeneric = !rawUrl || 
+                            rawUrl === "https://www.amazon.in" || 
+                            rawUrl === "https://www.flipkart.com" || 
+                            rawUrl === "https://www.croma.com" || 
+                            rawUrl === "https://www.reliancedigital.in" ||
+                            (!rawUrl.includes("?") && !rawUrl.includes("/p/") && !rawUrl.includes("/s?"));
+                            
+          if (isGeneric) {
+            if (platformLower.includes("amazon")) {
+              rawUrl = `https://www.amazon.in/s?k=${encodedProdName}`;
+            } else if (platformLower.includes("flipkart")) {
+              rawUrl = `https://www.flipkart.com/search?q=${encodedProdName}`;
+            } else if (platformLower.includes("croma")) {
+              rawUrl = `https://www.croma.com/search/?text=${encodedProdName}`;
+            } else if (platformLower.includes("reliance")) {
+              rawUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
+            } else if (!rawUrl) {
+              rawUrl = `https://www.google.com/search?q=${encodedProdName}`;
+            }
+          }
+          
+          // Ensure protocol is present
+          if (rawUrl && !rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+            rawUrl = "https://" + rawUrl;
+          }
+          
+          return {
+            ...link,
+            url: rawUrl
+          };
+        });
+      }
     } catch (parseError) {
       console.error("JSON Parse Error. Raw Text:", text, "Parsing error:", parseError);
       // Absolute fallback: secure default object
