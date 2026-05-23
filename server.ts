@@ -213,7 +213,7 @@ const defaultAuditData = {
     dealScore: 50,
     discountStrategy: "Trace cut off",
     procurementLinks: [
-      { platform: "Amazon", label: "Search Amazon", price: "Check Live", isBestDeal: true }
+      { platform: "Amazon", label: "Search Amazon", price: "Check Live", isBestDeal: true, url: "https://www.amazon.in" }
     ]
   },
   strategicRoadmap: {
@@ -424,8 +424,8 @@ const auditResponseSchema = {
     priceIntegrity: {
       type: Type.OBJECT,
       properties: {
-        currentPriceAudit: { type: Type.STRING, description: "Current price rating/commentary" },
-        historicalContext: { type: Type.STRING, description: "How current price relates to historical patterns" },
+        currentPriceAudit: { type: Type.STRING, description: "Honest feedback about today's price in simple, friendly, jargon-free Indian consumer context (e.g., 'This price is brilliant because it is close to the lowest-ever sale price.')" },
+        historicalContext: { type: Type.STRING, description: "How current price relates to past sales, explained in simple everyday words without any math or finance jargon (e.g., 'Prices drop by ₹1,500 every Diwali, but if you need it today, this current deal is quite fair.')" },
         priceHistory: {
           type: Type.ARRAY,
           items: {
@@ -439,7 +439,7 @@ const auditResponseSchema = {
           description: "Approximate historical prices over 4-6 months to build chart"
         },
         dealScore: { type: Type.INTEGER, description: "Deal quality index 0 to 100" },
-        discountStrategy: { type: Type.STRING, description: "How to capture maximum discount" },
+        discountStrategy: { type: Type.STRING, description: "Extremely simple, practical tips for everyday people to save additional cash, e.g., using SBI/HDFC card cashbacks or waiting for weekend coupon drops (e.g., 'Buy with an HDFC card for a ₹1,000 instant discount, or check your local multi-brand stores to match this online price.')" },
         procurementLinks: {
           type: Type.ARRAY,
           items: {
@@ -448,9 +448,10 @@ const auditResponseSchema = {
               platform: { type: Type.STRING, description: "Platform name (e.g., Amazon, Flipkart)" },
               label: { type: Type.STRING, description: "Button text (e.g., Amazon India)" },
               price: { type: Type.STRING, description: "Current price on platform (e.g. ₹18,499)" },
-              isBestDeal: { type: Type.BOOLEAN, description: "Whether this is the lowest price option" }
+              isBestDeal: { type: Type.BOOLEAN, description: "Whether this is the lowest price option" },
+              url: { type: Type.STRING, description: "Direct product or keyword search query URL to verify on platform (e.g., https://www.amazon.in/s?k=product+name)" }
             },
-            required: ["platform", "label", "price", "isBestDeal"]
+            required: ["platform", "label", "price", "isBestDeal", "url"]
           },
           description: "Major Indian procurement destinations"
         }
@@ -638,8 +639,8 @@ app.post("/api/audit", securityGuard, async (req, res) => {
         dealScore: 0,
         discountStrategy: "Format your query as a product name or shopping store link.",
         procurementLinks: [
-          { platform: "Amazon", label: "Search Amazon India", price: "Live Price", isBestDeal: true },
-          { platform: "Flipkart", label: "Search Flipkart India", price: "Live Price", isBestDeal: false }
+          { platform: "Amazon", label: "Search Amazon India", price: "Live Price", isBestDeal: true, url: "https://www.amazon.in" },
+          { platform: "Flipkart", label: "Search Flipkart India", price: "Live Price", isBestDeal: false, url: "https://www.flipkart.com" }
         ]
       },
       strategicRoadmap: {
@@ -724,7 +725,15 @@ STRICT PRICING & SCORING PROTOCOLS:
 5. REVIEW AUTHENTICITY: 0-100. Low scores if you detect bot patterns, repetitive phrasing, or disproportionate 5-star ratings.
 6. DEAL RATING: 0-100. 100 means historical low. 0 means peak price/MSRP trap.
 7. TARGET PRICE: This MUST be the scientifically calculated "Fair Value" you should pay. Use historical sale patterns (Big Billion Days, Prime Day) to determine the logical entry point.
-8. PRICE COMPARISON: You MUST provide live-accurate pricing for major Indian platforms like Amazon.in, Flipkart, Reliance Digital, Croma, and Official Brand Stores.
+8. PRICE COMPARISON & VERIFICATION LINKS:
+    - You MUST provide live-accurate pricing for major Indian platforms like Amazon.in, Flipkart, Reliance Digital, Croma, and Official Brand Stores.
+    - Provide direct clickable verifying search or product URLs for each vendor in the "procurementLinks" array under the "url" property.
+    - For Amazon, use: https://www.amazon.in/s?k=[urlencoded_product_name]
+    - For Flipkart, use: https://www.flipkart.com/search?q=[urlencoded_product_name]
+    - For Croma, use: https://www.croma.com/search/?text=[urlencoded_product_name]
+    - For Reliance Digital, use: https://www.reliancedigital.in/search?q=[urlencoded_product_name]
+    - For Official Brand Stores or others, use their search URL or their primary landing page.
+    - This ensures the user can instantly click, verify real-time price accuracy, check stock delivery timelines, and securely buy the item.
 9. SAFETY SCORE: 0-100. Reliability and service network quality in India.
 10. ZERO-DIFFERENTIATION PRICING CONGRUENCY:
     - Every price field in your JSON output must be mathematically and numerically consistent with no mismatch or differentiation.
@@ -734,6 +743,11 @@ STRICT PRICING & SCORING PROTOCOLS:
     - The smarter alternative's name and details are in "vettoContrast". The "vettoContrast.priceDelta" field must represent the actual calculated difference between the current lowest price and the alternative's price (e.g., if current is ₹54,999 and alternative is ₹44,999, the delta must be "Save ₹10,000").
     - The "vettoContrast.fairPriceTarget" must be congruent with your target price recommendations (e.g., "₹49,999").
     - There must be absolutely no conflicting price values in any text descriptions, lists, charts, or comparison sections.
+11. LAYMAN-FRIENDLY COPY FOR BUYING & STOCK SECTION (NO TECH/FINANCE JARGON):
+    - When generating "priceIntegrity.currentPriceAudit", "priceIntegrity.historicalContext", and "priceIntegrity.discountStrategy", you MUST speak like a normal consumer's helpful companion or elder brother.
+    - Write in everyday, simple, clear, jargon-free English that any typical uncle, student, or non-tech consumer can instantly understand.
+    - Under NO circumstances are you allowed to use academic, technical, or finance jargon such as "equilibrium", "market correction", "historical volatility", "arbitrage", "price elasticity", "retailer premium", "MSRP discrepancy", or "data points".
+    - Give simple, solid, down-to-earth advice like: "This price is a great discount, we think you should grab it now", "Usually, this gets ₹1,500 cheaper during Diwali and October sales", "Use an SBI credit card or wait for the weekend flash deals to save more."
 
 TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are the user's smart elder brother. No technical jargon. Accuracy in pricing is our lifeblood. Ensure "Status Tax" feels like a real penalty for buying a badge.`;
 

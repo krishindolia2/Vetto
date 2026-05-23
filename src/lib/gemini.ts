@@ -75,6 +75,7 @@ export interface Recommendation {
       label: string;
       price: string;
       isBestDeal: boolean;
+      url?: string;
     }[];
   };
   bhartiyaPersonaAudit: string;

@@ -2578,11 +2578,25 @@ export default function App() {
                         <p className="text-2xl font-black tracking-tight text-slate-900">Current Best Prices</p>
                       </div>
                       <div className="flex items-center gap-6">
-                        <div className="text-right">
-                          <span className="text-[9px] font-black text-slate-300 uppercase block mb-1">Price Deal Rating</span>
-                          <div className="flex items-end gap-1">
+                        <div className="text-left md:text-right">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Is this a Good Deal?</span>
+                          <div className="flex items-baseline md:justify-end gap-2">
                             <span className="text-3xl sm:text-4xl font-black text-slate-900">{result.priceIntegrity.dealScore}</span>
-                            <span className="text-xs font-bold text-slate-300 mb-1">/100</span>
+                            <span className="text-xs font-bold text-slate-400">/ 100</span>
+                          </div>
+                          <div className={cn(
+                            "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mt-1.5 border",
+                            result.priceIntegrity.dealScore >= 80 
+                              ? "text-emerald-700 bg-emerald-50 border-emerald-100" 
+                              : result.priceIntegrity.dealScore >= 60 
+                                ? "text-sky-700 bg-sky-50 border-sky-100" 
+                                : "text-rose-700 bg-rose-50 border-rose-100"
+                          )}>
+                            {result.priceIntegrity.dealScore >= 80 
+                              ? "Excellent Deal - Buy Now!" 
+                              : result.priceIntegrity.dealScore >= 60 
+                                ? "Good Fair Price" 
+                                : "Expensive - Better to Wait!"}
                           </div>
                         </div>
                       </div>
@@ -2593,40 +2607,87 @@ export default function App() {
                       <div className="space-y-8">
                         <span className="section-heading">Price Comparison</span>
                         <div className="space-y-4">
-                          {result.priceIntegrity.procurementLinks.map((link, i) => (
-                            <div 
-                              key={i} 
-                              className={cn(
-                                "flex items-center justify-between p-6 rounded-3xl border transition-all group",
-                                link.isBestDeal ? "bg-slate-950 border-slate-900 text-white" : "bg-slate-50 border-slate-100 opacity-60 hover:opacity-100"
-                              )}
-                            >
-                              <div className="flex items-center gap-5">
-                                <div className={cn(
-                                  "w-12 h-12 rounded-full flex items-center justify-center font-black text-xs shrink-0",
-                                  link.isBestDeal ? "bg-white text-slate-950" : "bg-white border border-slate-200 text-slate-400"
-                                )}>
-                                  {link.platform.charAt(0)}
-                                </div>
-                                <div>
-                                  <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-1", link.isBestDeal ? "text-white/40" : "text-slate-400")}>{link.platform}</span>
-                                  <span className={cn("text-sm font-black tracking-tight", link.isBestDeal ? "text-white" : "text-slate-900")}>{link.label}</span>
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <span className={cn("text-lg font-black block tracking-tighter", link.isBestDeal ? "text-white" : "text-slate-950")}>{link.price}</span>
-                                {link.isBestDeal && (
-                                  <span className="text-[10px] font-black text-white/60 uppercase tracking-widest flex items-center gap-1 justify-end animate-pulse">
-                                    LOCKED
-                                  </span>
+                          {result.priceIntegrity.procurementLinks.map((link, i) => {
+                            const isAnchor = !!link.url;
+                            const Comp = isAnchor ? 'a' : 'div';
+                            const extraProps = isAnchor ? {
+                              href: link.url,
+                              target: "_blank",
+                              rel: "noopener noreferrer",
+                              title: `Open product or search live on ${link.platform}`
+                            } : {};
+
+                            return (
+                              <Comp 
+                                key={i} 
+                                {...extraProps}
+                                className={cn(
+                                  "flex items-center justify-between p-6 rounded-3xl border transition-all group text-left block w-full",
+                                  link.isBestDeal 
+                                    ? "bg-slate-950 border-slate-900 text-white hover:bg-slate-900" 
+                                    : "bg-slate-50 border-slate-100 opacity-70 hover:opacity-100 hover:bg-slate-100/50 hover:border-slate-200"
                                 )}
-                              </div>
-                            </div>
-                          ))}
+                              >
+                                <div className="flex items-center gap-5">
+                                  <div className={cn(
+                                    "w-12 h-12 rounded-full flex items-center justify-center font-black text-xs shrink-0",
+                                    link.isBestDeal ? "bg-white text-slate-950" : "bg-white border border-slate-200 text-slate-400"
+                                  )}>
+                                    {link.platform.charAt(0)}
+                                  </div>
+                                  <div>
+                                    <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-1", link.isBestDeal ? "text-white/40" : "text-slate-400")}>
+                                      {link.platform}
+                                    </span>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className={cn("text-sm font-black tracking-tight", link.isBestDeal ? "text-white" : "text-slate-900")}>
+                                        {link.label}
+                                      </span>
+                                      {isAnchor && (
+                                        <ArrowUpRight className={cn("w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0", link.isBestDeal ? "text-white/60" : "text-slate-400")} />
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <span className={cn("text-lg font-black block tracking-tighter", link.isBestDeal ? "text-white" : "text-slate-950")}>
+                                    {link.price}
+                                  </span>
+                                  {link.isBestDeal ? (
+                                    <div className="flex flex-col items-end">
+                                      <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-1 justify-end">
+                                        ★ BEST VALUE
+                                      </span>
+                                      {isAnchor && (
+                                        <span className="text-[8px] font-bold text-white/50 uppercase tracking-wider block mt-0.5 group-hover:underline">
+                                          Click to open store
+                                        </span>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    isAnchor && (
+                                      <div className="flex flex-col items-end">
+                                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block">
+                                          Compare
+                                        </span>
+                                        <span className="text-[8px] font-bold text-accent uppercase tracking-wider block mt-0.5 group-hover:underline">
+                                          Click to check stock
+                                        </span>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              </Comp>
+                            );
+                          })}
                         </div>
-                        <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                          <p className="text-xs font-medium text-slate-600 leading-relaxed italic">
+                        <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-1.5">
+                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Shopping Tip from Vetto</p>
+                          <p className="text-xs font-semibold text-slate-700 leading-relaxed italic">
                             &ldquo;{result.priceIntegrity.discountStrategy}&rdquo;
+                          </p>
+                          <p className="text-[10px] font-medium text-slate-400 mt-1">
+                            💡 Tap any store name above to check if they have the item in stock and confirm today's live price before buying.
                           </p>
                         </div>
                       </div>
@@ -2634,7 +2695,7 @@ export default function App() {
                       {/* Price History Chart */}
                       <div className="space-y-8">
                         <div className="flex justify-between items-center px-2">
-                          <span className="section-heading mb-0">Price History (6 Months)</span>
+                          <span className="section-heading mb-0">Price Trends (Past 6 Months)</span>
                           <div className="flex items-center gap-2">
                             <Activity className="w-3 h-3 text-slate-300" />
                             <span className="text-[9px] font-mono font-bold text-slate-300 uppercase tracking-widest">Past Prices</span>
@@ -2683,9 +2744,12 @@ export default function App() {
                             </AreaChart>
                           </ResponsiveContainer>
                         </div>
-                        <p className="text-[10px] font-bold text-slate-400 leading-relaxed max-w-sm ml-2">
-                          &ldquo;{result.priceIntegrity.historicalContext}&rdquo;
-                        </p>
+                        <div className="space-y-1.5 px-2">
+                          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Our Honest Price Analysis</p>
+                          <p className="text-xs font-semibold text-slate-700 leading-relaxed italic">
+                            &ldquo;{result.priceIntegrity.historicalContext}&rdquo;
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
