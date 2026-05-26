@@ -2267,8 +2267,13 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
   } catch (error: any) {
     console.error("Vetto Server Error:", error);
     
-    // Check for billing / dunning decision deny errors
+    const isSSE = req.headers.accept === "text/event-stream";
     const errorMsg = String(error.message || "").toLowerCase();
+    
+    let message = error.message || "Failed to generate audit report.";
+    let status = 500;
+    let errorType: string | undefined = undefined;
+    
     const isDunningError = errorMsg.includes("dunning") || 
                            errorMsg.includes("billing") || 
                            errorMsg.includes("deny for project") ||
@@ -2281,36 +2286,37 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
                            error.status === 403 || error.code === 403;
                            
     if (isDunningError) {
-      return res.status(403).json({
-        error: "Billing Verification Required",
-        errorType: "BILLING_DUNNING_DENY",
-        message: "We have detected a Google Cloud billing restriction (dunning decision is deny) on this workspace's Google Gemini API key or project. Service can be restored instantly by adding or verifying a valid personal API key in AI Studio's 'Settings > Secrets' panel (top-right gear icon)."
-      });
+      status = 403;
+      errorType = "BILLING_DUNNING_DENY";
+      message = "We have detected a Google Cloud billing restriction (dunning decision is deny) on this workspace's Google Gemini API key or project. Service can be restored instantly by adding or verifying a valid personal API key in AI Studio's 'Settings > Secrets' panel (top-right gear icon).";
+    } else if (errorMsg.includes("safety")) {
+      status = 400;
+      message = "Audit Aborted: The query triggered safety protocols. Please refine your request.";
+    } else if (errorMsg.includes("503") || errorMsg.includes("unavailable")) {
+      status = 503;
+      message = "Engine High Demand: The Strategic Engine is currently under extreme load. Retries were attempted but the spike persists.";
+    } else if (errorMsg.includes("429") || errorMsg.includes("quota")) {
+      status = 429;
+      message = "Quota Exceeded: Your Vetto Engine limit has been reached. Please try again later.";
     }
     
-    // Check for safety filter blocks
-    if (error.message?.includes("SAFETY")) {
-      return res.status(400).json({ 
-        error: "Audit Aborted: The query triggered safety protocols. Please refine your request." 
+    if (isSSE) {
+      if (!res.headersSent) {
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+        res.setHeader("X-Accel-Buffering", "no");
+        res.flushHeaders();
+      }
+      res.write(`data: ${JSON.stringify({ type: "error", message, errorType })}\n\n`);
+      res.end();
+    } else {
+      res.status(status).json({ 
+        error: message, 
+        errorType, 
+        engineStatus: "OVERLOADED" 
       });
     }
-    
-    if (error.message?.includes("503") || error.message?.includes("UNAVAILABLE")) {
-      return res.status(503).json({ 
-        error: "Engine High Demand: The Strategic Engine is currently under extreme load. Retries were attempted but the spike persists." 
-      });
-    }
-
-    if (error.message?.includes("429") || error.message?.toLowerCase().includes("quota")) {
-      return res.status(429).json({ 
-        error: "Quota Exceeded: Your Vetto Engine limit has been reached. Please try again later." 
-      });
-    }
-
-    res.status(500).json({ 
-      error: error.message || "Failed to generate audit report.",
-      engineStatus: "OVERLOADED"
-    });
   }
 });
 
