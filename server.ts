@@ -993,8 +993,6 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
   // Identify placeholder/hallucinated links to trigger high-fidelity search URL fallback
   const isPlaceholderUrl = targetUrl.includes("B0CXXYZ") || 
                            targetUrl.includes("12345") || 
-                           targetUrl.includes("searchB") ||
-                           /itm\d+/.test(targetUrl) || 
                            targetUrl.includes("example.com");
   
   if (isPlaceholderUrl) {
@@ -1054,11 +1052,11 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
   // 4. Force high-fidelity deep-search query fallbacks for generic/mismatched/broken links
   if (isGenericOrMismatched) {
     if (platformLower.includes("amazon")) {
-      targetUrl = `https://www.amazon.in/s?k=${encodedProdName}`;
+      targetUrl = `https://www.amazon.in/s?k=${encodedPlusProdName}`;
     } else if (platformLower.includes("flipkart")) {
-      targetUrl = `https://www.flipkart.com/search?q=${encodedProdName}`;
+      targetUrl = `https://www.flipkart.com/search?q=${encodedPlusProdName}`;
     } else if (platformLower.includes("croma")) {
-      targetUrl = `https://www.croma.com/search/?text=${encodedPlusProdName}`;
+      targetUrl = `https://www.croma.com/searchB?q=${encodedPlusProdName}%3Arelevance&text=${encodedPlusProdName}`;
     } else if (platformLower.includes("reliance")) {
       targetUrl = `https://www.reliancedigital.in/search?q=${encodedPlusProdName}`;
     } else if (platformLower.includes("myntra")) {
@@ -1066,7 +1064,7 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
     } else if (platformLower.includes("ajio")) {
       targetUrl = `https://www.ajio.com/search/?text=${encodedPlusProdName}`;
     } else {
-      targetUrl = `https://www.google.com/search?q=${encodedProdName}`;
+      targetUrl = `https://www.google.com/search?q=${encodedPlusProdName}`;
     }
   }
 
@@ -1120,7 +1118,7 @@ function extractGroundingUrlForPlatform(response: any, platformName: string): st
 }
 
 // Perform internet search grounding to retrieve actual live pricing and platform links for a given search query
-async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", retries = 2): Promise<any[] | null> {
+async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", retries = 2): Promise<{ resolvedProductName: string, prices: any[] } | null> {
   if (!ai) return null;
   
   const cleanQuery = productQuery.trim();
@@ -1136,7 +1134,9 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
     try {
       console.log(`[Price Verification Pre-fetch] (Attempt ${attempt + 1}/${retries}) Querying Google Search grounding via ${modelToUse} for: "${cleanQuery}"${budgetLimit ? ` matching budget of ₹${budgetLimit}` : ""}`);
       
-      const preFetchPrompt = `Identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs or search result URLs for the product: "${cleanQuery}"${budgetLimit ? ` (conforming to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India (such as Amazon India, Flipkart, and Croma, Reliancedigital, Ajio, Myntra, or Tata CLiQ).
+      const preFetchPrompt = `Identify if the query is a broad category request (e.g. "best gaming phone", "good sneakers") or a specific product (e.g. "iPhone 15", "Nike Air Force 1").
+      If it is a broad category, you MUST first select the single absolutely best specific product that fits this category and budget.
+      Then, identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs or search result URLs for THAT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India (such as Amazon India, Flipkart, and Croma, Reliancedigital, Ajio, Myntra, or Tata CLiQ).
       
       CRITICAL ACCURACY & SPECIFICATION VARIANT RULES:
       1. ONLY return pricing and stock status for the EXACT technical specifications (specifically matching RAM capacity like 8GB/12GB/16GB, storage capacity like 128GB/256GB/512GB, and generation/processor like M2/M3/M4) requested or fitting closest to the optional budget: "${budgetLimit || 'N/A'}".
@@ -1147,34 +1147,30 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       6. For "url", you MUST return a working product page URL. If you cannot find the EXACT product page URL for the SPECIFIC model, you must mark it Out of Stock. If it is genuinely in stock, return the exact URL. If you cannot find it, leave "url" empty and mark it Out of Stock!
       7. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian platform, return "Out of Stock".
 
-      Return the results in a strict JSON array format.
+      Return the results in a strict JSON object format containing "resolvedProductName" and "prices" array.
       
       Example output format:
-      [
-        {
-          "platform": "Amazon",
-          "price": "₹37,999",
-          "url": "https://www.amazon.in/dp/B0CXXYZ",
-          "stockStatus": "In Stock",
-          "exactVariantMatch": true
-        },
-        {
-          "platform": "Flipkart",
-          "price": "Out of Stock",
-          "url": "",
-          "stockStatus": "Out of Stock",
-          "exactVariantMatch": false
-        },
-        {
-          "platform": "Croma",
-          "price": "₹39,999",
-          "url": "https://www.croma.com/iqoo-neo-10/p/12345",
-          "stockStatus": "In Stock",
-          "exactVariantMatch": true
-        }
-      ]
+      {
+        "resolvedProductName": "iQOO Neo 10 Pro 12GB 256GB",
+        "prices": [
+          {
+            "platform": "Amazon",
+            "price": "₹37,999",
+            "url": "https://www.amazon.in/dp/B0CXXYZ",
+            "stockStatus": "In Stock",
+            "exactVariantMatch": true
+          },
+          {
+            "platform": "Flipkart",
+            "price": "Out of Stock",
+            "url": "",
+            "stockStatus": "Out of Stock",
+            "exactVariantMatch": false
+          }
+        ]
+      }
       
-      If the product is not found or has no active listings, return an empty array [].
+      If the product is not found or has no active listings, return an empty array for prices.
       Only return valid JSON conforming to the example format. No markdown, no explanations. Make sure URLs are real direct search or product page URLs.
       `;
 
@@ -1206,9 +1202,12 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         console.log("[Price Verification Pre-fetch] Extracted Prices Data:", jsonText);
         const repaired = repairJson(jsonText);
         const parsed = JSON.parse(repaired);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        let pricesArray = Array.isArray(parsed) ? parsed : (parsed.prices || []);
+        let resolvedName = parsed.resolvedProductName || productQuery;
+        
+        if (Array.isArray(pricesArray) && pricesArray.length > 0) {
           // Pre-processing to decode numeric values to build protection filters
-          const parsedWithValues = parsed.map((item: any) => {
+          const parsedWithValues = pricesArray.map((item: any) => {
             if (!item.platform) return null;
             let priceStr = String(item.price || "").trim();
             const originalPriceStr = priceStr;
@@ -1228,7 +1227,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               priceStr = "₹" + priceStr;
             }
             
-            const numValue = isOos ? NaN : parseInt(priceStr.replace(/[^\d]/g, ''));
+            const numValue = isOos ? NaN : parseInt(priceStr.split('.')[0].replace(/[^\d]/g, ''));
             return { item, priceStr, numValue, originalPriceStr, isOos };
           }).filter(x => x !== null) as any[];
 
@@ -1245,7 +1244,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               console.log(`[Outlier Filter] Filtered out cheap accessory outliers using median price ₹${medianPrice}.`);
             }
           } else if (activeOffers.length === 1 && budgetLimit) {
-            const parsedLimit = parseInt(budgetLimit.replace(/[^\d]/g, ''));
+            const parsedLimit = parseInt(budgetLimit.split('.')[0].replace(/[^\d]/g, ''));
             if (!isNaN(parsedLimit) && parsedLimit > 2000) {
               // If only 1 offer found and it's less than 18% of the target budget, it's highly likely an accessory
               filtered = filtered.filter(x => x.isOos || x.numValue >= parsedLimit * 0.18);
@@ -1327,7 +1326,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               } else {
                 console.log(`[Price Verification Pre-fetch] Loaded ${healed.length} platforms, but all are currently out of stock.`);
               }
-              return healed;
+              return { resolvedProductName: resolvedName, prices: healed };
             }
           }
         }
@@ -1417,11 +1416,14 @@ app.post("/api/audit", securityGuard, async (req, res) => {
 
   let isBudgetCategoryQuery = false;
   const budgetKeywords = ["under", "below", "budget", "price range", "within", "cheapest", "costing", "around", "max"];
+  const categoryKeywords = ["best", "top", "recommend", "suggest", "which"];
+  
   const hasBudgetKeyword = budgetKeywords.some(kw => parsedQuery.toLowerCase().includes(kw)) || /\d+[kK]/.test(parsedQuery);
+  const hasCategoryKeyword = categoryKeywords.some(kw => parsedQuery.toLowerCase().includes(kw));
   const hasBudgetInField = parsedBudget.length > 0;
   
-  // Is this any category or branded query that contains a budget constraint?
-  const isGenericCategoryQuery = (hasBudgetKeyword || hasBudgetInField) && !hasUrl;
+  // Is this any category or branded query that contains a budget constraint, or a broad category request?
+  const isGenericCategoryQuery = (hasBudgetKeyword || hasBudgetInField || hasCategoryKeyword) && !hasUrl && !parsedQuery.toLowerCase().includes(" vs ");
 
   if (isGenericCategoryQuery && ai && parsedQuery.length > 2) {
     try {
@@ -1432,16 +1434,16 @@ app.post("/api/audit", securityGuard, async (req, res) => {
         contents: [{
           role: "user",
           parts: [{
-            text: `Analyze this shopping query: "${parsedQuery}" with a budget of: "₹${parsedBudget}". Your goal is to return a highly-specific, single retail-active product model name along with the exact, realistic RAM/Storage variant that fits this budget in the Indian consumer market.
+            text: `Analyze this shopping query: "${parsedQuery}" with a budget of: "${parsedBudget ? '₹' + parsedBudget : 'Unspecified'}". Your goal is to return a highly-specific, single retail-active product model name (including exact realistic variant like RAM/Storage if it's electronics, or Size/Color if relevant) that fits this budget in the Indian consumer market.
 
 Context & Hard Constraints:
-1. The model and specific variant you choose MUST be physically available and currently selling in India for a price strictly UNDER or EQUAL to the budget limit of ₹${parsedBudget}. For example, if the query contains "under 30k" or a budget of ₹30,000, do NOT output a phone model or variant like "OnePlus 12R", "iQOO Neo 9 Pro", or "iPhone 13" because they actually sell for ₹35,000 to ₹40,000+! Instead, choose a legendary high-value option currently selling under ₹30,000 (such as "OnePlus Nord 4 8GB 128GB", "iQOO Z9s Pro 8GB 128GB", "Moto Edge 50 Fusion 8GB 128GB", "Realme GT 6T 8GB 128GB").
-2. Resolve generic searches (e.g. "best phone under 30k", "oneplus under 30k", "samsung under 20k") to the absolute best specific model and variant currently active (e.g., "OnePlus Nord CE 4 8GB 128GB" for OnePlus under 25k, "Samsung Galaxy M35 8GB 128GB" for Samsung under 20k).
-3. If the user query is already a specific product model (e.g. "iQOO Neo 10") and fits closest to or under the budget, resolve it to the exact variant (e.g. "iQOO Neo 10 8GB 256GB") that fits closest to or under that budget.
-4. If the query already specifies an exact RAM/Storage/Processor configuration (e.g., "12GB 256GB"), preserve that exact variant.
-5. In India, typical smartphone variants are "8GB 128GB", "8GB 256GB", "12GB 256GB", "16GB 512GB". Laptops are "16GB 512GB SSD" etc. Choose realistic variants currently sold.
+1. The model and specific variant you choose MUST be physically available and currently selling in India for a price strictly UNDER or EQUAL to the budget limit (if specified). For example, if the budget is ₹30,000, do NOT output a phone model like "iQOO Neo 9 Pro" because it sells for ₹35,000+.
+2. Resolve generic searches (e.g. "best phone under 30k", "best sneakers", "samsung under 20k") to the absolute best specific model currently active (e.g., "OnePlus Nord CE 4 8GB 128GB" or "Puma Smash v2 L").
+3. If the user query is already a specific product model (e.g. "iQOO Neo 10") and fits the budget, just return that exact model and its most popular variant (e.g. "iQOO Neo 10 8GB 256GB").
+4. If the query already specifies an exact configuration (e.g., "12GB 256GB"), preserve it.
+5. In India, typical smartphone variants are "8GB 128GB", "12GB 256GB". Laptops are "16GB 512GB SSD". If the product is not electronics (e.g., shoes, appliances), just return the exact model name.
 
-Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4 8GB 128GB" or "Samsung Galaxy M35 8GB 128GB"). Do not include any formatting, notes, markdown, or explanations.`
+Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4 8GB 128GB" or "Nike Revolution 6"). Do not include any formatting, notes, markdown, or explanations. If you provide any conversational text, the system will break.`
           }]
         }],
         config: {
@@ -1449,8 +1451,11 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
         }
       });
       
-      const resolvedName = rewriteResponse.text?.trim();
-      if (resolvedName && resolvedName.length > 3 && !resolvedName.includes("\n")) {
+      let resolvedName = rewriteResponse.text?.trim() || "";
+      // Strip any markdown code blocks, prefixes, or newlines just in case the model hallucinates format
+      resolvedName = resolvedName.replace(/```[a-zA-Z]*\n?/g, '').replace(/```/g, '').replace(/\n/g, ' ').trim();
+      
+      if (resolvedName && resolvedName.length > 3) {
         console.log(`[Parser Resilience] Resolved query "${parsedQuery}" with budget "${parsedBudget}" to specific variant: "${resolvedName}"`);
         parsedQuery = resolvedName;
         isBudgetCategoryQuery = true;
@@ -1621,17 +1626,19 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
       : '';
 
     // Step 1: Pre-fetch verified real-time prices & links
-    const preFetchedPrices = await preFetchLivePricesAndLinks(parsedQuery, parsedBudget);
+    const preFetchResult = await preFetchLivePricesAndLinks(parsedQuery, parsedBudget);
+    const preFetchedPrices = preFetchResult?.prices || null;
+    const resolvedProduct = preFetchResult?.resolvedProductName || parsedQuery;
 
     let promptText = `CURRENT DATE: ${currentDate}
 Original User Query: "${query}"
-Establish Strategic Audit for Resolved Target: ${parsedQuery || "Analyzed Visual Evidence"}
+Resolved Specific Target Product: ${resolvedProduct || "Analyzed Visual Evidence"}
 Target Capital: ${parsedBudget || 'Unlimited'}
 Strategic Context: ${useCase || 'General Deployment'}${historyText}`;
 
     if (preFetchedPrices && preFetchedPrices.length > 0) {
       promptText += `\n\nVERIFIED CURRENT LIVE PRICES ON MAJOR PLATFORMS IN INDIA:\n` +
-        preFetchedPrices.map(p => `- ${p.platform}: ${p.price} (Verified Purchase/Search Link: ${p.url || 'None - Out of Stock'})`).join('\n') +
+        preFetchedPrices.map((p: any) => `- ${p.platform}: ${p.price} (Verified Purchase/Search Link: ${p.url || 'None - Out of Stock'})`).join('\n') +
         `\nUse these exact verified live prices and direct URLs for your "priceIntegrity.procurementLinks" structure. Ensure exact congruency. If the price is "Out of Stock" or the link says "None", you MUST NOT provide a URL for that platform (leave the url field empty string "").`;
     }
 

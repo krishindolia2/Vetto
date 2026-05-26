@@ -201,12 +201,16 @@ const getNumericPrice = (res: any) => {
   const bestDeal = res.priceIntegrity?.procurementLinks?.find(
     (l: any) => l.isBestDeal,
   );
-  const priceStr =
+  const priceStr = String(
     bestDeal?.price ||
     res.priceIntegrity?.procurementLinks?.[0]?.price ||
-    res.vettoContrast?.fairPriceTarget;
+    res.vettoContrast?.fairPriceTarget || ""
+  );
+  if (/out of stock|unavailable/i.test(priceStr)) {
+    return 0; // Signifies OOS
+  }
   if (priceStr) {
-    const num = parseInt(priceStr.replace(/[^\d]/g, ""));
+    const num = parseInt(priceStr.split('.')[0].replace(/[^\d]/g, ""));
     if (!isNaN(num) && num > 0) return num;
   }
   return 25000;
@@ -1372,7 +1376,7 @@ export default function App() {
                       worth buying?
                     </span>
                   </h1>
-                  <p className="text-zinc-400 font-medium max-w-xl text-sm leading-relaxed mx-auto md:mx-0">
+                  <p className="text-slate-600 font-medium max-w-xl text-sm leading-relaxed mx-auto md:mx-0">
                     Paste any product link to instantly uncover fake reviews,
                     hidden fees, and smarter alternatives.
                   </p>
@@ -1389,7 +1393,7 @@ export default function App() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="e.g. iPhone 15 vs 16, organic cotton shirts, or paste major retail links..."
-                    className="w-full bg-white/5 border border-white/10 focus:border-accent focus:bg-white/10 rounded-2xl py-7 pl-16 pr-6 text-lg font-medium text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] hover:border-white/20 transition-all duration-300 outline-none placeholder:text-zinc-500"
+                    className="w-full bg-slate-100 border border-slate-200 focus:border-accent focus:bg-white rounded-2xl py-7 pl-16 pr-6 text-lg font-medium text-slate-900 shadow-sm hover:border-slate-300 transition-all duration-300 outline-none placeholder:text-slate-400"
                     required
                   />
                 </div>
@@ -1397,7 +1401,7 @@ export default function App() {
                 {/* Additional parameters split */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest block ml-1">
+                    <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest block ml-1">
                       Max Budget (Optional)
                     </label>
                     <div className="relative group/budget">
@@ -1411,13 +1415,13 @@ export default function App() {
                         value={budget}
                         onChange={(e) => setBudget(e.target.value)}
                         placeholder="e.g. 50,000"
-                        className="w-full bg-white/5 border border-white/10 focus:border-accent/40 focus:bg-white/10 rounded-xl py-5 pl-10 pr-6 text-sm font-medium text-white outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]"
+                        className="w-full bg-slate-100 border border-slate-200 focus:border-accent/40 focus:bg-white rounded-xl py-5 pl-10 pr-6 text-sm font-medium text-slate-900 outline-none transition-all shadow-sm"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest block ml-1">
+                    <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest block ml-1">
                       Main Use Case (Optional)
                     </label>
                     <input
@@ -1425,7 +1429,7 @@ export default function App() {
                       value={useCase}
                       onChange={(e) => setUseCase(e.target.value)}
                       placeholder="e.g. Office work, Family commute, Workout"
-                      className="w-full bg-white/5 border border-white/10 focus:border-accent/40 focus:bg-white/10 rounded-xl py-5 px-6 text-sm font-medium text-white outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)] mb-3"
+                      className="w-full bg-slate-100 border border-slate-200 focus:border-accent/40 focus:bg-white rounded-xl py-5 px-6 text-sm font-medium text-slate-900 outline-none transition-all shadow-sm mb-3"
                     />
 
                     {/* Interactive pill recommendations */}
@@ -1473,10 +1477,10 @@ export default function App() {
                 <div className="border-t border-white/10 pt-6 max-w-4xl space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest block mb-0.5">
+                      <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest block mb-0.5">
                         Attach Product Image or Spec Sheet (Optional)
                       </span>
-                      <span className="text-[9px] text-zinc-500 font-medium font-serif italic">
+                      <span className="text-[9px] text-slate-400 font-medium font-serif italic">
                         Analyzed instantly via Gemini Multimodal Vision checks
                       </span>
                     </div>
@@ -4587,7 +4591,7 @@ export default function App() {
                             Cost Target
                           </span>
                           <span className="text-sm font-black text-zinc-500 text-center line-through decoration-red-500/50">
-                            ₹{getNumericPrice(result).toLocaleString()}
+                            {getNumericPrice(result) === 0 ? "Out of Stock" : `₹${getNumericPrice(result).toLocaleString()}`}
                           </span>
                           <span className="text-sm font-black text-white text-center font-mono bg-white/5 py-1 rounded-md border border-white/10">
                             {result.vettoContrast.fairPriceTarget}

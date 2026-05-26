@@ -102,26 +102,7 @@ button {
    Clean, Premium Apple-Style Light Theme Overrides & Safety Patches
    ========================================================================== */
 
-/* 1. Global Input & Textarea Premium Styling - Solves query typing visibility concerns */
-input[type="text"], textarea {
-  background-color: rgba(0, 0, 0, 0.03) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #1D1D1F !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-}
-
-input[type="text"]::placeholder, textarea::placeholder {
-  color: #86868B !important;
-  opacity: 0.8 !important;
-}
-
-input[type="text"]:focus, textarea:focus {
-  background-color: #FFFFFF !important;
-  border-color: #0071E3 !important;
-  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-}
-
-/* 2. Global Safety Overrides for Hardcoded Dark Theme Utility Classes */
+/* Global Safety Overrides for Hardcoded Dark Theme Utility Classes */
 @layer utilities {
   /* Invert White transparent panels to clean soft dark translucent overlays */
   .bg-white\/5 {
