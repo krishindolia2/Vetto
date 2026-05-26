@@ -2909,9 +2909,9 @@ export default function App() {
                 <div
                   className={cn(
                     "p-8 md:p-16 space-y-12 relative overflow-hidden",
-                    result.marketTiming === "RUN"
+                    result?.marketTiming === "RUN"
                       ? "bg-red-950/10 border-red-500/20"
-                      : result.marketTiming === "WAIT"
+                      : result?.marketTiming === "WAIT"
                         ? "bg-amber-950/10 border-amber-500/20"
                         : "bg-white/[0.02]",
                   )}
@@ -2934,14 +2934,14 @@ export default function App() {
                         <h1
                           className={cn(
                             "score-display",
-                            result.marketTiming === "RUN"
+                            result?.marketTiming === "RUN"
                               ? "text-red-500 drop-shadow-[0_0_20px_rgba(239,68,68,0.3)]"
-                              : result.marketTiming === "WAIT"
+                              : result?.marketTiming === "WAIT"
                                 ? "text-amber-500 drop-shadow-[0_0_20px_rgba(245,158,11,0.3)]"
                                 : "text-gradient drop-shadow-[0_0_20px_rgba(229,193,88,0.3)]",
                           )}
                         >
-                          {result.marketTiming}
+                          {result?.marketTiming || "Analyzing..."}
                         </h1>
                         <div className="flex items-center gap-3 mt-4">
                           <div className="h-px w-12 bg-white/10" />
@@ -2956,7 +2956,7 @@ export default function App() {
                           The Item We Analyzed
                         </span>
                         <p className="text-2xl md:text-3xl font-black text-white tracking-tight leading-none">
-                          {result.productName}
+                          {result?.productName || "Loading..."}
                         </p>
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">
@@ -2970,7 +2970,7 @@ export default function App() {
                     <div className="space-y-4 shrink-0">
                       <button
                         onClick={() => {
-                          const text = `VETTO REPORT: "${result.aamAadmiSummary}"\n\nRecommendation: ${result.marketTiming}\n\nRead the full report at: ${window.location.origin}`;
+                          const text = `VETTO REPORT: "${result?.aamAadmiSummary || ""}"\n\nRecommendation: ${result?.marketTiming || ""}\n\nRead the full report at: ${window.location.origin}`;
                           copyToClipboard(text);
                           showToast(
                             "Report copied to your clipboard!",
@@ -2990,7 +2990,7 @@ export default function App() {
 
                   <div className="max-w-4xl relative z-10">
                     <p className="text-3xl md:text-4xl font-black text-white leading-[1.1] tracking-tight">
-                      &ldquo;{result.aamAadmiSummary}&rdquo;
+                      &ldquo;{result?.aamAadmiSummary || ""}&rdquo;
                     </p>
                   </div>
                 </div>
@@ -3003,7 +3003,7 @@ export default function App() {
                       </span>
                       <div className="flex items-end gap-4">
                         <span className="text-6xl sm:text-7xl font-black text-white leading-none tracking-tighter">
-                          {result.paisaVasoolIndex}
+                          {result?.paisaVasoolIndex ?? 0}
                         </span>
                         <span className="text-xl sm:text-2xl font-bold text-zinc-700 mb-2">
                           / 100
@@ -3012,7 +3012,7 @@ export default function App() {
                       <div className="h-3 w-full bg-white/5 rounded-full mt-8 overflow-hidden border border-white/10 p-0.5">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: `${result.paisaVasoolIndex}%` }}
+                          animate={{ width: `${result?.paisaVasoolIndex ?? 0}%` }}
                           transition={{ duration: 1.5, ease: "easeOut" }}
                           className="h-full bg-accent rounded-full"
                         />
@@ -3025,7 +3025,7 @@ export default function App() {
                           The Brand "Tax"
                         </span>
                         <span className="text-2xl font-black text-red-400 tracking-tighter">
-                          ₹{result.statusTax.toLocaleString()}
+                          ₹{(result?.statusTax ?? 0).toLocaleString()}
                         </span>
                         <p className="text-[10px] text-zinc-500 font-medium italic truncate">
                           Extra cost for the brand name
@@ -3036,7 +3036,7 @@ export default function App() {
                           Usefulness Score
                         </span>
                         <span className="text-2xl font-black text-white tracking-tighter">
-                          {result.utilityScore}/100
+                          {result?.utilityScore ?? 0}/100
                         </span>
                         <p className="text-[10px] text-zinc-500 font-medium italic">
                           How much it solves
@@ -3180,11 +3180,11 @@ export default function App() {
                             95,
                             Math.max(
                               5,
-                              Math.round((result.statusTax / totalCost) * 100),
+                              Math.round(((result?.statusTax ?? 0) / totalCost) * 100),
                             ),
                           );
                           const computedPvi = Math.round(
-                            result.paisaVasoolIndex *
+                            (result?.paisaVasoolIndex ?? 0) *
                               (usagePattern === "daily"
                                 ? 1.0
                                 : usagePattern === "weekly"
@@ -3249,7 +3249,7 @@ export default function App() {
                           Scan Confidence
                         </span>
                         <span className="text-sm font-black text-slate-900">
-                          {result.confidenceScore}%
+                          {result?.confidenceScore ?? 0}%
                         </span>
                       </div>
                       <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 space-y-6">
@@ -3262,7 +3262,7 @@ export default function App() {
                               Report Reasoning
                             </span>
                             <p className="text-sm font-medium text-slate-600 leading-relaxed">
-                              {result.marketReasoning}
+                              {result?.marketReasoning || ""}
                             </p>
                           </div>
                         </div>
@@ -3276,7 +3276,7 @@ export default function App() {
                               Regret Risk
                             </span>
                             <p className="text-sm font-medium text-slate-600 leading-relaxed">
-                              {result.regretWarning}
+                              {result?.regretWarning || ""}
                             </p>
                           </div>
                         </div>
@@ -3325,7 +3325,7 @@ export default function App() {
                       <div className="space-y-4">
                         <div className="flex items-end gap-2">
                           <span className="text-5xl font-black text-white">
-                            {result.socialAudit.integrityAudit.divergenceIndex}%
+                            {result?.socialAudit?.integrityAudit?.divergenceIndex ?? 0}%
                           </span>
                           <span className="text-[10px] font-bold text-white/30 mb-2 uppercase">
                             Gap
@@ -3335,7 +3335,7 @@ export default function App() {
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{
-                              width: `${result.socialAudit.integrityAudit.divergenceIndex}%`,
+                              width: `${result?.socialAudit?.integrityAudit?.divergenceIndex ?? 0}%`,
                             }}
                             className="h-full bg-red-500"
                           />
@@ -3343,7 +3343,7 @@ export default function App() {
                       </div>
                     </div>
                     <p className="text-xs text-white/60 leading-relaxed italic mt-6">
-                      &ldquo;{result.socialAudit.userRealityCheck}&rdquo;
+                      &ldquo;{result?.socialAudit?.userRealityCheck || ""}&rdquo;
                     </p>
                   </div>
 
@@ -3366,7 +3366,7 @@ export default function App() {
                       </p>
 
                       <div className="space-y-3">
-                        {result.socialAudit.integrityAudit.buzzwordSlayer
+                        {(result?.socialAudit?.integrityAudit?.buzzwordSlayer ?? [])
                           .slice(0, 4)
                           .map((b, i) => {
                             const isSlain = slainBuzzwords.includes(i);
@@ -3460,7 +3460,7 @@ export default function App() {
                       <div className="space-y-4">
                         <div className="flex items-end gap-3">
                           <span className="text-6xl font-black text-white">
-                            {result.socialAudit.integrityAudit.fakeReviewScore}
+                            {result?.socialAudit?.integrityAudit?.fakeReviewScore ?? 0}
                           </span>
                           <span className="text-xl font-bold text-white/20 mb-2 font-sans">
                             /100
@@ -3476,13 +3476,13 @@ export default function App() {
                       <div
                         className={cn(
                           "w-2 h-2 rounded-full animate-pulse",
-                          result.socialAudit.integrityAudit.isFakeReviewRisk
+                          result?.socialAudit?.integrityAudit?.isFakeReviewRisk
                             ? "bg-red-500"
                             : "bg-green-500",
                         )}
                       />
                       <span className="text-[10px] font-bold text-white/80 uppercase tracking-wide truncate">
-                        {result.socialAudit.integrityAudit.isFakeReviewRisk
+                        {result?.socialAudit?.integrityAudit?.isFakeReviewRisk
                           ? "⚠️ Risk of Fake Reviews Detected"
                           : "✅ Reviews Appear Genuine & Safe"}
                       </span>
@@ -3499,7 +3499,7 @@ export default function App() {
                         </span>
                       </div>
                       <p className="text-sm font-bold text-white/90 leading-relaxed italic">
-                        &ldquo;{result.hiddenCosts}&rdquo;
+                        &ldquo;{result?.hiddenCosts || ""}&rdquo;
                       </p>
                     </div>
                     <div className="mt-6">
@@ -3526,7 +3526,7 @@ export default function App() {
                       </span>
                     </div>
                     <p className="text-lg md:text-xl font-bold text-slate-900 leading-relaxed relative z-10">
-                      &ldquo;{result.bhartiyaPersonaAudit}&rdquo;
+                      &ldquo;{result?.bhartiyaPersonaAudit || ""}&rdquo;
                     </p>
                     <div className="flex items-center gap-2 pt-2 opacity-50">
                       <span className="text-[9px] font-mono font-bold tracking-widest">
@@ -3560,25 +3560,25 @@ export default function App() {
                         platform: "Reddit",
                         icon: MessageSquare,
                         color: "#FF4500",
-                        data: result.communityPulse.redditConsensus,
+                        data: result?.communityPulse?.redditConsensus || "",
                       },
                       {
                         platform: "X",
                         icon: Twitter,
                         color: "#000000",
-                        data: result.communityPulse.twitterPulse,
+                        data: result?.communityPulse?.twitterPulse || "",
                       },
                       {
                         platform: "YouTube",
                         icon: Youtube,
                         color: "#FF0000",
-                        data: result.communityPulse.youtubeReality,
+                        data: result?.communityPulse?.youtubeReality || "",
                       },
                       {
                         platform: "LinkedIn",
                         icon: Linkedin,
                         color: "#0A66C2",
-                        data: result.communityPulse.linkedinProfessional,
+                        data: result?.communityPulse?.linkedinProfessional || "",
                       },
                     ].map((source, i) => (
                       <motion.div
@@ -3630,7 +3630,7 @@ export default function App() {
                           </span>
                           <div className="flex items-baseline md:justify-end gap-2">
                             <span className="text-3xl sm:text-4xl font-black text-slate-900">
-                              {result.priceIntegrity.dealScore}
+                              {result?.priceIntegrity?.dealScore ?? 0}
                             </span>
                             <span className="text-xs font-bold text-slate-400">
                               / 100
@@ -3639,16 +3639,16 @@ export default function App() {
                           <div
                             className={cn(
                               "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mt-1.5 border",
-                              result.priceIntegrity.dealScore >= 80
+                              (result?.priceIntegrity?.dealScore ?? 0) >= 80
                                 ? "text-emerald-700 bg-emerald-50 border-emerald-100"
-                                : result.priceIntegrity.dealScore >= 60
+                                : (result?.priceIntegrity?.dealScore ?? 0) >= 60
                                   ? "text-sky-700 bg-sky-50 border-sky-100"
                                   : "text-rose-700 bg-rose-50 border-rose-100",
                             )}
                           >
-                            {result.priceIntegrity.dealScore >= 80
+                            {(result?.priceIntegrity?.dealScore ?? 0) >= 80
                               ? "Excellent Deal - Buy Now!"
-                              : result.priceIntegrity.dealScore >= 60
+                              : (result?.priceIntegrity?.dealScore ?? 0) >= 60
                                 ? "Good Fair Price"
                                 : "Expensive - Better to Wait!"}
                           </div>
@@ -3663,11 +3663,11 @@ export default function App() {
                           Price Comparison
                         </span>
                         <div className="space-y-4">
-                          {result.priceIntegrity.procurementLinks.map(
+                          {(result?.priceIntegrity?.procurementLinks ?? []).map(
                             (link, i) => {
                               // Client-side link self-healing and resolving mechanism for absolute reliability
                               let resolvedUrl = link.url || "";
-                              const prodName = result.productName || "product";
+                              const prodName = result?.productName || "product";
                               const cleanQuery =
                                 simplifyProductNameForSearch(prodName);
                               const encodedProdName = encodeURIComponent(
@@ -4548,7 +4548,8 @@ export default function App() {
 
               {/* Smart Swap: Better Alternatives (if any) */}
               {/* Smart Swap: Better Alternatives (if any) */}
-              {result.vettoContrast && (
+              {/* Smart Swap: Better Alternatives (if any) */}
+              {result?.vettoContrast && (
                 <div className="glass-panel p-8 md:p-16 relative overflow-hidden group/swap border border-amber-500/10">
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-50" />
                   <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover/swap:scale-110 group-hover/swap:rotate-12 transition-all duration-1000">
@@ -4575,11 +4576,11 @@ export default function App() {
                         <p className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none font-display">
                           Upgrade to:{" "}
                           <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200 block mt-3 drop-shadow-sm">
-                            {result.vettoContrast.alternativeName}
+                            {result?.vettoContrast?.alternativeName || ""}
                           </span>
                         </p>
                         <p className="text-lg md:text-xl font-medium text-zinc-300 leading-relaxed italic border-l-4 border-amber-500/30 pl-8">
-                          &ldquo;{result.vettoContrast.whyContrast}&rdquo;
+                          &ldquo;{result?.vettoContrast?.whyContrast || ""}&rdquo;
                         </p>
                       </div>
 
@@ -4594,10 +4595,10 @@ export default function App() {
                             Metrics
                           </span>
                           <span className="text-xs font-black text-zinc-400 truncate">
-                            {result.productName}
+                            {result?.productName || ""}
                           </span>
                           <span className="text-xs font-black text-amber-400 truncate">
-                            {result.vettoContrast.alternativeName}
+                            {result?.vettoContrast?.alternativeName || ""}
                           </span>
                         </div>
 
@@ -4607,13 +4608,13 @@ export default function App() {
                             Value Score
                           </span>
                           <span className="text-sm font-black text-red-400 text-center drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]">
-                            {result.paisaVasoolIndex} / 100
+                            {result?.paisaVasoolIndex ?? 0} / 100
                           </span>
                           <span className="text-sm font-black text-green-400 text-center font-mono drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]">
                             {Math.min(
                               100,
-                              result.paisaVasoolIndex +
-                                result.vettoContrast.pviBoost,
+                              (result?.paisaVasoolIndex ?? 0) +
+                                (result?.vettoContrast?.pviBoost ?? 0),
                             )}{" "}
                             / 100
                           </span>
@@ -4625,7 +4626,7 @@ export default function App() {
                             Brand Surcharge
                           </span>
                           <span className="text-sm font-black text-red-400 text-center">
-                            ₹{result.statusTax.toLocaleString()}
+                            ₹{(result?.statusTax ?? 0).toLocaleString()}
                           </span>
                           <span className="text-sm font-black text-green-400 text-center flex flex-col items-center">
                             <span>₹0</span>
@@ -4644,7 +4645,7 @@ export default function App() {
                             {getNumericPrice(result) === 0 ? "Out of Stock" : `₹${getNumericPrice(result).toLocaleString()}`}
                           </span>
                           <span className="text-sm font-black text-white text-center font-mono bg-white/5 py-1 rounded-md border border-white/10">
-                            {result.vettoContrast.fairPriceTarget}
+                            {result?.vettoContrast?.fairPriceTarget || ""}
                           </span>
                         </div>
                       </div>
@@ -4653,11 +4654,12 @@ export default function App() {
                       <div className="space-y-3 pt-4">
                         <button
                           type="button"
-                          onClick={() =>
-                            triggerAuditForAlternative(
-                              result.vettoContrast.alternativeName,
-                            )
-                          }
+                          onClick={() => {
+                            const altName = result?.vettoContrast?.alternativeName;
+                            if (altName) {
+                              triggerAuditForAlternative(altName);
+                            }
+                          }}
                           className="w-full bg-white hover:bg-zinc-200 text-black p-6 rounded-2xl font-black uppercase text-[11px] tracking-widest flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:scale-[1.02] active:scale-[0.98]"
                         >
                           <RefreshCw className="w-5 h-5 animate-spin-slow text-amber-500" />
@@ -4680,7 +4682,7 @@ export default function App() {
                           </span>
                         </div>
                         <p className="text-sm font-medium text-zinc-300 leading-relaxed italic relative z-10">
-                          &ldquo;{result.vettoContrast.procurementGuidance}
+                          &ldquo;{result?.vettoContrast?.procurementGuidance || ""}
                           &rdquo;
                         </p>
                       </div>
@@ -4703,14 +4705,14 @@ export default function App() {
                   <div className="flex items-center gap-4">
                     <div className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full">
                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-mono">
-                        Our Final Advice on {result.productName}
+                        Our Final Advice on {result?.productName || ""}
                       </span>
                     </div>
                     <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
                   </div>
 
                   <h2 className="text-3xl md:text-6xl font-black leading-[1.05] tracking-tighter max-w-4xl font-display">
-                    &ldquo;<span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">{result.whyBest}</span>&rdquo;
+                    &ldquo;<span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">{result?.whyBest || ""}</span>&rdquo;
                   </h2>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-white/5">
@@ -4718,17 +4720,17 @@ export default function App() {
                       {
                         label: "When to Buy",
                         icon: Timer,
-                        val: result.strategicRoadmap.immediateAction,
+                        val: result?.strategicRoadmap?.immediateAction || "",
                       },
                       {
                         label: "How long it lasts",
                         icon: RotateCcw,
-                        val: result.strategicRoadmap.peakUtilityAge,
+                        val: result?.strategicRoadmap?.peakUtilityAge || "",
                       },
                       {
                         label: "When to Sell",
                         icon: LogOut,
-                        val: result.strategicRoadmap.exitStrategy,
+                        val: result?.strategicRoadmap?.exitStrategy || "",
                       },
                     ].map((step, i) => (
                       <div key={i} className="space-y-6 group/step">
@@ -4753,18 +4755,18 @@ export default function App() {
                         Personalized Recommendation
                       </span>
                       <p className="text-xl md:text-2xl font-bold leading-relaxed font-serif italic text-zinc-900 group-hover/rec:text-black transition-colors">
-                        &ldquo;{result.personalizedInsight}&rdquo;
+                        &ldquo;{result?.personalizedInsight || ""}&rdquo;
                       </p>
                       <div className="mt-8 pt-8 border-t border-zinc-200 flex items-center justify-between">
                         <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">
-                          {result.postOutputHook}
+                          {result?.postOutputHook || ""}
                         </span>
                         <Fingerprint className="w-5 h-5 text-zinc-300" />
                       </div>
                     </div>
                     <div className="lg:w-80 flex flex-col justify-center space-y-6 p-8 bg-zinc-900/40 border border-white/5 rounded-[2.5rem] backdrop-blur-sm">
                       <p className="text-lg font-black text-white/90 leading-tight italic tracking-tight font-serif">
-                        "{result.socialHook}"
+                        "{result?.socialHook || ""}"
                       </p>
                       <div className="h-px bg-white/10 w-full" />
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">
@@ -4787,11 +4789,11 @@ export default function App() {
                       <h3 className="text-2xl md:text-3xl font-black tracking-tight font-display">
                         Our Recommendation for{" "}
                         <span className="text-accent font-serif italic font-medium drop-shadow-sm">
-                          {result.productName}
+                          {result?.productName || ""}
                         </span>
                       </h3>
                       <p className="text-base md:text-lg font-medium leading-relaxed italic text-white/80">
-                        &ldquo;{result.finalDecision}&rdquo;
+                        &ldquo;{result?.finalDecision || ""}&rdquo;
                       </p>
                     </div>
 
@@ -4809,53 +4811,53 @@ export default function App() {
                               `                      Date: ${new Date().toLocaleDateString()}                     `,
                               separator,
                               "",
-                              ` PRODUCT NAME : ${result.productName}`,
-                              ` VERDICT      : ${result.marketTiming}`,
-                              ` PAISA VASOOL : ${result.paisaVasoolIndex}/100`,
-                              ` DECISION     : ${result.finalDecision}`,
+                              ` PRODUCT NAME : ${result?.productName || ""}`,
+                              ` VERDICT      : ${result?.marketTiming || ""}`,
+                              ` PAISA VASOOL : ${result?.paisaVasoolIndex ?? 0}/100`,
+                              ` DECISION     : ${result?.finalDecision || ""}`,
                               "",
                               separator,
                               "                          AAM AADMI VERDICT                          ",
                               separator,
-                              result.aamAadmiSummary,
+                              result?.aamAadmiSummary || "",
                               "",
                               separator,
                               "                           PRICE INTEGRITY                           ",
                               separator,
-                              ` Deal Score : ${result.priceIntegrity?.dealScore}/100`,
-                              ` Rating     : ${result.priceIntegrity?.currentPriceAudit || "N/A"}`,
-                              ` History    : ${result.priceIntegrity?.historicalContext || "N/A"}`,
-                              ` Strategy   : ${result.priceIntegrity?.discountStrategy || "N/A"}`,
+                              ` Deal Score : ${result?.priceIntegrity?.dealScore ?? 0}/100`,
+                              ` Rating     : ${result?.priceIntegrity?.currentPriceAudit || "N/A"}`,
+                              ` History    : ${result?.priceIntegrity?.historicalContext || "N/A"}`,
+                              ` Strategy   : ${result?.priceIntegrity?.discountStrategy || "N/A"}`,
                               "",
                               innerLine,
                               "Procurement Rates Detected:",
                               ...(
-                                result.priceIntegrity?.procurementLinks || []
+                                result?.priceIntegrity?.procurementLinks || []
                               ).map(
                                 (link: any) =>
-                                  ` - ${link.platform} (${link.label}): ${link.price} ${link.isBestDeal ? "[BEST DEAL]" : ""}`,
+                                  ` - ${link?.platform || ""} (${link?.label || ""}): ${link?.price || ""} ${link?.isBestDeal ? "[BEST DEAL]" : ""}`,
                               ),
                               "",
                               separator,
                               "                         SMARTER SWAP RECOMMEND                         ",
                               separator,
-                              ` Suggested Upgrade : ${result.vettoContrast?.alternativeName || "None"}`,
-                              ` Upgrade Delta     : ${result.vettoContrast?.priceDelta || "N/A"}`,
-                              ` Target Fair Price : ${result.vettoContrast?.fairPriceTarget || "N/A"}`,
-                              ` Advantage         : ${result.vettoContrast?.strategicAdvantage || "N/A"}`,
-                              ` Guidance          : ${result.vettoContrast?.procurementGuidance || "N/A"}`,
+                              ` Suggested Upgrade : ${result?.vettoContrast?.alternativeName || "None"}`,
+                              ` Upgrade Delta     : ${result?.vettoContrast?.priceDelta || "N/A"}`,
+                              ` Target Fair Price : ${result?.vettoContrast?.fairPriceTarget || "N/A"}`,
+                              ` Advantage         : ${result?.vettoContrast?.strategicAdvantage || "N/A"}`,
+                              ` Guidance          : ${result?.vettoContrast?.procurementGuidance || "N/A"}`,
                               "",
                               separator,
                               "                          STRATEGIC ROADMAP                          ",
                               separator,
-                              ` Action Window     : ${result.strategicRoadmap?.immediateAction || "N/A"}`,
-                              ` Life Expectancy   : ${result.strategicRoadmap?.peakUtilityAge || "N/A"}`,
-                              ` Exit Strategy     : ${result.strategicRoadmap?.exitStrategy || "N/A"}`,
+                              ` Action Window     : ${result?.strategicRoadmap?.immediateAction || "N/A"}`,
+                              ` Life Expectancy   : ${result?.strategicRoadmap?.peakUtilityAge || "N/A"}`,
+                              ` Exit Strategy     : ${result?.strategicRoadmap?.exitStrategy || "N/A"}`,
                               "",
                               separator,
                               "                         PERSONALIZED INSIGHT                        ",
                               separator,
-                              result.personalizedInsight || "N/A",
+                              result?.personalizedInsight || "N/A",
                               "",
                               separator,
                               "           Generated via Vetto (The Founder's Truth Engine)          ",
@@ -4869,7 +4871,7 @@ export default function App() {
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement("a");
                             a.href = url;
-                            a.download = `${result.productName.toLowerCase().replace(/[^a-z0-9]+/g, "_")}_vetto_truth_report.txt`;
+                            a.download = `${(result?.productName || "product").toLowerCase().replace(/[^a-z0-9]+/g, "_")}_vetto_truth_report.txt`;
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
@@ -4892,7 +4894,7 @@ export default function App() {
                       </button>
                       <button
                         onClick={async () => {
-                          const text = `🔍 Vetto Truth Audit: ${result.productName}\n\n🏆 Verdict: ${result.marketTiming}\n💰 Paisa Vasool Index: ${result.paisaVasoolIndex}/100\n\n"${result.aamAadmiSummary}"\n\nSee full honest audit at: ${window.location.href}`;
+                          const text = `🔍 Vetto Truth Audit: ${result?.productName || ""}\n\n🏆 Verdict: ${result?.marketTiming || ""}\n💰 Paisa Vasool Index: ${result?.paisaVasoolIndex ?? 0}/100\n\n"${result?.aamAadmiSummary || ""}"\n\nSee full honest audit at: ${window.location.href}`;
 
                           if (navigator.share) {
                             try {

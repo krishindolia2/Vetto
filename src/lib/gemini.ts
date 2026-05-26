@@ -229,9 +229,7 @@ export async function getRecommendation(
                   if (now - lastUpdateTime > 100) {
                     lastUpdateTime = now;
                     try {
-                      let cleaned = fullText.replace(/^```(json)?\n?/g, '').replace(/```$/g, '').trim();
-                      const firstBrace = cleaned.search(/[{[]/);
-                      if (firstBrace > 0) cleaned = cleaned.substring(firstBrace);
+                      const cleaned = cleanJsonString(fullText);
                       const repaired = jsonrepair(cleaned);
                       onProgress(JSON.parse(repaired), preFetchedPrices);
                     } catch (e) {
@@ -285,4 +283,33 @@ export async function getRecommendation(
   (finalError as any).errorType = lastError?.errorType;
   (finalError as any).rawError = lastError?.rawError;
   throw finalError;
+}
+
+export function cleanJsonString(str: string): string {
+  let cleaned = str.trim();
+  
+  // 1. Strip markdown code blocks at the beginning or anywhere before the first brace
+  const firstBrace = cleaned.search(/[{[]/);
+  if (firstBrace !== -1) {
+    cleaned = cleaned.substring(firstBrace);
+  }
+  
+  // 2. Remove markdown code block endings and any text following them
+  const markdownEndIndex = cleaned.lastIndexOf("```");
+  if (markdownEndIndex !== -1) {
+    cleaned = cleaned.substring(0, markdownEndIndex).trim();
+  }
+  
+  // 3. Remove trailing text if we have a closing brace/bracket and there's text after it
+  const lastBrace = cleaned.lastIndexOf('}');
+  const lastBracket = cleaned.lastIndexOf(']');
+  const lastValidIndex = Math.max(lastBrace, lastBracket);
+  if (lastValidIndex !== -1 && lastValidIndex < cleaned.length - 1) {
+    const remaining = cleaned.substring(lastValidIndex + 1).trim();
+    if (remaining.length > 0 && !/^[}\]]*$/.test(remaining)) {
+      cleaned = cleaned.substring(0, lastValidIndex + 1);
+    }
+  }
+  
+  return cleaned.trim();
 }

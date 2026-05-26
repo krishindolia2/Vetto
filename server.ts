@@ -328,18 +328,42 @@ const defaultAuditData = {
   }
 };
 
+function cleanJsonString(str: string): string {
+  let cleaned = str.trim();
+  
+  // 1. Strip markdown code blocks at the beginning or anywhere before the first brace
+  const firstBrace = cleaned.search(/[{[]/);
+  if (firstBrace !== -1) {
+    cleaned = cleaned.substring(firstBrace);
+  }
+  
+  // 2. Remove markdown code block endings and any text following them
+  const markdownEndIndex = cleaned.lastIndexOf("```");
+  if (markdownEndIndex !== -1) {
+    cleaned = cleaned.substring(0, markdownEndIndex).trim();
+  }
+  
+  // 3. Remove trailing text if we have a closing brace/bracket and there's text after it
+  const lastBrace = cleaned.lastIndexOf('}');
+  const lastBracket = cleaned.lastIndexOf(']');
+  const lastValidIndex = Math.max(lastBrace, lastBracket);
+  if (lastValidIndex !== -1 && lastValidIndex < cleaned.length - 1) {
+    const remaining = cleaned.substring(lastValidIndex + 1).trim();
+    if (remaining.length > 0 && !/^[}\]]*$/.test(remaining)) {
+      cleaned = cleaned.substring(0, lastValidIndex + 1);
+    }
+  }
+  
+  return cleaned.trim();
+}
+
 function repairJson(jsonStr: string): string {
   try {
-    // Basic markdown strip first
-    let cleaned = jsonStr.replace(/^```(json)?\n?/g, '').replace(/```$/g, '').trim();
-    const firstBrace = cleaned.search(/[{[]/);
-    if (firstBrace > 0) cleaned = cleaned.substring(firstBrace);
-    
-    // jsonrepair is highly robust against truncated JSON, trailing commas, comments, unescaped quotes!
+    const cleaned = cleanJsonString(jsonStr);
     return jsonrepair(cleaned);
   } catch (err) {
     console.error("jsonrepair failed, falling back to original string", err);
-    return jsonStr; // return original string and let JSON.parse throw
+    return jsonStr;
   }
 }
 
@@ -1340,7 +1364,8 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
                              err?.status === 403 || 
                              err?.code === 403;
       if (isCriticalFail) {
-        throw err;
+        console.error("[Price Verification Pre-fetch] Critical pre-fetch fail, returning null to avoid crash:", err);
+        return null;
       }
       if (attempt < retries - 1) {
         console.log(`[Price Verification Pre-fetch] Waiting 800ms before retry...`);
