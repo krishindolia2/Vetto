@@ -1591,7 +1591,18 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
           const cached = cacheSnap.data();
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
-            return res.json(cached.data);
+            if (req.headers.accept === "text/event-stream") {
+              res.setHeader("Content-Type", "text/event-stream");
+              res.setHeader("Cache-Control", "no-cache");
+              res.setHeader("Connection", "keep-alive");
+              res.setHeader("X-Accel-Buffering", "no");
+              res.flushHeaders();
+              res.write(`data: ${JSON.stringify({ type: "final", auditData: cached.data })}\n\n`);
+              res.write("data: [DONE]\n\n");
+              return res.end();
+            } else {
+              return res.json(cached.data);
+            }
           } else {
             console.log(`[Cache Engine] Firestore cache exists but is invalid, broken or contains placeholders. Bypassing...`);
           }
@@ -1606,7 +1617,18 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
       const cached = auditCache.get(cacheKey)!;
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
-        return res.json(cached.data);
+        if (req.headers.accept === "text/event-stream") {
+          res.setHeader("Content-Type", "text/event-stream");
+          res.setHeader("Cache-Control", "no-cache");
+          res.setHeader("Connection", "keep-alive");
+          res.setHeader("X-Accel-Buffering", "no");
+          res.flushHeaders();
+          res.write(`data: ${JSON.stringify({ type: "final", auditData: cached.data })}\n\n`);
+          res.write("data: [DONE]\n\n");
+          return res.end();
+        } else {
+          return res.json(cached.data);
+        }
       }
       auditCache.delete(cacheKey);
       saveCacheToDisk();
