@@ -219,6 +219,8 @@ export async function getRecommendation(
               const data = JSON.parse(dataStr);
               if (data.type === "metadata") {
                 preFetchedPrices = data.preFetchedPrices || [];
+              } else if (data.type === "error") {
+                throw new Error(data.message || "Engine stream aborted due to an error");
               } else if (data.type === "chunk") {
                 fullText += data.text;
                 if (onProgress) {
@@ -241,6 +243,9 @@ export async function getRecommendation(
                 return data.auditData as Recommendation;
               }
             } catch (err) {
+              if (err instanceof Error && err.message !== "Failed to parse SSE chunk") {
+                throw err;
+              }
               console.warn("Failed to parse SSE chunk", dataStr);
             }
           }
