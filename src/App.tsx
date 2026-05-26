@@ -3753,6 +3753,18 @@ export default function App() {
                                 resolvedUrl.includes("google.co.in");
                               let isGeneric = !resolvedUrl || isGoogleLink;
 
+                              // Client-side placeholder/hallucinated URL shield
+                              const isPlaceholderUrl =
+                                resolvedUrl.includes("B0CXXYZ") ||
+                                resolvedUrl.includes("12345") ||
+                                resolvedUrl.includes("searchB") ||
+                                /itm\d+/.test(resolvedUrl) ||
+                                resolvedUrl.includes("example.com");
+
+                              if (isPlaceholderUrl) {
+                                isGeneric = true;
+                              }
+
                               if (!isGeneric) {
                                 try {
                                   const parsedUrl = new URL(resolvedUrl);
@@ -3773,11 +3785,14 @@ export default function App() {
                                   ) {
                                     platformDomainMatch = false;
                                   } else if (
-                                    platformLower.includes("croma")
+                                    platformLower.includes("croma") &&
+                                    !host.includes("croma.com")
                                   ) {
                                     platformDomainMatch = false;
                                   } else if (
-                                    platformLower.includes("reliance")
+                                    platformLower.includes("reliance") &&
+                                    !host.includes("reliancedigital.in") &&
+                                    !host.includes("reliancedigital.com")
                                   ) {
                                     platformDomainMatch = false;
                                   } else if (
@@ -3851,7 +3866,7 @@ export default function App() {
                                 } else if (platformLower.includes("flipkart")) {
                                   resolvedUrl = `https://www.flipkart.com/search?q=${encodedProdName}`;
                                 } else if (platformLower.includes("croma")) {
-                                  resolvedUrl = `https://www.croma.com/searchB?q=${encodedPlusProdName}`;
+                                  resolvedUrl = `https://www.croma.com/search/?text=${encodedPlusProdName}`;
                                 } else if (platformLower.includes("reliance")) {
                                   resolvedUrl = `https://www.reliancedigital.in/search?q=${encodedPlusProdName}`;
                                 } else if (platformLower.includes("myntra")) {
