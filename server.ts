@@ -1672,7 +1672,7 @@ STRICT PRICING & SCORING PROTOCOLS:
 0.1. STRICT TARGET CAPITAL & BUDGET COMPLIANCE:
     - If the "Target Capital" constraint is specified and is NOT "Unlimited", you MUST mathematically compare the primary product's lowest platform price against the budget. 
     - If the price is LESS THAN or EQUAL to the budget, you MUST explicitly state that it fits their budget perfectly. NEVER hallucinate or claim that it exceeds their budget or tell them not to buy it for budget reasons.
-    - If the price genuinely exceeds the budget, explain clearly in "aamAadmiSummary" and recommend a high-value alternative in "vettoContrast" that strictly fits within or under the budget.
+    - If the price genuinely exceeds the budget, explain clearly in "aamAadmiSummary" and recommend a high-value alternative in "vettoContrast" that strictly fits within or under the budget. YOU MUST ALSO SET the "finalDecision" to "WAIT" or "DON'T BUY". You cannot recommend "BUY" for a product that fails the user's explicit budget constraint.
 
 1. TRUTH DETECTOR & BOT CRACKDOWN ENGINE:
     A. REVIEW AUTHENTICITY ANALYSIS (fakeReviewScore, botSignalDetection):
@@ -1735,7 +1735,7 @@ STRICT PRICING & SCORING PROTOCOLS:
 10. ZERO-DIFFERENTIATION PRICING CONGRUENCY:
     - Every price field in your JSON output must be mathematically and numerically consistent with no mismatch or differentiation.
     - All displayed currency strings must use the Rupees symbol "₹" consistently (e.g. "₹54,999" - not "Rs", "INR" or lack of symbol).
-    - In "priceIntegrity.procurementLinks", the item marked "isBestDeal: true" must have the lowest price string (e.g., "₹54,999").
+    - In "priceIntegrity.procurementLinks", the item marked "isBestDeal: true" must have the absolute numerically lowest price out of all the listed links. Double check your math (e.g. 81990 is lower than 99999, so 81990 is the best deal).
     - The latest month's price in the "priceIntegrity.priceHistory" array (which is an integer) MUST exactly equal the numerical value of that lowest price (e.g., 54999) so that the chart's current node matches the listed deal price.
     - The smarter alternative's name and details are in "vettoContrast". The "vettoContrast.priceDelta" field must represent the actual calculated difference between the current lowest price and the alternative's price (e.g., if current is ₹54,999 and alternative is ₹44,999, the delta must be "Save ₹10,000").
     - The "vettoContrast.fairPriceTarget" must be congruent with your target price recommendations (e.g., "₹49,999").

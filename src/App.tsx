@@ -461,6 +461,7 @@ export default function App() {
   const triggerAuditForAlternative = async (altName: string) => {
     if (!altName) return;
     setQuery(altName);
+    setResult(null);
     setLoading(true);
     setError(null);
     setBillingError(false);
@@ -1014,6 +1015,7 @@ export default function App() {
     e.preventDefault();
     if (!query.trim()) return;
 
+    setResult(null);
     setLoading(true);
     setError(null);
     setBillingError(false);
