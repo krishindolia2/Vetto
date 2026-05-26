@@ -2028,15 +2028,24 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         const risk = String(auditData.regretRisk || "Medium").toLowerCase();
         
         let stableVerdict: "BUY" | "WAIT" | "RUN" = "WAIT";
-        if (pvi >= 70 && deal >= 60 && risk !== "high") {
-          stableVerdict = "BUY";
-        } else if (pvi <= 45 || deal <= 40 || risk === "high") {
-          stableVerdict = "RUN";
+        if (isBudgetCategoryQuery) {
+          // For best-value category recommendations resolved by Vetto, recommend BUY as it is chosen by Vetto as the absolute best choice in this budget!
+          if (deal >= 50) {
+            stableVerdict = "BUY";
+          } else {
+            stableVerdict = "WAIT"; // Only wait if the deal score is very bad (e.g. MSRP trap)
+          }
         } else {
-          stableVerdict = "WAIT";
+          if (pvi >= 70 && deal >= 60 && risk !== "high") {
+            stableVerdict = "BUY";
+          } else if (pvi <= 45 || deal <= 40 || risk === "high") {
+            stableVerdict = "RUN";
+          } else {
+            stableVerdict = "WAIT";
+          }
         }
         
-        console.log(`[Stability Alignment] Calibrating marketTiming: "${auditData.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk})`);
+        console.log(`[Stability Alignment] Calibrating marketTiming: "${auditData.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk}, isCategoryQuery: ${isBudgetCategoryQuery})`);
         auditData.marketTiming = stableVerdict;
         auditData.finalDecision = stableVerdict;
       }
