@@ -122,7 +122,8 @@ export async function getRecommendation(
   budget?: string, 
   useCase?: string,
   history?: Recommendation[],
-  images?: string[]
+  images?: string[],
+  onProgress?: (partial: Partial<Recommendation>, preFetchedPrices?: any[]) => void
 ): Promise<Recommendation> {
   const maxRetries = 3;
   let lastError: any = null;
@@ -133,6 +134,7 @@ export async function getRecommendation(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "text/event-stream"
         },
         body: JSON.stringify({
           query,
@@ -174,7 +176,7 @@ export async function getRecommendation(
       }
 
       const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
+      if (!contentType || !contentType.includes("text/event-stream")) {
         // If it's an unstable state but could be transient, retry
         if (attempt < maxRetries - 1) {
           const jitter = Math.random() * 800;
@@ -184,11 +186,62 @@ export async function getRecommendation(
         }
         
         const text = await response.text().catch(() => "N/A");
-        console.error("Non-JSON Response Body:", text);
+        console.error("Non-SSE Response Body:", text);
         throw new Error(`The Vetto Engine returned an unstable state (Format: ${contentType || 'Unknown'}). This usually happens during peak demand.`);
       }
 
-      return await response.json();
+      if (!response.body) throw new Error("No response body in stream");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      
+      let fullText = "";
+      let preFetchedPrices: any[] = [];
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        buffer += decoder.decode(value, { stream: true });
+        
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || ""; // Keep the last incomplete chunk in the buffer
+        
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const dataStr = line.replace("data: ", "").trim();
+            if (dataStr === "[DONE]") continue;
+            
+            try {
+              const data = JSON.parse(dataStr);
+              if (data.type === "metadata") {
+                preFetchedPrices = data.preFetchedPrices || [];
+              } else if (data.type === "chunk") {
+                fullText += data.text;
+                if (onProgress) {
+                  import("jsonrepair").then(({ jsonrepair }) => {
+                    try {
+                      let cleaned = fullText.replace(/^```(json)?\n?/g, '').replace(/```$/g, '').trim();
+                      const firstBrace = cleaned.search(/[{[]/);
+                      if (firstBrace > 0) cleaned = cleaned.substring(firstBrace);
+                      const repaired = jsonrepair(cleaned);
+                      onProgress(JSON.parse(repaired), preFetchedPrices);
+                    } catch (e) {
+                      // ignore parse errors for partial chunks
+                    }
+                  });
+                }
+              } else if (data.type === "final") {
+                return data.auditData as Recommendation;
+              }
+            } catch (err) {
+              console.warn("Failed to parse SSE chunk", dataStr);
+            }
+          }
+        }
+      }
+      
+      throw new Error("Stream closed before receiving final payload");
     } catch (error: any) {
       lastError = error;
 

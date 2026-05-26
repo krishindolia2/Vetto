@@ -472,6 +472,14 @@ export default function App() {
         useCase,
         history,
         [],
+        (partial) => {
+          setResult(prev => ({
+            ...prev,
+            ...partial,
+            id: prev?.id || 'temp',
+            timestamp: prev?.timestamp || Date.now(),
+          }) as RecommendationWithMeta);
+        }
       );
       setLastAuditTime(Date.now());
       const recommendationWithMeta = {
@@ -1029,6 +1037,14 @@ export default function App() {
         useCase,
         history,
         base64Images,
+        (partial) => {
+          setResult(prev => ({
+            ...prev,
+            ...partial,
+            id: prev?.id || 'temp',
+            timestamp: prev?.timestamp || Date.now(),
+          }) as RecommendationWithMeta);
+        }
       );
       setLastAuditTime(Date.now());
       const recommendationWithMeta = {

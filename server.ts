@@ -1795,31 +1795,76 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       genConfig.responseSchema = auditResponseSchema;
     }
 
-    const genResponse = await callGeminiWithRetry({
-      model: modelToUse,
-      contents: [{ role: "user", parts }],
-      config: genConfig,
-    });
-
-    const duration = Date.now() - startTime;
-    console.log(`[Audit Req] Model finished in ${duration}ms`);
+    const isSSE = req.headers.accept === "text/event-stream";
 
     let text = "";
-    try {
-      if (typeof genResponse.text === 'string') {
-        text = genResponse.text.trim();
-      } else if (genResponse.candidates?.[0]?.content?.parts) {
-        text = genResponse.candidates[0].content.parts
-          .map((part: any) => part.text || "")
-          .join("")
-          .trim();
+    
+    if (isSSE) {
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+      
+      // Send initial metadata with preFetchedPrices
+      res.write(`data: ${JSON.stringify({ type: "metadata", preFetchedPrices })}\n\n`);
+
+      try {
+        let stream;
+        let lastErr;
+        // Simple retry for stream initialization
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            stream = await ai.models.generateContentStream({
+              model: modelToUse,
+              contents: [{ role: "user", parts }],
+              config: genConfig,
+            });
+            break;
+          } catch (e: any) {
+            lastErr = e;
+            if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+          }
+        }
+        if (!stream) throw lastErr;
+
+        for await (const chunk of stream) {
+          const chunkText = chunk.text;
+          if (chunkText) {
+            text += chunkText;
+            res.write(`data: ${JSON.stringify({ type: "chunk", text: chunkText })}\n\n`);
+          }
+        }
+      } catch (err: any) {
+        console.error("Stream generation failed:", err);
+        res.write(`data: ${JSON.stringify({ type: "error", message: err.message })}\n\n`);
+        res.end();
+        return;
       }
-    } catch (e) {
-      console.error("Failed to extract text from Gemini response:", e);
-      throw new Error("The Strategic Engine failed to articulate its verdict. This might be due to safety filters or an internal glitch.");
-    }
-    if (!text) {
-      throw new Error("Model returned an empty response.");
+    } else {
+      const genResponse = await callGeminiWithRetry({
+        model: modelToUse,
+        contents: [{ role: "user", parts }],
+        config: genConfig,
+      });
+
+      const duration = Date.now() - startTime;
+      console.log(`[Audit Req] Model finished in ${duration}ms`);
+
+      try {
+        if (typeof genResponse.text === 'string') {
+          text = genResponse.text.trim();
+        } else if (genResponse.candidates?.[0]?.content?.parts) {
+          text = genResponse.candidates[0].content.parts
+            .map((part: any) => part.text || "")
+            .join("")
+            .trim();
+        }
+      } catch (e) {
+        console.error("Failed to extract text from Gemini response:", e);
+        throw new Error("The Strategic Engine failed to articulate its verdict. This might be due to safety filters or an internal glitch.");
+      }
+      if (!text) {
+        throw new Error("Model returned an empty response.");
+      }
     }
     
     // Robust parsing with JSON repair and deep merge fallback
@@ -2154,11 +2199,67 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         console.log(`[Stability Alignment] Calibrating marketTiming: "${auditData.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk}, isCategoryQuery: ${isBudgetCategoryQuery})`);
         auditData.marketTiming = stableVerdict;
         auditData.finalDecision = stableVerdict;
+        
+        console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
+      
+        if (isSSE) {
+          res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
+          res.write("data: [DONE]\n\n");
+          res.end();
+        } else {
+          res.status(200).json(auditData);
+        }
+      } catch (parseError) {
+        console.error("JSON Parse Error:", parseError, "Raw Text:", text);
+        if (isSSE) {
+          res.write(`data: ${JSON.stringify({ type: "error", message: "Engine failed to format results cleanly." })}\n\n`);
+          res.end();
+        } else {
+          res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
+        }
       }
-    } catch (parseError) {
-      console.error("JSON Parse Error. Raw Text:", text, "Parsing error:", parseError);
-      // Absolute fallback: secure default object
-      auditData = deepMerge(defaultAuditData, {});
+    } catch (error: any) {
+      console.error("Error processing audit:", error);
+      
+      // Check for specific safety or billing errors
+      const errorMsg = error.message || "";
+      
+      if (errorMsg.includes("SAFETY") || error.status === 400) {
+        if (req.headers.accept === "text/event-stream") {
+          res.write(`data: ${JSON.stringify({ type: "error", message: "Vetto Engine blocked this request due to safety filters." })}\n\n`);
+          res.end();
+        } else {
+          res.status(400).json({ error: "Vetto Engine blocked this request due to safety filters.", errorType: "SAFETY_BLOCK" });
+        }
+        return;
+      }
+      
+      if (errorMsg.includes("403") || error.status === 403 || errorMsg.includes("permission_denied")) {
+        if (req.headers.accept === "text/event-stream") {
+          res.write(`data: ${JSON.stringify({ type: "error", message: "Vetto API key lacks permissions for this model or feature." })}\n\n`);
+          res.end();
+        } else {
+          res.status(403).json({ error: "Vetto API key lacks permissions for this model or feature.", errorType: "BILLING_DUNNING_DENY" });
+        }
+        return;
+      }
+
+      if (errorMsg.includes("429") || error.status === 429) {
+        if (req.headers.accept === "text/event-stream") {
+          res.write(`data: ${JSON.stringify({ type: "error", message: "System is currently serving too many users. Please retry in 10 seconds." })}\n\n`);
+          res.end();
+        } else {
+          res.status(429).json({ error: "System is currently serving too many users. Please retry in 10 seconds.", errorType: "RATE_LIMIT" });
+        }
+        return;
+      }
+
+      if (req.headers.accept === "text/event-stream") {
+        res.write(`data: ${JSON.stringify({ type: "error", message: "Internal Engine Error: " + errorMsg })}\n\n`);
+        res.end();
+      } else {
+        res.status(500).json({ error: "Internal Engine Error: " + errorMsg });
+      }
     }
 
     // Store in cache if applicable
