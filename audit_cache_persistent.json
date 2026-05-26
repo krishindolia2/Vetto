@@ -1,0 +1,178 @@
+{
+  "aXBob25lIDE1IDEyOGdiLTgwMDAwLXByb2Zlc3Npb25hbCBwaG90b2dyYXBoeSBoZWF2eSBtdWx0aXRhc2tpbmc_": {
+    "data": {
+      "isAnalysis": true,
+      "productName": "iPhone 15 128GB",
+      "isComparison": true,
+      "finalDecision": "BUY",
+      "whyBest": "It offers the most balanced feature set for professional tasks without the unnecessary premium of the 16 series.",
+      "pros": [
+        "Excellent camera performance",
+        "USB-C convenience",
+        "Dynamic Island utility"
+      ],
+      "cons": [
+        "60Hz screen feels dated",
+        "Base storage fills fast",
+        "Charging speed is slow"
+      ],
+      "aamAadmiSummary": "iPhone 15 is a solid, reliable choice that saves you a lot of money compared to the 16, while doing almost everything just as well.",
+      "avoid": "Avoid the 128GB model if you shoot 4K video daily; look for 256GB instead.",
+      "regretWarning": "You might miss the 120Hz screen if you are coming from a high-end Android phone.",
+      "confidenceScore": 95,
+      "regretRisk": "Low",
+      "whyRegret": "Lack of high refresh rate display for smooth scrolling.",
+      "saferChoice": "iPhone 15 Plus for better battery life.",
+      "marketTiming": "BUY",
+      "marketReasoning": "The price has stabilized and offers the best value-to-performance ratio right now.",
+      "specLongevity": "4 years",
+      "personalizedInsight": "For professional photography, invest the saved money in a high-quality cloud storage subscription instead of the newer model.",
+      "socialHook": "iPhone 15 vs 16: Why you should save your money.",
+      "postOutputHook": "Check your bank app for extra card discounts before paying.",
+      "paisaVasoolIndex": 85,
+      "statusTax": 15000,
+      "utilityScore": 88,
+      "hiddenCosts": "Requires a separate 20W+ charger and potentially iCloud storage upgrades.",
+      "platformWarShield": {
+        "hasMarketingSilos": true,
+        "siloExposure": "Apple ecosystem lock-in via iMessage and AirDrop.",
+        "truthResilienceScore": 80,
+        "bypassStrategyUsed": "Focusing on hardware utility over brand prestige."
+      },
+      "vettoContrast": {
+        "alternativeName": "iPhone 15 256GB",
+        "whyContrast": "Extra storage is essential for professional photography workflows.",
+        "pviBoost": 90,
+        "priceDelta": "Save ₹15,000",
+        "fairPriceTarget": "₹44,900",
+        "procurementGuidance": "Wait for festive sales or bank cashback offers.",
+        "strategicAdvantage": "Better long-term usability for heavy media users."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹59,900 • Verified lowest available price among active sellers online.",
+        "historicalContext": "Prices have dropped significantly since launch, making this a great time to buy.",
+        "priceHistory": [
+          {
+            "month": "January",
+            "price": 65900
+          },
+          {
+            "month": "March",
+            "price": 62900
+          },
+          {
+            "month": "May",
+            "price": 59900
+          }
+        ],
+        "dealScore": 80,
+        "discountStrategy": "Use HDFC or SBI credit cards for instant cashback offers.",
+        "procurementLinks": [
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "https://www.amazon.in/Apple-iPhone-15-128-GB/dp/B0CHX2F5QT",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "https://www.flipkart.com/apple-iphone-15-black-128-gb/p/itm6ac6485515ae4",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "https://www.croma.com/apple-iphone-15-128gb-black/p/300652",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Purchase the 128GB model if you use cloud storage.",
+        "peakUtilityAge": "24 months",
+        "exitStrategy": "Resell after 3 years to recover 40% of the value."
+      },
+      "communityPulse": {
+        "redditConsensus": "Most users suggest 15 over 16 for the price difference.",
+        "twitterPulse": "Mixed, but generally positive on the 15's reliability.",
+        "youtubeReality": "Critics agree the 16 is a minor iterative update.",
+        "linkedinProfessional": "Highly regarded for stable performance and professional reliability.",
+        "topUSP": "Reliable camera system.",
+        "topGripe": "Slow charging speeds."
+      },
+      "lifecyclePhase": {
+        "status": "Mature",
+        "isObsoleteSoon": false,
+        "nextMajorUpdate": "iPhone 17 series in September 2026."
+      },
+      "bhartiyaPersonaAudit": "Perfect for the Indian professional who values brand reliability and resale value.",
+      "technicalNode": "Trace cut off",
+      "buildIntegrity": "Trace cut off",
+      "resaleValueNode": "Trace cut off",
+      "ecosystemLockIn": "Trace cut off",
+      "features": [
+        {
+          "name": "Camera",
+          "score": 90,
+          "details": "Excellent for daily professional use."
+        },
+        {
+          "name": "Battery",
+          "score": 75,
+          "details": "Average, needs a power bank for heavy days."
+        },
+        {
+          "name": "Performance",
+          "score": 85,
+          "details": "Very smooth for multitasking."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4.5,
+        "sentimentSplit": {
+          "positive": 80,
+          "negative": 10,
+          "mixed": 10
+        },
+        "criticsConsensus": "A very balanced phone for most people.",
+        "userRealityCheck": "Users love the camera and build quality.",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 90,
+          "botSignalDetection": "Minimal bot activity detected.",
+          "verifiedPurchaseTruth": "High reliability in user feedback.",
+          "divergenceIndex": 10,
+          "crossPlatformPatterns": [
+            {
+              "platform": "Amazon",
+              "sentiment": 90,
+              "botRisk": "Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "Pro-grade camera",
+              "reality": "Great for social media, not for cinema."
+            }
+          ]
+        }
+      }
+    },
+    "timestamp": 1779796970632
+  }
+}
