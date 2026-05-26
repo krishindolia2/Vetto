@@ -1125,9 +1125,9 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-3.5-flash",
+    "gemini-1.5-flash",
     "gemini-3.1-flash-lite",
-    "gemini-1.5-flash"
+    "gemini-3.5-flash"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1184,7 +1184,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
           temperature: 0.0,
           ...(modelToUse.includes("gemini-3") ? {
             thinkingConfig: {
-              thinkingLevel: ThinkingLevel.LOW
+              thinkingLevel: ThinkingLevel.MINIMAL
             }
           } : {})
         }
