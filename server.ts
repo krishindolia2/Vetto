@@ -1118,7 +1118,7 @@ function extractGroundingUrlForPlatform(response: any, platformName: string): st
 }
 
 // Perform internet search grounding to retrieve actual live pricing and platform links for a given search query
-async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", retries = 2): Promise<{ resolvedProductName: string, prices: any[] } | null> {
+async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
   if (!ai) return null;
   
   const cleanQuery = productQuery.trim();
@@ -1147,11 +1147,12 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       6. For "url", you MUST return a working product page URL. If you cannot find the EXACT product page URL for the SPECIFIC model, you must mark it Out of Stock. If it is genuinely in stock, return the exact URL. If you cannot find it, leave "url" empty and mark it Out of Stock!
       7. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian platform, return "Out of Stock".
 
-      Return the results in a strict JSON object format containing "resolvedProductName" and "prices" array.
+      Return the results in a strict JSON object format containing "resolvedProductName", "queryType" (must be "category", "comparison", or "specific"), and "prices" array.
       
       Example output format:
       {
         "resolvedProductName": "iQOO Neo 10 Pro 12GB 256GB",
+        "queryType": "specific",
         "prices": [
           {
             "platform": "Amazon",
@@ -1319,17 +1320,11 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               });
             });
 
-            if (healed.length > 0) {
-              if (lowestIdx !== -1) {
-                healed[lowestIdx].isBestDeal = true;
-                console.log(`[Price Verification Pre-fetch] Success! Found ${healed.length} platforms. Lowest Price: ₹${lowestPrice.toLocaleString('en-IN')}`);
-              } else {
-                console.log(`[Price Verification Pre-fetch] Loaded ${healed.length} platforms, but all are currently out of stock.`);
-              }
-              return { resolvedProductName: resolvedName, prices: healed };
-            }
+            
+            return { resolvedProductName: resolvedName, queryType: parsed.queryType || "specific", prices: healed };
           }
         }
+        return { resolvedProductName: resolvedName, queryType: parsed.queryType || "specific", prices: [] };
       }
     } catch (err: any) {
       console.error(`[Price Verification Pre-fetch] Error running price verification scanner (Attempt ${attempt + 1}):`, err);
@@ -1629,10 +1624,12 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
     const preFetchResult = await preFetchLivePricesAndLinks(parsedQuery, parsedBudget);
     const preFetchedPrices = preFetchResult?.prices || null;
     const resolvedProduct = preFetchResult?.resolvedProductName || parsedQuery;
+    const queryType = preFetchResult?.queryType || "specific";
 
     let promptText = `CURRENT DATE: ${currentDate}
 Original User Query: "${query}"
 Resolved Specific Target Product: ${resolvedProduct || "Analyzed Visual Evidence"}
+Query Type: ${queryType}
 Target Capital: ${parsedBudget || 'Unlimited'}
 Strategic Context: ${useCase || 'General Deployment'}${historyText}`;
 
@@ -1733,6 +1730,13 @@ STRICT PRICING & SCORING PROTOCOLS:
 
 13. SMART QUERY RESOLUTION:
     - You must directly address the specific nuance of the "Original User Query" in your final response.
+
+14. RECOMMENDATION PERSONA INJECTION:
+    - If the "Query Type" is "category", the user originally asked for a recommendation (e.g., "best washing machine under 20k"). The "Resolved Specific Target Product" you are evaluating is YOUR OWN top choice for them.
+    - Do NOT treat this product as a random user-selected item that needs to be shot down. 
+    - Evaluate it fairly. If it genuinely fits their criteria, give it a high rating (BUY or STEAL) and enthusiastically explain why it is the absolute best choice in the "aamAadmiSummary".
+    - In the "vettoContrast" alternative section, provide a slightly cheaper or slightly more premium alternative. You MUST ensure this alternative is a mainstream, widely available product that is ACTUALLY IN STOCK in India right now. Do not recommend obsolete or out-of-stock items as alternatives.
+    - If the "Query Type" is "comparison", analyze both items fairly and crown the true winner.
     - If the user asks a yes/no question like "is this product worth it?", your "aamAadmiSummary" and "finalDecision" must explicitly answer "Yes" or "No" based on your findings.
     - If the user asks for "best product under 10k", acknowledge their specific request and frame the recommendation around why this is the best for that budget.
     - Differentiate your tone and response structure based on the specific question asked in the Original User Query, rather than providing a generic product summary.
