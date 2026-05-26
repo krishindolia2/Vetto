@@ -1272,24 +1272,22 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
                                         url.includes("placeholder") ||
                                         url.length < 30; // Generic listing homepage urls are usually short
 
-              // Direct Alignment: Override URL with actual crawled URL from grounding chunks ONLY if the existing URL is generic
-              if (isGenericModelUrl) {
-                const groundingUrl = extractGroundingUrlForPlatform(response, platform);
-                if (groundingUrl && groundingUrl.length > 25) {
-                  const gLower = groundingUrl.toLowerCase();
-                  // Ensure it's a real product or search page, not a help / login / cart / seller page
-                  const isLowQualityLink = gLower.includes("/help/") || 
-                                           gLower.includes("/display.html") || 
-                                           gLower.includes("/login") || 
-                                           gLower.includes("/register") || 
-                                           gLower.includes("/cart") || 
-                                           gLower.includes("/seller") ||
-                                           gLower.includes("/about") ||
-                                           gLower.includes("/terms");
-                  if (!isLowQualityLink) {
-                    console.log(`[Grounding URL Override] Overriding generic URL with direct verified crawl URL for ${platform}: ${groundingUrl}`);
-                    url = groundingUrl;
-                  }
+              // Direct Alignment: ALWAYS prioritize actual crawled URL from grounding chunks to prevent LLM hallucinated dead-links
+              const groundingUrl = extractGroundingUrlForPlatform(response, platform);
+              if (groundingUrl && groundingUrl.length > 25) {
+                const gLower = groundingUrl.toLowerCase();
+                // Ensure it's a real product or search page, not a help / login / cart / seller page
+                const isLowQualityLink = gLower.includes("/help/") || 
+                                         gLower.includes("/display.html") || 
+                                         gLower.includes("/login") || 
+                                         gLower.includes("/register") || 
+                                         gLower.includes("/cart") || 
+                                         gLower.includes("/seller") ||
+                                         gLower.includes("/about") ||
+                                         gLower.includes("/terms");
+                if (!isLowQualityLink) {
+                  console.log(`[Grounding URL Override] Overriding LLM URL with verified crawl URL for ${platform}: ${groundingUrl}`);
+                  url = groundingUrl;
                 }
               }
 
