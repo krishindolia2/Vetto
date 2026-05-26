@@ -144,32 +144,41 @@ button {
   button.bg-zinc-950,
   button.bg-black,
   button.bg-accent,
-  [class*="bg-slate-"] .text-white,
-  [class*="bg-zinc-"] .text-white,
-  [class*="bg-black"] .text-white,
+  .bg-slate-800 .text-white,
   .bg-slate-900 .text-white,
+  .bg-slate-950 .text-white,
+  .bg-zinc-800 .text-white,
   .bg-zinc-900 .text-white,
   .bg-zinc-950 .text-white,
-  .bg-accent .text-white,
   .bg-black .text-white,
+  .bg-accent .text-white,
   .bg-red-500 .text-white,
   .bg-emerald-500 .text-white,
   .bg-blue-500 .text-white,
+  .bg-amber-500 .text-white,
   .mono-tag .text-white,
-  [class*="bg-slate-"] span,
-  [class*="bg-zinc-"] span,
-  [class*="bg-black"] span,
-  [class*="bg-slate-"] h3,
-  [class*="bg-zinc-"] h3,
-  [class*="bg-black"] h3,
-  [class*="bg-slate-"] p,
-  [class*="bg-zinc-"] p,
-  [class*="bg-black"] p,
+  .bg-slate-800 span,
   .bg-slate-900 span,
+  .bg-slate-950 span,
+  .bg-zinc-800 span,
   .bg-zinc-900 span,
   .bg-zinc-950 span,
-  .bg-accent span,
   .bg-black span,
+  .bg-slate-800 h3,
+  .bg-slate-900 h3,
+  .bg-slate-950 h3,
+  .bg-zinc-800 h3,
+  .bg-zinc-900 h3,
+  .bg-zinc-950 h3,
+  .bg-black h3,
+  .bg-slate-800 p,
+  .bg-slate-900 p,
+  .bg-slate-950 p,
+  .bg-zinc-800 p,
+  .bg-zinc-900 p,
+  .bg-zinc-950 p,
+  .bg-black p,
+  .bg-accent span,
   button span.text-white,
   button .text-white,
   a.bg-slate-900,
@@ -189,13 +198,13 @@ button {
   .text-white\/10 { color: rgba(29, 29, 31, 0.1) !important; }
 
   /* Restore translucent white text for dark/accent buttons & callouts */
-  [class*="bg-slate-"] .text-white\/90, [class*="bg-zinc-"] .text-white\/90, [class*="bg-black"] .text-white\/90, .bg-accent .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
-  [class*="bg-slate-"] .text-white\/80, [class*="bg-zinc-"] .text-white\/80, [class*="bg-black"] .text-white\/80, .bg-accent .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
-  [class*="bg-slate-"] .text-white\/70, [class*="bg-zinc-"] .text-white\/70, [class*="bg-black"] .text-white\/70, .bg-accent .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
-  [class*="bg-slate-"] .text-white\/60, [class*="bg-zinc-"] .text-white\/60, [class*="bg-black"] .text-white\/60, .bg-accent .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
-  [class*="bg-slate-"] .text-white\/50, [class*="bg-zinc-"] .text-white\/50, [class*="bg-black"] .text-white\/50, .bg-accent .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
-  [class*="bg-slate-"] .text-white\/40, [class*="bg-zinc-"] .text-white\/40, [class*="bg-black"] .text-white\/40, .bg-accent .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
-  [class*="bg-slate-"] .text-white\/30, [class*="bg-zinc-"] .text-white\/30, [class*="bg-black"] .text-white\/30, .bg-accent .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
-  [class*="bg-slate-"] .text-white\/20, [class*="bg-zinc-"] .text-white\/20, [class*="bg-black"] .text-white\/20, .bg-accent .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
-  [class*="bg-slate-"] .text-white\/10, [class*="bg-zinc-"] .text-white\/10, [class*="bg-black"] .text-white\/10, .bg-accent .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+  .bg-slate-900 .text-white\/90, .bg-slate-950 .text-white\/90, .bg-zinc-900 .text-white\/90, .bg-zinc-950 .text-white\/90, .bg-black .text-white\/90, .bg-accent .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+  .bg-slate-900 .text-white\/80, .bg-slate-950 .text-white\/80, .bg-zinc-900 .text-white\/80, .bg-zinc-950 .text-white\/80, .bg-black .text-white\/80, .bg-accent .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+  .bg-slate-900 .text-white\/70, .bg-slate-950 .text-white\/70, .bg-zinc-900 .text-white\/70, .bg-zinc-950 .text-white\/70, .bg-black .text-white\/70, .bg-accent .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+  .bg-slate-900 .text-white\/60, .bg-slate-950 .text-white\/60, .bg-zinc-900 .text-white\/60, .bg-zinc-950 .text-white\/60, .bg-black .text-white\/60, .bg-accent .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+  .bg-slate-900 .text-white\/50, .bg-slate-950 .text-white\/50, .bg-zinc-900 .text-white\/50, .bg-zinc-950 .text-white\/50, .bg-black .text-white\/50, .bg-accent .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+  .bg-slate-900 .text-white\/40, .bg-slate-950 .text-white\/40, .bg-zinc-900 .text-white\/40, .bg-zinc-950 .text-white\/40, .bg-black .text-white\/40, .bg-accent .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+  .bg-slate-900 .text-white\/30, .bg-slate-950 .text-white\/30, .bg-zinc-900 .text-white\/30, .bg-zinc-950 .text-white\/30, .bg-black .text-white\/30, .bg-accent .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+  .bg-slate-900 .text-white\/20, .bg-slate-950 .text-white\/20, .bg-zinc-900 .text-white\/20, .bg-zinc-950 .text-white\/20, .bg-black .text-white\/20, .bg-accent .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+  .bg-slate-900 .text-white\/10, .bg-slate-950 .text-white\/10, .bg-zinc-900 .text-white\/10, .bg-zinc-950 .text-white\/10, .bg-black .text-white\/10, .bg-accent .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
 }

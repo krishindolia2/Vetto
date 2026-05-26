@@ -4352,19 +4352,19 @@ export default function App() {
 
               {/* Simple Pros & Cons */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="glass-panel p-10 space-y-8 group hover:bg-zinc-900/60 transition-colors border-white/5 relative overflow-hidden">
+                <div className="glass-panel p-10 space-y-8 group hover:bg-slate-50 transition-colors border-slate-100 relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
                     <ThumbsUp className="w-32 h-32 text-green-500" />
                   </div>
                   <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                      <ThumbsUp className="w-5 h-5 text-green-400" />
+                    <div className="w-12 h-12 rounded-2xl bg-green-50 border border-green-100 flex items-center justify-center">
+                      <ThumbsUp className="w-5 h-5 text-green-500" />
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                         Good News
                       </span>
-                      <h3 className="text-xl font-black text-white">
+                      <h3 className="text-xl font-black text-slate-900">
                         Ground Truth Wins
                       </h3>
                     </div>
@@ -4373,28 +4373,28 @@ export default function App() {
                     {result.pros.map((pro, i) => (
                       <li
                         key={i}
-                        className="flex gap-4 text-sm font-medium text-zinc-300 leading-relaxed"
+                        className="flex gap-4 text-sm font-medium text-slate-600 leading-relaxed"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 shrink-0 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
                         {pro}
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="glass-panel p-10 space-y-8 group hover:bg-zinc-900/60 transition-colors border-white/5 relative overflow-hidden">
+                <div className="glass-panel p-10 space-y-8 group hover:bg-slate-50 transition-colors border-slate-100 relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
                     <ThumbsDown className="w-32 h-32 text-red-500" />
                   </div>
                   <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                      <ThumbsDown className="w-5 h-5 text-red-400" />
+                    <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
+                      <ThumbsDown className="w-5 h-5 text-red-500" />
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
                         Fair Warning
                       </span>
-                      <h3 className="text-xl font-black text-white">
+                      <h3 className="text-xl font-black text-slate-900">
                         Potential Risks
                       </h3>
                     </div>
@@ -4403,9 +4403,9 @@ export default function App() {
                     {result.cons.map((con, i) => (
                       <li
                         key={i}
-                        className="flex gap-4 text-sm font-medium text-zinc-300 leading-relaxed"
+                        className="flex gap-4 text-sm font-medium text-slate-600 leading-relaxed"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(248,113,113,0.5)]" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                         {con}
                       </li>
                     ))}
@@ -4417,11 +4417,12 @@ export default function App() {
               <div className="space-y-10">
                 <div className="flex items-center justify-between px-4">
                   <span className="section-heading mb-0 text-zinc-500">
+                  <span className="section-heading mb-0">
                     Feature Quality Check
                   </span>
-                  <div className="px-4 py-2 bg-zinc-900 border border-white/5 text-white rounded-full flex items-center gap-2 shadow-inner">
+                  <div className="px-4 py-2 bg-slate-900 border border-slate-800 text-white rounded-full flex items-center gap-2 shadow-inner">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)] animate-pulse" />
-                    <span className="text-[10px] font-mono font-bold tracking-widest">
+                    <span className="text-[10px] font-mono font-bold tracking-widest text-white">
                       Checking Every Detail
                     </span>
                   </div>
@@ -4433,7 +4434,7 @@ export default function App() {
                       key={i}
                       whileHover={{ y: -5, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="glass-panel p-8 flex flex-col justify-between h-full border border-white/5 hover:border-white/10 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] transition-all bg-zinc-950/40"
+                      className="glass-panel p-8 flex flex-col justify-between h-full border border-slate-100 hover:border-slate-200 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all bg-white"
                     >
                       <div className="space-y-6">
                         <div className="space-y-4">
@@ -4442,38 +4443,38 @@ export default function App() {
                               className={cn(
                                 "w-10 h-10 rounded-xl flex items-center justify-center border",
                                 feature.score > 80
-                                  ? "bg-green-500/10 border-green-500/20 shadow-[inset_0_0_12px_rgba(34,197,94,0.1)]"
+                                  ? "bg-green-50 border-green-100"
                                   : feature.score > 50
-                                    ? "bg-amber-500/10 border-amber-500/20 shadow-[inset_0_0_12px_rgba(245,158,11,0.1)]"
-                                    : "bg-red-500/10 border-red-500/20 shadow-[inset_0_0_12px_rgba(239,68,68,0.1)]",
+                                    ? "bg-amber-50 border-amber-100"
+                                    : "bg-red-50 border-red-100",
                               )}
                             >
                               <Zap
                                 className={cn(
                                   "w-5 h-5",
                                   feature.score > 80
-                                    ? "text-green-400"
+                                    ? "text-green-500"
                                     : feature.score > 50
-                                      ? "text-amber-400"
-                                      : "text-red-400",
+                                      ? "text-amber-500"
+                                      : "text-red-500",
                                 )}
                               />
                             </div>
-                            <span className="text-sm font-black text-white truncate tracking-wide">
+                            <span className="text-sm font-black text-slate-900 truncate tracking-wide">
                               {feature.name}
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-400 leading-relaxed font-medium">
+                          <p className="text-xs text-slate-600 leading-relaxed font-medium">
                             {feature.details}
                           </p>
                         </div>
                       </div>
-                      <div className="pt-5 border-t border-white/5 flex items-center justify-between mt-6">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">
+                      <div className="pt-5 border-t border-slate-100 flex items-center justify-between mt-6">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
                           Quality Level
                         </span>
                         <div className="flex items-center gap-3">
-                          <div className="h-1.5 w-16 bg-zinc-800 rounded-full overflow-hidden shadow-inner">
+                          <div className="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden shadow-inner">
                             <div
                               className={cn(
                                 "h-full rounded-full transition-all duration-1000",
@@ -4486,7 +4487,7 @@ export default function App() {
                               style={{ width: `${feature.score}%` }}
                             />
                           </div>
-                          <span className="text-[11px] font-black text-white font-mono">
+                          <span className="text-[11px] font-black text-slate-900 font-mono">
                             {feature.score}%
                           </span>
                         </div>
