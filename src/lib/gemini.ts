@@ -197,6 +197,9 @@ export async function getRecommendation(
       let fullText = "";
       let preFetchedPrices: any[] = [];
       let buffer = "";
+      
+      let lastUpdateTime = 0;
+      const { jsonrepair } = await import("jsonrepair");
 
       while (true) {
         const { done, value } = await reader.read();
@@ -219,7 +222,10 @@ export async function getRecommendation(
               } else if (data.type === "chunk") {
                 fullText += data.text;
                 if (onProgress) {
-                  import("jsonrepair").then(({ jsonrepair }) => {
+                  const now = Date.now();
+                  // Throttle UI updates to max 10fps to prevent browser freeze
+                  if (now - lastUpdateTime > 100) {
+                    lastUpdateTime = now;
                     try {
                       let cleaned = fullText.replace(/^```(json)?\n?/g, '').replace(/```$/g, '').trim();
                       const firstBrace = cleaned.search(/[{[]/);
@@ -229,7 +235,7 @@ export async function getRecommendation(
                     } catch (e) {
                       // ignore parse errors for partial chunks
                     }
-                  });
+                  }
                 }
               } else if (data.type === "final") {
                 return data.auditData as Recommendation;
