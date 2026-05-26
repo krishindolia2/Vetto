@@ -1648,8 +1648,9 @@ STRICT PRICING & SCORING PROTOCOLS:
 0. STRICT VARIANT & OPTION DIFFERENTIATION:
     - If the product query refers to a specific storage capacity (e.g. "128GB", "256GB", "512GB"), a RAM capacity (e.g. "8GB", "12GB", "16GB"), or a chip/processor (e.g. "M2", "M3"), you MUST return pricing, comparison links, and alternative choices specifically matching that CHOSEN option. Do NOT return the base model's pricing or a generic category pricing.
 0.1. STRICT TARGET CAPITAL & BUDGET COMPLIANCE:
-    - If the "Target Capital" constraint is specified and is NOT "Unlimited", the primary recommended product's actual price (lowest across platforms) MUST be LESS THAN or EQUAL to this budget. Never recommend a primary product that exceeds the target capital.
-    - If impossible, explain clearly in "aamAadmiSummary" and recommend a high-value alternative in "vettoContrast.alternativeName" that strictly fits within or under the budget.
+    - If the "Target Capital" constraint is specified and is NOT "Unlimited", you MUST mathematically compare the primary product's lowest platform price against the budget. 
+    - If the price is LESS THAN or EQUAL to the budget, you MUST explicitly state that it fits their budget perfectly. NEVER hallucinate or claim that it exceeds their budget or tell them not to buy it for budget reasons.
+    - If the price genuinely exceeds the budget, explain clearly in "aamAadmiSummary" and recommend a high-value alternative in "vettoContrast" that strictly fits within or under the budget.
 
 1. TRUTH DETECTOR & BOT CRACKDOWN ENGINE:
     A. REVIEW AUTHENTICITY ANALYSIS (fakeReviewScore, botSignalDetection):
