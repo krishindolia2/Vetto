@@ -1786,7 +1786,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         
         // Unify pre-fetched live prices feed and model-suggested links into a single high-integrity processing loop
         let sourceLinks: any[] = [];
-        if (preFetchedPrices && preFetchedPrices.length > 0) {
+        const hasValidPreFetchedPrice = preFetchedPrices && preFetchedPrices.some(p => p.price && p.price !== "Out of Stock" && parseInt(p.price.replace(/[^\d]/g, '')) > 0);
+        
+        if (hasValidPreFetchedPrice) {
           console.log(`[Price Engine] Processing pre-fetched live prices...`);
           sourceLinks = preFetchedPrices;
         } else {
@@ -1852,7 +1854,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
           // Self-heal prices if they are placeholders or non-numeric
           const isPlaceholderPrice = !priceStr || 
-                                     /live|check|tbd|n\/a|0/i.test(priceStr) || 
+                                     /live|check|tbd|n\/a/i.test(priceStr) || 
                                      priceStr === "0" || 
                                      (!/\d/.test(priceStr) && !/out of stock/i.test(priceStr));
                                      
