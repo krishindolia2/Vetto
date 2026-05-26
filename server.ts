@@ -2218,49 +2218,6 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
         }
       }
-    } catch (error: any) {
-      console.error("Error processing audit:", error);
-      
-      // Check for specific safety or billing errors
-      const errorMsg = error.message || "";
-      
-      if (errorMsg.includes("SAFETY") || error.status === 400) {
-        if (req.headers.accept === "text/event-stream") {
-          res.write(`data: ${JSON.stringify({ type: "error", message: "Vetto Engine blocked this request due to safety filters." })}\n\n`);
-          res.end();
-        } else {
-          res.status(400).json({ error: "Vetto Engine blocked this request due to safety filters.", errorType: "SAFETY_BLOCK" });
-        }
-        return;
-      }
-      
-      if (errorMsg.includes("403") || error.status === 403 || errorMsg.includes("permission_denied")) {
-        if (req.headers.accept === "text/event-stream") {
-          res.write(`data: ${JSON.stringify({ type: "error", message: "Vetto API key lacks permissions for this model or feature." })}\n\n`);
-          res.end();
-        } else {
-          res.status(403).json({ error: "Vetto API key lacks permissions for this model or feature.", errorType: "BILLING_DUNNING_DENY" });
-        }
-        return;
-      }
-
-      if (errorMsg.includes("429") || error.status === 429) {
-        if (req.headers.accept === "text/event-stream") {
-          res.write(`data: ${JSON.stringify({ type: "error", message: "System is currently serving too many users. Please retry in 10 seconds." })}\n\n`);
-          res.end();
-        } else {
-          res.status(429).json({ error: "System is currently serving too many users. Please retry in 10 seconds.", errorType: "RATE_LIMIT" });
-        }
-        return;
-      }
-
-      if (req.headers.accept === "text/event-stream") {
-        res.write(`data: ${JSON.stringify({ type: "error", message: "Internal Engine Error: " + errorMsg })}\n\n`);
-        res.end();
-      } else {
-        res.status(500).json({ error: "Internal Engine Error: " + errorMsg });
-      }
-    }
 
     // Store in cache if applicable
     if (cacheKey) {
@@ -2283,8 +2240,6 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       auditCache.set(cacheKey, { data: auditData, timestamp: Date.now() });
       saveCacheToDisk();
     }
-
-    res.json(auditData);
   } catch (error: any) {
     console.error("Vetto Server Error:", error);
     
