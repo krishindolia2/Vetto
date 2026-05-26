@@ -1,5 +1,4 @@
-import { db, auth } from './firebase';
-import { doc, setDoc, updateDoc, increment, serverTimestamp, getDoc } from 'firebase/firestore';
+import { auth } from './firebase';
 
 export async function trackVisit() {
   // Simple session check to avoid spamming logs on every refresh
@@ -11,9 +10,6 @@ export async function trackVisit() {
     return; // Don't track if visited in last 30 mins
   }
   localStorage.setItem(sessionKey, now.toString());
-
-  const logId = `visit_${now}_${Math.random().toString(36).substring(2, 9)}`;
-  const logRef = doc(db, 'analytics_v1', logId);
   
   // Fire and forget geolocation to avoid blocking
   const getGeo = async () => {
@@ -28,30 +24,29 @@ export async function trackVisit() {
 
   const geoPromise = getGeo();
 
-  const visitorData: any = {
-    uid: auth.currentUser?.uid || 'anonymous',
-    email: auth.currentUser?.email || 'anonymous',
-    userAgent: navigator.userAgent,
-    referrer: document.referrer || 'Direct',
-    screen: `${window.screen.width}x${window.screen.height}`,
-    timestamp: serverTimestamp(),
-  };
-
   try {
     const geo = await geoPromise;
+    let location = null;
     if (geo) {
-      visitorData.location = `${geo.city}, ${geo.region}, ${geo.country_name}`;
+      location = `${geo.city}, ${geo.region}, ${geo.country_name}`;
     }
 
-    // Individual visit log
-    await setDoc(logRef, visitorData);
+    const payload = {
+      uid: auth.currentUser?.uid || 'anonymous',
+      email: auth.currentUser?.email || 'anonymous',
+      userAgent: navigator.userAgent,
+      referrer: document.referrer || 'Direct',
+      screen: `${window.screen.width}x${window.screen.height}`,
+      location,
+    };
 
-    // Global counter
-    const statsRef = doc(db, 'stats', 'global');
-    await setDoc(statsRef, {
-      activeUsers: increment(1),
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
+    await fetch("/api/analytics", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
   } catch (error) {
     console.warn('Analytics capture incomplete:', error);

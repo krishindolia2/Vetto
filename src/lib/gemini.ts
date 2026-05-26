@@ -76,6 +76,7 @@ export interface Recommendation {
       price: string;
       isBestDeal: boolean;
       url?: string;
+      stockStatus?: string;
     }[];
   };
   bhartiyaPersonaAudit: string;
@@ -143,26 +144,42 @@ export async function getRecommendation(
       });
 
       if (!response.ok) {
-        // If it's a transient server error (502, 503, 504), retry
-        if ([502, 503, 504].includes(response.status) && attempt < maxRetries - 1) {
-          const delay = 1000 * Math.pow(2, attempt);
-          console.warn(`Gateway/Server transient error ${response.status}. Retrying in ${delay}ms...`);
+        // If it's a critical non-retryable error (like 403/Forbidden for Billing restriction or 401/Unauthorized)
+        if ([401, 403].includes(response.status)) {
+          const errorData = await response.json().catch(() => ({}));
+          const customErr = new Error(errorData.message || errorData.error || `Access Denied: ${response.status}`);
+          (customErr as any).errorType = errorData.errorType;
+          (customErr as any).rawError = errorData.error;
+          throw customErr;
+        }
+
+        // If it's a transient server error or quota limit (429, 500, 502, 503, 504), retry with backoff + jitter
+        if ([429, 500, 502, 503, 504].includes(response.status) && attempt < maxRetries - 1) {
+          const jitter = Math.random() * 800;
+          const delay = (1000 * Math.pow(2, attempt)) + jitter;
+          console.warn(`Gateway/Server transient error ${response.status} on attempt ${attempt + 1}. Retrying in ${Math.round(delay)}ms...`);
           await new Promise(r => setTimeout(r, delay));
           continue;
         }
 
         if (response.status === 429) {
-          throw new Error("Quota Exceeded: Your Gemini API limit has been reached. Please try again later.");
+          throw new Error("Quota Exceeded: Your Vetto Engine limit has been reached. Please try again later.");
         }
+
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Audit Server Error: ${response.status}`);
+        const customErr = new Error(errorData.message || errorData.error || `Audit Server Error: ${response.status}`);
+        (customErr as any).errorType = errorData.errorType;
+        (customErr as any).rawError = errorData.error;
+        throw customErr;
       }
 
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         // If it's an unstable state but could be transient, retry
         if (attempt < maxRetries - 1) {
-          await new Promise(r => setTimeout(r, 1000));
+          const jitter = Math.random() * 800;
+          const delay = 1000 + jitter;
+          await new Promise(r => setTimeout(r, delay));
           continue;
         }
         
@@ -174,9 +191,23 @@ export async function getRecommendation(
       return await response.json();
     } catch (error: any) {
       lastError = error;
-      // If it's a network error, retry
-      if ((error.message?.includes("fetch") || error.message?.includes("NetworkError")) && attempt < maxRetries - 1) {
-        await new Promise(r => setTimeout(r, 1000));
+
+      // If it's a billing/access error, do not retry, just throw immediately
+      if (error.errorType === "BILLING_DUNNING_DENY" || error.status === 403 || error.status === 401) {
+        break;
+      }
+
+      // If it's a network error or generic fetch failure, retry with backoff + jitter
+      const isNetworkError = error.message?.includes("fetch") || 
+                             error.message?.includes("NetworkError") || 
+                             error.message?.includes("Failed to fetch") ||
+                             error.message?.includes("network");
+
+      if (isNetworkError && attempt < maxRetries - 1) {
+        const jitter = Math.random() * 800;
+        const delay = (1000 * Math.pow(2, attempt)) + jitter;
+        console.warn(`Network transient failure on attempt ${attempt + 1}. Retrying in ${Math.round(delay)}ms...`, error);
+        await new Promise(r => setTimeout(r, delay));
         continue;
       }
       break;
@@ -184,5 +215,8 @@ export async function getRecommendation(
   }
 
   console.error("Client Audit Error:", lastError);
-  throw new Error(`Engine Link Lost: ${lastError?.message || "Unknown Error"}`);
+  const finalError = new Error(`Engine Link Lost: ${lastError?.message || "Unknown Error"}`);
+  (finalError as any).errorType = lastError?.errorType;
+  (finalError as any).rawError = lastError?.rawError;
+  throw finalError;
 }

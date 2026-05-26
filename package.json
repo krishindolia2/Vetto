@@ -26,6 +26,7 @@
     "react-markdown": "latest",
     "recharts": "latest",
     "tailwind-merge": "latest",
+    "undici": "^8.3.0",
     "vite": "latest"
   },
   "overrides": {

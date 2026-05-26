@@ -35,6 +35,10 @@ service cloud.firestore {
       return resource.data;
     }
 
+    function isServer() {
+      return isSignedIn() && request.auth.token.email == "server@vetto.in";
+    }
+
     // Asset Validation
     function isValidAsset(data) {
       return data.keys().hasAll(['userId', 'name', 'paisaVasoolIndex', 'finalDecision', 'vettedAt']) 
@@ -99,29 +103,26 @@ service cloud.firestore {
 
     match /stats/{statId} {
       allow read: if true;
-      allow create, update: if true;
+      allow create, update: if isServer() || isAdmin();
     }
 
     match /waitlist/{entryId} {
       allow get: if isAdmin() || (isValidId(entryId)); // Allow anyone to check existence/rank by ID safely (PII is minimal)
       allow list: if isAdmin();
-      allow create: if (isValidId(entryId) && isValidWaitlistEntry(incoming()) && incoming().timestamp == request.time) || isAdmin();
+      allow create: if isServer() || isAdmin();
     }
 
     match /audit_cache/{cacheId} {
       allow read: if true; // Cache is public for all app nodes
-      allow create, update: if isValidId(cacheId)
-                            && incoming().keys().hasAll(['data', 'timestamp', 'query', 'createdAt'])
-                            && incoming().query is string
-                            && incoming().timestamp is number
-                            && incoming().createdAt == request.time;
+      allow create, update: if isServer() || isAdmin();
       allow delete: if false;
     }
 
     match /audit_feedback/{feedbackId} {
       allow read: if true;
       allow list: if isAdmin();
-      allow create: if isValidId(feedbackId) 
+      allow create: if isSignedIn()
+                    && isValidId(feedbackId) 
                     && incoming().keys().hasAll(['recId', 'accuracyScore', 'timestamp'])
                     && incoming().accuracyScore >= 1 && incoming().accuracyScore <= 5
                     && incoming().timestamp == request.time;
@@ -129,7 +130,8 @@ service cloud.firestore {
 
     match /hotline/{messageId} {
       allow read, list: if isAdmin();
-      allow create: if isValidId(messageId)
+      allow create: if isSignedIn()
+                    && isValidId(messageId)
                     && (incoming().keys().hasAll(['email', 'message', 'timestamp']))
                     && incoming().email is string && incoming().email.size() <= 100
                     && incoming().message is string && incoming().message.size() <= 1000
@@ -138,7 +140,7 @@ service cloud.firestore {
 
     match /analytics_v1/{logId} {
       allow read, list: if isAdmin();
-      allow create: if true;
+      allow create: if isServer() || isAdmin();
     }
   }
 }

@@ -1,11 +1,1 @@
-{
-  "name": "Vetto",
-  "description": "Vetto helps Indian households make smarter shopping decisions by uncovering hidden costs and comparing real value, preserving your family's savings.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
+{"name":"Vetto","description":"Vetto helps Indian households make smarter shopping decisions by uncovering hidden costs and comparing real value, preserving your family\u0027s savings.","requestFramePermissions":["camera","microphone"],"majorCapabilities":["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]}
