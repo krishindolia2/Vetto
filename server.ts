@@ -979,6 +979,17 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
   const isGoogleLink = targetUrl.includes("google.com") || targetUrl.includes("google.co.in");
   let isGenericOrMismatched = !targetUrl || isGoogleLink;
 
+  // Identify placeholder/hallucinated links to trigger high-fidelity search URL fallback
+  const isPlaceholderUrl = targetUrl.includes("B0CXXYZ") || 
+                           targetUrl.includes("12345") || 
+                           targetUrl.includes("searchB") ||
+                           /itm\d+/.test(targetUrl) || 
+                           targetUrl.includes("example.com");
+  
+  if (isPlaceholderUrl) {
+    isGenericOrMismatched = true;
+  }
+
   if (!isGenericOrMismatched) {
     try {
       const parsedUrl = new URL(targetUrl);
