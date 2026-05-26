@@ -4417,7 +4417,6 @@ export default function App() {
               <div className="space-y-10">
                 <div className="flex items-center justify-between px-4">
                   <span className="section-heading mb-0 text-zinc-500">
-                  <span className="section-heading mb-0">
                     Feature Quality Check
                   </span>
                   <div className="px-4 py-2 bg-slate-900 border border-slate-800 text-white rounded-full flex items-center gap-2 shadow-inner">
