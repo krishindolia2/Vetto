@@ -478,7 +478,7 @@ export default function App() {
             ...partial,
             id: prev?.id || 'temp',
             timestamp: prev?.timestamp || Date.now(),
-          }) as RecommendationWithMeta);
+          }) as any);
         }
       );
       setLastAuditTime(Date.now());
@@ -1043,7 +1043,7 @@ export default function App() {
             ...partial,
             id: prev?.id || 'temp',
             timestamp: prev?.timestamp || Date.now(),
-          }) as RecommendationWithMeta);
+          }) as any);
         }
       );
       setLastAuditTime(Date.now());
