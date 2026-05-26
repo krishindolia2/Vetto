@@ -1125,8 +1125,8 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-2.5-flash",
-    "gemini-3.1-flash-lite"
+    "gemini-2.0-flash",
+    "gemini-1.5-flash"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1766,7 +1766,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-2.5-flash";
+    const modelToUse = "gemini-2.0-flash";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];
