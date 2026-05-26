@@ -474,10 +474,10 @@ export default function App() {
         [],
         (partial) => {
           setResult(prev => ({
-            ...prev,
+            ...(prev || {}),
             ...partial,
-            id: prev?.id || 'temp',
-            timestamp: prev?.timestamp || Date.now(),
+            id: (prev as any)?.id || 'temp',
+            timestamp: (prev as any)?.timestamp || Date.now(),
           }) as any);
         }
       );
@@ -1039,10 +1039,10 @@ export default function App() {
         base64Images,
         (partial) => {
           setResult(prev => ({
-            ...prev,
+            ...(prev || {}),
             ...partial,
-            id: prev?.id || 'temp',
-            timestamp: prev?.timestamp || Date.now(),
+            id: (prev as any)?.id || 'temp',
+            timestamp: (prev as any)?.timestamp || Date.now(),
           }) as any);
         }
       );

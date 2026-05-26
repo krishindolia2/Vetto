@@ -1808,8 +1808,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       res.write(`data: ${JSON.stringify({ type: "metadata", preFetchedPrices })}\n\n`);
 
       try {
-        let stream;
-        let lastErr;
+        let stream: any;
+        let lastErr: any;
         // Simple retry for stream initialization
         for (let attempt = 0; attempt < 3; attempt++) {
           try {
