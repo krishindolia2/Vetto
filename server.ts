@@ -2199,8 +2199,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         console.log(`[Stability Alignment] Calibrating marketTiming: "${auditData.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk}, isCategoryQuery: ${isBudgetCategoryQuery})`);
         auditData.marketTiming = stableVerdict;
         auditData.finalDecision = stableVerdict;
+      }
         
-        console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
+      console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
       
         if (isSSE) {
           res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
