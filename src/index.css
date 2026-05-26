@@ -97,3 +97,106 @@ button {
   animation: pulse-slow 12s infinite ease-in-out;
   z-index: 0;
 }
+
+/* ==========================================================================
+   Clean, Premium Apple-Style Light Theme Overrides & Safety Patches
+   ========================================================================== */
+
+/* 1. Global Input & Textarea Premium Styling - Solves query typing visibility concerns */
+input[type="text"], textarea {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1D1D1F !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+input[type="text"]::placeholder, textarea::placeholder {
+  color: #86868B !important;
+  opacity: 0.8 !important;
+}
+
+input[type="text"]:focus, textarea:focus {
+  background-color: #FFFFFF !important;
+  border-color: #0071E3 !important;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 2. Global Safety Overrides for Hardcoded Dark Theme Utility Classes */
+@layer utilities {
+  /* Invert White transparent panels to clean soft dark translucent overlays */
+  .bg-white\/5 {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+  }
+  .bg-white\/10 {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  .bg-white\/80 {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+  .hover\:bg-white\/5:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+  .hover\:bg-white\/10:hover {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+  }
+  .border-white\/5 {
+    border-color: rgba(0, 0, 0, 0.05) !important;
+  }
+  .border-white\/10 {
+    border-color: rgba(0, 0, 0, 0.08) !important;
+  }
+  .border-white\/20 {
+    border-color: rgba(0, 0, 0, 0.12) !important;
+  }
+  .border-white\/15 {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Safe map: Override general text-white to premium dark ink font */
+  .text-white {
+    color: #1D1D1F !important;
+  }
+
+  /* Safely target white text inside actually dark elements (e.g. solid dark buttons, accent pills) */
+  button.bg-slate-900,
+  button.bg-accent,
+  button.bg-black,
+  .bg-slate-900 .text-white,
+  .bg-accent .text-white,
+  .bg-black .text-white,
+  .bg-red-500 .text-white,
+  .bg-emerald-500 .text-white,
+  .bg-blue-500 .text-white,
+  .mono-tag .text-white,
+  .bg-slate-900 span,
+  .bg-accent span,
+  .bg-black span,
+  button span.text-white,
+  button .text-white,
+  a.bg-slate-900,
+  a.bg-accent {
+    color: #FFFFFF !important;
+  }
+
+  /* Invert translucent white opacities to clean soft translucent dark fonts */
+  .text-white\/90 { color: rgba(29, 29, 31, 0.9) !important; }
+  .text-white\/80 { color: rgba(29, 29, 31, 0.8) !important; }
+  .text-white\/70 { color: rgba(29, 29, 31, 0.7) !important; }
+  .text-white\/60 { color: rgba(29, 29, 31, 0.6) !important; }
+  .text-white\/50 { color: rgba(29, 29, 31, 0.5) !important; }
+  .text-white\/40 { color: rgba(29, 29, 31, 0.4) !important; }
+  .text-white\/30 { color: rgba(29, 29, 31, 0.3) !important; }
+  .text-white\/20 { color: rgba(29, 29, 31, 0.2) !important; }
+  .text-white\/10 { color: rgba(29, 29, 31, 0.1) !important; }
+
+  /* Restore translucent white text for dark/accent buttons & callouts */
+  .bg-slate-900 .text-white\/90, .bg-accent .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+  .bg-slate-900 .text-white\/80, .bg-accent .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+  .bg-slate-900 .text-white\/70, .bg-accent .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+  .bg-slate-900 .text-white\/60, .bg-accent .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+  .bg-slate-900 .text-white\/50, .bg-accent .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+  .bg-slate-900 .text-white\/40, .bg-accent .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+  .bg-slate-900 .text-white\/30, .bg-accent .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+  .bg-slate-900 .text-white\/20, .bg-accent .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+  .bg-slate-900 .text-white\/10, .bg-accent .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+}
