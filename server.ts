@@ -1125,9 +1125,9 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-1.5-flash",
     "gemini-3.1-flash-lite",
-    "gemini-3.5-flash"
+    "gemini-3.5-flash",
+    "gemini-1.5-flash"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1782,10 +1782,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       });
     }
 
-    // Always enable Google Search grounding for all queries to ensure 100% accurate, real-time price comparisons & stock diagnostics
-    // OPTIMIZATION: If we successfully pre-fetched live prices using Google Search grounding, we can disable Google Search grounding on the main call.
-    // This reduces the response time of the main call from ~7 seconds to ~2 seconds, saving up to 5 seconds of total end-to-end latency!
-    const useSearchGrounding = !(preFetchedPrices && preFetchedPrices.length > 0);
+    // Enforce 100% JSON safety: Never enable search grounding on the main call, ensuring we always use application/json responseMimeType to prevent blank page UI crashes.
+    const useSearchGrounding = false;
     
     console.log(`[Cache Engine] Active Mode: Live Google Search Grounding for maximum platform price integrity`);
 
