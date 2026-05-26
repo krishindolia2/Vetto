@@ -174,5 +174,212 @@
       }
     },
     "timestamp": 1779796970632
+  },
+  "aXBob25lIDE1IDEyOGdiLTg1MDAwLXByb2Zlc3Npb25hbCBwaG90b2dyYXBoeSBoZWF2eSBtdWx0aXRhc2tpbmc_": {
+    "data": {
+      "isAnalysis": true,
+      "productName": "iPhone 15 128GB",
+      "isComparison": true,
+      "finalDecision": "RUN",
+      "whyBest": "It's a solid iPhone for general use, but not for your stated professional needs.",
+      "pros": [
+        "Reliable Apple ecosystem",
+        "Good everyday camera",
+        "Strong A16 Bionic chip"
+      ],
+      "cons": [
+        "Not for professional photography",
+        "60Hz display is outdated",
+        "Lacks telephoto lens for versatility"
+      ],
+      "aamAadmiSummary": "Bhai, iPhone 15 daily use ke liye accha hai, par professional photography aur heavy multitasking ke liye yeh Pro model nahi hai. Aapko iPhone 16 Pro ya koi aur powerful phone dekhna chahiye.",
+      "avoid": "Buying this for professional photography or heavy multitasking.",
+      "regretWarning": "You will regret this purchase if you expect Pro-level camera and performance.",
+      "confidenceScore": 95,
+      "regretRisk": "High",
+      "whyRegret": "Its camera and processing power are not sufficient for professional-grade work.",
+      "saferChoice": "Consider iPhone 15 Pro or wait for iPhone 16 Pro.",
+      "marketTiming": "RUN",
+      "marketReasoning": "For professional photography and heavy multitasking, waiting for a Pro model or the iPhone 16 Pro is a better investment.",
+      "specLongevity": "3 years for general use, less for pro tasks.",
+      "personalizedInsight": "For your specific needs, a Pro model or a high-end Android like Pixel 8 Pro offers better value.",
+      "socialHook": "iPhone 15: Good, but not for Pro work!",
+      "postOutputHook": "Don't compromise on your professional tools!",
+      "paisaVasoolIndex": 65,
+      "statusTax": 15000,
+      "utilityScore": 70,
+      "hiddenCosts": "Charger, case, screen protector, Apple services.",
+      "platformWarShield": {
+        "hasMarketingSilos": true,
+        "siloExposure": "Apple's marketing blurs lines between base and Pro models.",
+        "truthResilienceScore": 75,
+        "bypassStrategyUsed": "Focus on real-world user reviews and spec comparisons."
+      },
+      "vettoContrast": {
+        "alternativeName": "Google Pixel 8 Pro 128GB",
+        "whyContrast": "Superior computational photography and AI features for your budget.",
+        "pviBoost": 25,
+        "priceDelta": "Save ₹15,000",
+        "fairPriceTarget": "₹44,900",
+        "procurementGuidance": "Check Flipkart/Amazon during sale events for bank offers.",
+        "strategicAdvantage": "Best-in-class camera software and clean Android experience."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹59,900 • Verified lowest available price among active sellers online.",
+        "historicalContext": "Prices usually drop further during major festive sales like Diwali.",
+        "priceHistory": [
+          {
+            "month": "December 2025",
+            "price": 66000
+          },
+          {
+            "month": "January 2026",
+            "price": 65000
+          },
+          {
+            "month": "February 2026",
+            "price": 64000
+          },
+          {
+            "month": "March 2026",
+            "price": 62000
+          },
+          {
+            "month": "April 2026",
+            "price": 61000
+          },
+          {
+            "month": "May 2026",
+            "price": 59900
+          }
+        ],
+        "dealScore": 80,
+        "discountStrategy": "Use bank offers (HDFC/SBI) for extra cashback, or look for exchange bonuses.",
+        "procurementLinks": [
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "₹59,900",
+            "isBestDeal": true,
+            "url": "https://www.flipkart.com/apple-iphone-15-green-128-gb/p/itm186141212121?pid=MOBGZ8G2K2Y3G2Y3",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "₹59,900",
+            "isBestDeal": false,
+            "url": "https://www.croma.com/apple-iphone-15-128gb-blue-/p/300684",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Re-evaluate your priorities: brand loyalty vs. professional features.",
+        "peakUtilityAge": "18-24 months for heavy use.",
+        "exitStrategy": "Sell before iPhone 17 launch for best resale value."
+      },
+      "communityPulse": {
+        "redditConsensus": "Good daily driver, but not a Pro replacement.",
+        "twitterPulse": "Solid upgrade from older iPhones, but 60Hz is a letdown.",
+        "youtubeReality": "Camera is good, but Pro models are significantly better for video/photos.",
+        "linkedinProfessional": "Reliable for communication, but not a primary tool for pro content creation.",
+        "topUSP": "Apple ecosystem and reliable performance.",
+        "topGripe": "60Hz display and lack of telephoto lens."
+      },
+      "lifecyclePhase": {
+        "status": "Mature",
+        "isObsoleteSoon": true,
+        "nextMajorUpdate": "iPhone 16 series (September 2026)."
+      },
+      "bhartiyaPersonaAudit": "Good for status, but practical users might find better value elsewhere for pro tasks.",
+      "technicalNode": "Trace cut off",
+      "buildIntegrity": "Trace cut off",
+      "resaleValueNode": "Trace cut off",
+      "ecosystemLockIn": "Trace cut off",
+      "features": [
+        {
+          "name": "Camera",
+          "score": 75,
+          "details": "Good for casual photos, but lacks Pro features like telephoto and ProRes video."
+        },
+        {
+          "name": "Performance",
+          "score": 80,
+          "details": "A16 Bionic is powerful, but not for sustained heavy multitasking compared to Pro models."
+        },
+        {
+          "name": "Display",
+          "score": 60,
+          "details": "60Hz refresh rate feels less smooth than competitors and Pro models."
+        },
+        {
+          "name": "Battery Life",
+          "score": 85,
+          "details": "Solid all-day battery for most users."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4.3,
+        "sentimentSplit": {
+          "positive": 60,
+          "negative": 20,
+          "mixed": 20
+        },
+        "criticsConsensus": "A solid, safe upgrade for most, but lacks Pro features.",
+        "userRealityCheck": "Users love the design and camera, but some miss the ProMotion display.",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 85,
+          "botSignalDetection": "Minimal bot activity detected.",
+          "verifiedPurchaseTruth": "High reliability from verified purchasers.",
+          "divergenceIndex": 30,
+          "crossPlatformPatterns": [
+            {
+              "platform": "Amazon",
+              "sentiment": 70,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Flipkart",
+              "sentiment": 75,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Croma",
+              "sentiment": 80,
+              "botRisk": "Very Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "Cinematic Mode",
+              "reality": "Good for casual, not Hollywood-level."
+            },
+            {
+              "term": "Dynamic Island",
+              "reality": "Useful, but not revolutionary."
+            }
+          ]
+        }
+      }
+    },
+    "timestamp": 1779798392331
   }
 }
