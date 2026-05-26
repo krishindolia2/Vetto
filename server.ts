@@ -701,6 +701,41 @@ function isValidCachedData(data: any): boolean {
           return false;
         }
       }
+
+      const electronicsKeywords = [
+        'laptop', 'mobile', 'phone', 'buds', 'earphones', 'headphone', 'audio', 'speaker', 'tv', 'television', 'fridge', 
+        'refrigerator', 'ac', 'air conditioner', 'microwave', 'oven', 'camera', 'monitor', 'keyboard', 'mouse', 
+        'ipad', 'tablet', 'samsung', 'apple', 'macbook', 'asus', 'dell', 'hp', 'lenovo', 'oneplus', 'realme', 'xiaomi', 
+        'redmi', 'soundbar', 'charger', 'powerbank', 'graphics card', 'rtx', 'amd', 'intel', 'processor'
+      ];
+      const isElectronics = electronicsKeywords.some(kw => combinedText.includes(kw));
+      if (isElectronics) {
+        const hasFashionStore = links.some((link: any) => {
+          const pf = String(link.platform || "").toLowerCase();
+          return pf.includes("myntra") || pf.includes("ajio");
+        });
+        if (hasFashionStore) {
+          console.log(`[Cache Engine] Bypassing cache to heal category-platform mismatch (found fashion store for electronics item: "${prodName}").`);
+          return false;
+        }
+      }
+
+      const automotiveKeywords = [
+        'car', 'bike', 'vehicle', 'motorcycle', 'tyre', 'tire', 'helmet', 'dashcam', 'gps tracker', 'alloy wheels',
+        'car perfume', 'tata', 'mahindra', 'hyundai', 'maruti suzuki', 'honda', 'yamaha', 'royal enfield', 'ather', 'ola s1',
+        'scooter', 'inflator', 'car wash', 'lubricant', 'engine oil'
+      ];
+      const isAutomotive = automotiveKeywords.some(kw => combinedText.includes(kw));
+      if (isAutomotive) {
+        const hasInvalidStore = links.some((link: any) => {
+          const pf = String(link.platform || "").toLowerCase();
+          return pf.includes("myntra") || pf.includes("ajio") || pf.includes("croma") || pf.includes("reliance");
+        });
+        if (hasInvalidStore) {
+          console.log(`[Cache Engine] Bypassing cache to heal category-platform mismatch (found invalid store for automotive item: "${prodName}").`);
+          return false;
+        }
+      }
     }
   } catch (e) {
     return false;
@@ -734,7 +769,7 @@ function getReferencePrice(auditData: any, parsedQuery: string, budget: string):
 }
 
 // Detect category based on product identity and search params to align platform selection
-function detectProductCategory(prodName: string, query: string): 'electronics' | 'fashion' | 'general' {
+function detectProductCategory(prodName: string, query: string): 'electronics' | 'fashion' | 'automotive' | 'general' {
   const combined = `${prodName} ${query}`.toLowerCase();
   
   const fashionKeywords = [
@@ -749,11 +784,20 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
     'ipad', 'tablet', 'samsung', 'apple', 'macbook', 'asus', 'dell', 'hp', 'lenovo', 'oneplus', 'realme', 'xiaomi', 
     'redmi', 'soundbar', 'charger', 'powerbank', 'graphics card', 'rtx', 'amd', 'intel', 'processor'
   ];
+
+  const automotiveKeywords = [
+    'car', 'bike', 'vehicle', 'motorcycle', 'tyre', 'tire', 'helmet', 'dashcam', 'gps tracker', 'alloy wheels',
+    'car perfume', 'tata', 'mahindra', 'hyundai', 'maruti suzuki', 'honda', 'yamaha', 'royal enfield', 'ather', 'ola s1',
+    'scooter', 'inflator', 'car wash', 'lubricant', 'engine oil'
+  ];
   
   const hasFashion = fashionKeywords.some(kw => combined.includes(kw));
   const hasElectronics = electronicsKeywords.some(kw => combined.includes(kw));
+  const hasAutomotive = automotiveKeywords.some(kw => combined.includes(kw));
   
-  if (hasFashion && !hasElectronics) {
+  if (hasAutomotive && !hasElectronics && !hasFashion) {
+    return 'automotive';
+  } else if (hasFashion && !hasElectronics) {
     return 'fashion';
   } else if (hasElectronics) {
     return 'electronics';
@@ -1080,7 +1124,7 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
     } else if (platformLower.includes("flipkart")) {
       targetUrl = `https://www.flipkart.com/search?q=${encodedPlusProdName}`;
     } else if (platformLower.includes("croma")) {
-      targetUrl = `https://www.croma.com/searchB?q=${encodedPlusProdName}%3Arelevance&text=${encodedPlusProdName}`;
+      targetUrl = `https://www.croma.com/search/?text=${encodedPlusProdName}`;
     } else if (platformLower.includes("reliance")) {
       targetUrl = `https://www.reliancedigital.in/search?q=${encodedPlusProdName}`;
     } else if (platformLower.includes("myntra")) {
@@ -1088,7 +1132,28 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
     } else if (platformLower.includes("ajio")) {
       targetUrl = `https://www.ajio.com/search/?text=${encodedPlusProdName}`;
     } else {
-      targetUrl = `https://www.google.com/search?q=${encodedPlusProdName}`;
+      // For automotive brands or any other custom platform, let's direct to their official website search or search Google
+      if (platformLower.includes("tata")) {
+        targetUrl = "https://www.tatamotors.com";
+      } else if (platformLower.includes("mahindra")) {
+        targetUrl = "https://auto.mahindra.com";
+      } else if (platformLower.includes("hyundai")) {
+        targetUrl = "https://www.hyundai.com/in";
+      } else if (platformLower.includes("maruti") || platformLower.includes("suzuki")) {
+        targetUrl = "https://www.marutisuzuki.com";
+      } else if (platformLower.includes("honda")) {
+        targetUrl = "https://www.hondacarindia.com";
+      } else if (platformLower.includes("ather")) {
+        targetUrl = "https://www.atherenergy.com";
+      } else if (platformLower.includes("ola")) {
+        targetUrl = "https://www.olaelectric.com";
+      } else if (platformLower.includes("royal enfield")) {
+        targetUrl = "https://www.royalenfield.com";
+      } else if (platformLower.includes("yamaha")) {
+        targetUrl = "https://www.yamaha-motor-india.com";
+      } else {
+        targetUrl = `https://www.google.com/search?q=${encodedPlusProdName}`;
+      }
     }
   }
 
@@ -1132,6 +1197,14 @@ function extractGroundingUrlForPlatform(response: any, platformName: string): st
           if (pLower.includes("tatacliq") && uriLower.includes("tatacliq.com")) {
             return uri;
           }
+
+          // Automotive Brands check
+          const brandKeywords = ["tata", "mahindra", "hyundai", "suzuki", "maruti", "honda", "yamaha", "royal enfield", "ather", "ola"];
+          for (const bk of brandKeywords) {
+            if (pLower.includes(bk) && uriLower.includes(bk)) {
+              return uri;
+            }
+          }
         }
       }
     }
@@ -1159,9 +1232,23 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
     try {
       console.log(`[Price Verification Pre-fetch] (Attempt ${attempt + 1}/${retries}) Querying Google Search grounding via ${modelToUse} for: "${cleanQuery}"${budgetLimit ? ` matching budget of ₹${budgetLimit}` : ""}`);
       
+      const category = detectProductCategory("", cleanQuery);
+      let platformRestrictionRule = "";
+      if (category === 'fashion') {
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is a FASHION product query. You MUST actively restrict the e-commerce platforms and links to: Myntra, Ajio, Amazon India, and Flipkart. Do NOT look up or return prices/links for Croma, Reliance Digital, or other irrelevant sites.`;
+      } else if (category === 'electronics') {
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an ELECTRONICS product query. You MUST actively restrict the e-commerce platforms and links to: Croma, Reliance Digital, Amazon India, and Flipkart. Do NOT look up or return prices/links for Myntra, Ajio, or other irrelevant sites.`;
+      } else if (category === 'automotive') {
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE (cars, bikes, parts, accessories) query. You MUST actively restrict the e-commerce platforms and links to: Amazon India, Flipkart, and the official brand store web page (e.g. Maruti Suzuki, Tata Motors, Hyundai India, Honda, Ather Energy, Ola Electric, Royal Enfield, Yamaha, etc.). Do NOT look up or return prices/links for Myntra, Ajio, Croma, or Reliance Digital.`;
+      } else {
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra, or Tata CLiQ.`;
+      }
+
       const preFetchPrompt = `Identify if the query is a broad category request (e.g. "best gaming phone", "good sneakers") or a specific product (e.g. "iPhone 15", "Nike Air Force 1").
       If it is a broad category, you MUST first select the single absolutely best specific product that fits this category and budget.
-      Then, identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs or search result URLs for THAT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India (such as Amazon India, Flipkart, and Croma, Reliancedigital, Ajio, Myntra, or Tata CLiQ).
+      Then, identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs or search result URLs for THAT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India.
+      
+      ${platformRestrictionRule}
       
       CRITICAL ACCURACY & SPECIFICATION VARIANT RULES:
       1. ONLY return pricing and stock status for the EXACT technical specifications (specifically matching RAM capacity like 8GB/12GB/16GB, storage capacity like 128GB/256GB/512GB, and generation/processor like M2/M3/M4) requested or fitting closest to the optional budget: "${budgetLimit || 'N/A'}".
@@ -2024,6 +2111,16 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
               label = "Buy on Reliance Digital";
               rawUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
             }
+          } else if (category === 'automotive') {
+            if (platformLower.includes("myntra") || platformLower.includes("croma")) {
+              platform = "Amazon";
+              label = "Buy on Amazon India";
+              rawUrl = `https://www.amazon.in/s?k=${encodedProdName}`;
+            } else if (platformLower.includes("ajio") || platformLower.includes("reliance")) {
+              platform = "Flipkart";
+              label = "Buy on Flipkart";
+              rawUrl = `https://www.flipkart.com/search?q=${encodedProdName}`;
+            }
           }
           
           const finalPlatformLower = platform.toLowerCase();
@@ -2095,6 +2192,47 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.994 },
             { name: "Croma", label: "Buy on Croma Store", path: `https://www.croma.com/search/?text=${encodedPlusQueryForSearch}`, pct: 1.006 },
             { name: "Reliance Digital", label: "Buy on Reliance Digital", path: `https://www.reliancedigital.in/search?q=${encodedPlusQueryForSearch}`, pct: 1.002 }
+          ];
+        } else if (category === 'automotive') {
+          // Identify brand to set the brand store URL and name dynamically
+          const prodLower = prodName.toLowerCase();
+          let brandName = "Official Brand Store";
+          let brandUrl = `https://www.google.com/search?q=${encodedQueryForSearch}+official+website`;
+          
+          if (prodLower.includes("tata")) {
+            brandName = "Tata Motors";
+            brandUrl = "https://www.tatamotors.com";
+          } else if (prodLower.includes("mahindra")) {
+            brandName = "Mahindra Auto";
+            brandUrl = "https://auto.mahindra.com";
+          } else if (prodLower.includes("hyundai")) {
+            brandName = "Hyundai India";
+            brandUrl = "https://www.hyundai.com/in";
+          } else if (prodLower.includes("maruti") || prodLower.includes("suzuki")) {
+            brandName = "Maruti Suzuki";
+            brandUrl = "https://www.marutisuzuki.com";
+          } else if (prodLower.includes("honda")) {
+            brandName = "Honda India";
+            brandUrl = "https://www.hondacarindia.com";
+          } else if (prodLower.includes("ather")) {
+            brandName = "Ather Energy";
+            brandUrl = "https://www.atherenergy.com";
+          } else if (prodLower.includes("ola")) {
+            brandName = "Ola Electric";
+            brandUrl = "https://www.olaelectric.com";
+          } else if (prodLower.includes("royal enfield")) {
+            brandName = "Royal Enfield";
+            brandUrl = "https://www.royalenfield.com";
+          } else if (prodLower.includes("yamaha")) {
+            brandName = "Yamaha India";
+            brandUrl = "https://www.yamaha-motor-india.com";
+          }
+          
+          standardPlatforms = [
+            { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
+            { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.990 },
+            { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 },
+            { name: "Google Shopping", label: "Google Product Listings", path: `https://www.google.com/search?q=${encodedQueryForSearch}&tbm=shop`, pct: 1.010 }
           ];
         } else {
           standardPlatforms = [
