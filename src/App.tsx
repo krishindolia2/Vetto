@@ -473,6 +473,7 @@ export default function App() {
         history,
         [],
         (partial) => {
+          setLoading(false);
           setResult(prev => ({
             ...(prev || {}),
             ...partial,
@@ -1038,6 +1039,7 @@ export default function App() {
         history,
         base64Images,
         (partial) => {
+          setLoading(false);
           setResult(prev => ({
             ...(prev || {}),
             ...partial,
