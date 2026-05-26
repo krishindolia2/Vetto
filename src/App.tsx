@@ -475,12 +475,27 @@ export default function App() {
         [],
         (partial) => {
           setLoading(false);
-          setResult(prev => ({
-            ...(prev || {}),
-            ...partial,
-            id: (prev as any)?.id || 'temp',
-            timestamp: (prev as any)?.timestamp || Date.now(),
-          }) as any);
+          setResult(prev => {
+            const merged = { ...(prev || {}), ...partial } as any;
+            merged.pros = merged.pros || [];
+            merged.cons = merged.cons || [];
+            merged.features = merged.features || [];
+            if (!merged.priceIntegrity) merged.priceIntegrity = {};
+            if (!merged.priceIntegrity.procurementLinks) merged.priceIntegrity.procurementLinks = [];
+            if (!merged.priceIntegrity.priceHistory) merged.priceIntegrity.priceHistory = [];
+            if (!merged.socialAudit) merged.socialAudit = { integrityAudit: {} };
+            if (!merged.socialAudit.integrityAudit) merged.socialAudit.integrityAudit = {};
+            if (!merged.platformWarShield) merged.platformWarShield = {};
+            if (!merged.vettoContrast) merged.vettoContrast = {};
+            if (!merged.strategicRoadmap) merged.strategicRoadmap = {};
+            if (!merged.communityPulse) merged.communityPulse = {};
+            if (!merged.lifecyclePhase) merged.lifecyclePhase = {};
+            return {
+              ...merged,
+              id: (prev as any)?.id || 'temp',
+              timestamp: (prev as any)?.timestamp || Date.now(),
+            };
+          });
         }
       );
       setLastAuditTime(Date.now());
@@ -1042,12 +1057,27 @@ export default function App() {
         base64Images,
         (partial) => {
           setLoading(false);
-          setResult(prev => ({
-            ...(prev || {}),
-            ...partial,
-            id: (prev as any)?.id || 'temp',
-            timestamp: (prev as any)?.timestamp || Date.now(),
-          }) as any);
+          setResult(prev => {
+            const merged = { ...(prev || {}), ...partial } as any;
+            merged.pros = merged.pros || [];
+            merged.cons = merged.cons || [];
+            merged.features = merged.features || [];
+            if (!merged.priceIntegrity) merged.priceIntegrity = {};
+            if (!merged.priceIntegrity.procurementLinks) merged.priceIntegrity.procurementLinks = [];
+            if (!merged.priceIntegrity.priceHistory) merged.priceIntegrity.priceHistory = [];
+            if (!merged.socialAudit) merged.socialAudit = { integrityAudit: {} };
+            if (!merged.socialAudit.integrityAudit) merged.socialAudit.integrityAudit = {};
+            if (!merged.platformWarShield) merged.platformWarShield = {};
+            if (!merged.vettoContrast) merged.vettoContrast = {};
+            if (!merged.strategicRoadmap) merged.strategicRoadmap = {};
+            if (!merged.communityPulse) merged.communityPulse = {};
+            if (!merged.lifecyclePhase) merged.lifecyclePhase = {};
+            return {
+              ...merged,
+              id: (prev as any)?.id || 'temp',
+              timestamp: (prev as any)?.timestamp || Date.now(),
+            };
+          });
         }
       );
       setLastAuditTime(Date.now());
