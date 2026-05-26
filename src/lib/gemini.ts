@@ -201,7 +201,9 @@ export async function getRecommendation(
       const isNetworkError = error.message?.includes("fetch") || 
                              error.message?.includes("NetworkError") || 
                              error.message?.includes("Failed to fetch") ||
-                             error.message?.includes("network");
+                             error.message?.includes("network") ||
+                             error.message?.includes("JSON") ||
+                             error.name === "SyntaxError";
 
       if (isNetworkError && attempt < maxRetries - 1) {
         const jitter = Math.random() * 800;

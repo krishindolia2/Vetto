@@ -84,7 +84,7 @@ service cloud.firestore {
                     && incoming().userId == request.auth.uid
                     && incoming().timestamp == request.time;
       
-      allow update: if isSignedIn()
+      allow update: if isSignedIn() && isVerified()
                     && incoming().diff(existing()).affectedKeys().hasOnly(['likes'])
                     && incoming().likes == (existing().get('likes', 0) + 1);
       
@@ -107,7 +107,7 @@ service cloud.firestore {
     }
 
     match /waitlist/{entryId} {
-      allow get: if isAdmin() || (isValidId(entryId)); // Allow anyone to check existence/rank by ID safely (PII is minimal)
+      allow get: if isAdmin(); 
       allow list: if isAdmin();
       allow create: if isServer() || isAdmin();
     }
@@ -121,7 +121,7 @@ service cloud.firestore {
     match /audit_feedback/{feedbackId} {
       allow read: if true;
       allow list: if isAdmin();
-      allow create: if isSignedIn()
+      allow create: if isSignedIn() && isVerified()
                     && isValidId(feedbackId) 
                     && incoming().keys().hasAll(['recId', 'accuracyScore', 'timestamp'])
                     && incoming().accuracyScore >= 1 && incoming().accuracyScore <= 5
@@ -130,7 +130,7 @@ service cloud.firestore {
 
     match /hotline/{messageId} {
       allow read, list: if isAdmin();
-      allow create: if isSignedIn()
+      allow create: if isSignedIn() && isVerified()
                     && isValidId(messageId)
                     && (incoming().keys().hasAll(['email', 'message', 'timestamp']))
                     && incoming().email is string && incoming().email.size() <= 100

@@ -54,6 +54,33 @@
   @apply text-[10px] sm:text-xs font-bold uppercase tracking-[0.35em] text-zinc-500 mb-6 flex items-center gap-3 font-mono;
 }
 
+/* MasterClass Theme Overrides */
+@layer utilities {
+  .bg-white { @apply bg-[#09090b] border border-white/5 !important; }
+  .bg-slate-50 { @apply bg-[#18181b]/40 !important; }
+  .bg-slate-100 { @apply bg-[#27272a]/40 !important; }
+  .bg-slate-900 { @apply bg-[#030303] !important; }
+  .bg-slate-950 { @apply bg-[#000000] !important; }
+  
+  .text-slate-900, .text-slate-950 { @apply text-zinc-100 !important; }
+  .text-slate-800 { @apply text-zinc-200 !important; }
+  .text-slate-700 { @apply text-zinc-300 !important; }
+  .text-slate-600 { @apply text-zinc-400 !important; }
+  .text-slate-500 { @apply text-zinc-500 !important; }
+  .text-slate-400 { @apply text-zinc-600 !important; }
+  .text-slate-300 { @apply text-zinc-700 !important; }
+  
+  .border-slate-100 { @apply border-white/5 !important; }
+  .border-slate-150 { @apply border-white/5 !important; }
+  .border-slate-200 { @apply border-white/10 !important; }
+  .border-slate-800 { @apply border-white/10 !important; }
+  .border-slate-900 { @apply border-white/10 !important; }
+  
+  .hover\:bg-slate-50:hover { @apply bg-[#27272a]/40 !important; }
+  .hover\:bg-white:hover { @apply bg-[#18181b] !important; }
+  .hover\:bg-slate-100:hover { @apply bg-[#27272a]/60 !important; }
+}
+
 /* Custom Premium Thin Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -83,8 +110,8 @@ button {
 
 /* Smooth ambient animate pulses */
 @keyframes pulse-slow {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(1.05); }
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(1.05); }
 }
 
 .ambient-glow {

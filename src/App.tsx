@@ -4333,54 +4333,60 @@ export default function App() {
 
               {/* Simple Pros & Cons */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="glass-panel p-10 space-y-8 group hover:bg-slate-50/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-green-50 border border-green-100 flex items-center justify-center">
-                      <ThumbsUp className="w-5 h-5 text-green-600" />
+                <div className="glass-panel p-10 space-y-8 group hover:bg-zinc-900/60 transition-colors border-white/5 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
+                    <ThumbsUp className="w-32 h-32 text-green-500" />
+                  </div>
+                  <div className="flex items-center gap-4 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                      <ThumbsUp className="w-5 h-5 text-green-400" />
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
                         Good News
                       </span>
-                      <h3 className="text-xl font-black text-slate-950">
+                      <h3 className="text-xl font-black text-white">
                         Ground Truth Wins
                       </h3>
                     </div>
                   </div>
-                  <ul className="space-y-4">
+                  <ul className="space-y-4 relative z-10">
                     {result.pros.map((pro, i) => (
                       <li
                         key={i}
-                        className="flex gap-4 text-sm font-medium text-slate-600 leading-relaxed"
+                        className="flex gap-4 text-sm font-medium text-zinc-300 leading-relaxed"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
                         {pro}
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="glass-panel p-10 space-y-8 group hover:bg-slate-50/50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
-                      <ThumbsDown className="w-5 h-5 text-red-600" />
+                <div className="glass-panel p-10 space-y-8 group hover:bg-zinc-900/60 transition-colors border-white/5 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
+                    <ThumbsDown className="w-32 h-32 text-red-500" />
+                  </div>
+                  <div className="flex items-center gap-4 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                      <ThumbsDown className="w-5 h-5 text-red-400" />
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
                         Fair Warning
                       </span>
-                      <h3 className="text-xl font-black text-slate-950">
+                      <h3 className="text-xl font-black text-white">
                         Potential Risks
                       </h3>
                     </div>
                   </div>
-                  <ul className="space-y-4">
+                  <ul className="space-y-4 relative z-10">
                     {result.cons.map((con, i) => (
                       <li
                         key={i}
-                        className="flex gap-4 text-sm font-medium text-slate-600 leading-relaxed"
+                        className="flex gap-4 text-sm font-medium text-zinc-300 leading-relaxed"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(248,113,113,0.5)]" />
                         {con}
                       </li>
                     ))}
@@ -4391,11 +4397,11 @@ export default function App() {
               {/* Key Features Analysis */}
               <div className="space-y-10">
                 <div className="flex items-center justify-between px-4">
-                  <span className="section-heading mb-0">
+                  <span className="section-heading mb-0 text-zinc-500">
                     Feature Quality Check
                   </span>
-                  <div className="px-4 py-2 bg-slate-950 text-white rounded-full flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent-blue animate-pulse" />
+                  <div className="px-4 py-2 bg-zinc-900 border border-white/5 text-white rounded-full flex items-center gap-2 shadow-inner">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)] animate-pulse" />
                     <span className="text-[10px] font-mono font-bold tracking-widest">
                       Checking Every Detail
                     </span>
@@ -4406,61 +4412,62 @@ export default function App() {
                   {result.features.map((feature, i) => (
                     <motion.div
                       key={i}
-                      whileHover={{ y: -5 }}
-                      className="glass-panel p-8 flex flex-col justify-between h-full"
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className="glass-panel p-8 flex flex-col justify-between h-full border border-white/5 hover:border-white/10 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] transition-all bg-zinc-950/40"
                     >
                       <div className="space-y-6">
                         <div className="space-y-4">
                           <div className="flex items-center gap-3">
                             <div
                               className={cn(
-                                "w-8 h-8 rounded-xl flex items-center justify-center",
+                                "w-10 h-10 rounded-xl flex items-center justify-center border",
                                 feature.score > 80
-                                  ? "bg-green-50"
+                                  ? "bg-green-500/10 border-green-500/20 shadow-[inset_0_0_12px_rgba(34,197,94,0.1)]"
                                   : feature.score > 50
-                                    ? "bg-amber-50"
-                                    : "bg-red-50",
+                                    ? "bg-amber-500/10 border-amber-500/20 shadow-[inset_0_0_12px_rgba(245,158,11,0.1)]"
+                                    : "bg-red-500/10 border-red-500/20 shadow-[inset_0_0_12px_rgba(239,68,68,0.1)]",
                               )}
                             >
                               <Zap
                                 className={cn(
-                                  "w-4 h-4",
+                                  "w-5 h-5",
                                   feature.score > 80
-                                    ? "text-green-600"
+                                    ? "text-green-400"
                                     : feature.score > 50
-                                      ? "text-amber-600"
-                                      : "text-red-600",
+                                      ? "text-amber-400"
+                                      : "text-red-400",
                                 )}
                               />
                             </div>
-                            <span className="text-sm font-black text-slate-950 truncate">
+                            <span className="text-sm font-black text-white truncate tracking-wide">
                               {feature.name}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                          <p className="text-xs text-zinc-400 leading-relaxed font-medium">
                             {feature.details}
                           </p>
                         </div>
                       </div>
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-6">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">
+                      <div className="pt-5 border-t border-white/5 flex items-center justify-between mt-6">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">
                           Quality Level
                         </span>
-                        <div className="flex items-center gap-2">
-                          <div className="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="flex items-center gap-3">
+                          <div className="h-1.5 w-16 bg-zinc-800 rounded-full overflow-hidden shadow-inner">
                             <div
                               className={cn(
                                 "h-full rounded-full transition-all duration-1000",
                                 feature.score > 80
-                                  ? "bg-green-500"
+                                  ? "bg-gradient-to-r from-green-500 to-green-400 shadow-[0_0_10px_rgba(74,222,128,0.6)]"
                                   : feature.score > 50
-                                    ? "bg-amber-500"
-                                    : "bg-red-500",
+                                    ? "bg-gradient-to-r from-amber-500 to-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]"
+                                    : "bg-gradient-to-r from-red-500 to-red-400 shadow-[0_0_10px_rgba(248,113,113,0.6)]",
                               )}
                               style={{ width: `${feature.score}%` }}
                             />
                           </div>
-                          <span className="text-[10px] font-black text-slate-950">
+                          <span className="text-[11px] font-black text-white font-mono">
                             {feature.score}%
                           </span>
                         </div>
@@ -4471,67 +4478,69 @@ export default function App() {
               </div>
 
               {/* Smart Swap: Better Alternatives (if any) */}
+              {/* Smart Swap: Better Alternatives (if any) */}
               {result.vettoContrast && (
-                <div className="glass-panel p-8 md:p-16 relative overflow-hidden group/swap">
-                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover/swap:scale-110 transition-transform duration-1000">
-                    <RefreshCw className="w-64 h-64 text-slate-950" />
+                <div className="glass-panel p-8 md:p-16 relative overflow-hidden group/swap border border-amber-500/10">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-50" />
+                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover/swap:scale-110 group-hover/swap:rotate-12 transition-all duration-1000">
+                    <RefreshCw className="w-64 h-64 text-amber-500" />
                   </div>
 
                   <div className="flex flex-col lg:flex-row gap-16 relative z-10">
                     <div className="space-y-8 flex-1">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                          <RefreshCw className="w-5 h-5 text-white animate-spin-slow" />
+                        <div className="w-14 h-14 rounded-2xl bg-amber-500 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+                          <RefreshCw className="w-6 h-6 text-white animate-spin-slow" />
                         </div>
-                        <div className="space-y-0.5">
-                          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-black uppercase tracking-[0.5em] text-amber-500/70">
                             Smarter Alternative
                           </span>
-                          <h3 className="text-2xl md:text-3xl font-black text-slate-950 tracking-tighter italic">
+                          <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter font-display">
                             Comparison Arena
                           </h3>
                         </div>
                       </div>
 
                       <div className="space-y-6">
-                        <p className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">
+                        <p className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none font-display">
                           Upgrade to:{" "}
-                          <span className="text-amber-600 underline decoration-amber-200 underline-offset-8 decoration-4 truncate block mt-2">
+                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200 block mt-3 drop-shadow-sm">
                             {result.vettoContrast.alternativeName}
                           </span>
                         </p>
-                        <p className="text-lg md:text-xl font-medium text-slate-600 leading-relaxed italic border-l-4 border-slate-100 pl-8">
+                        <p className="text-lg md:text-xl font-medium text-zinc-300 leading-relaxed italic border-l-4 border-amber-500/30 pl-8">
                           &ldquo;{result.vettoContrast.whyContrast}&rdquo;
                         </p>
                       </div>
 
                       {/* Interactive Side-by-Side Scorecard */}
-                      <div className="bg-slate-50/50 rounded-3xl border border-slate-150 p-6 space-y-4">
-                        <span className="text-[10px] icon-span font-black text-slate-400 uppercase tracking-widest block font-mono">
+                      <div className="bg-zinc-950/60 rounded-3xl border border-white/10 p-8 space-y-5 shadow-2xl backdrop-blur-md">
+                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block font-mono">
                           Side-by-Side Scorecard
                         </span>
 
-                        <div className="grid grid-cols-3 gap-4 text-center items-center py-2 border-b border-slate-200/60">
-                          <span className="text-[9px] font-black text-slate-400 uppercase text-left">
+                        <div className="grid grid-cols-3 gap-4 text-center items-center py-3 border-b border-white/5">
+                          <span className="text-[9px] font-black text-zinc-500 uppercase text-left">
                             Metrics
                           </span>
-                          <span className="text-xs font-black text-slate-500 truncate">
+                          <span className="text-xs font-black text-zinc-400 truncate">
                             {result.productName}
                           </span>
-                          <span className="text-xs font-black text-amber-600 truncate">
+                          <span className="text-xs font-black text-amber-400 truncate">
                             {result.vettoContrast.alternativeName}
                           </span>
                         </div>
 
                         {/* Row 1: PVI */}
-                        <div className="grid grid-cols-3 gap-4 items-center py-3 border-b border-slate-200/40">
-                          <span className="text-[10px] font-bold text-slate-600 font-mono">
+                        <div className="grid grid-cols-3 gap-4 items-center py-4 border-b border-white/5">
+                          <span className="text-[10px] font-bold text-zinc-400 font-mono">
                             Value Score
                           </span>
-                          <span className="text-sm font-black text-red-500 text-center">
+                          <span className="text-sm font-black text-red-400 text-center drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]">
                             {result.paisaVasoolIndex} / 100
                           </span>
-                          <span className="text-sm font-black text-green-600 text-center font-mono">
+                          <span className="text-sm font-black text-green-400 text-center font-mono drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]">
                             {Math.min(
                               100,
                               result.paisaVasoolIndex +
@@ -4542,37 +4551,37 @@ export default function App() {
                         </div>
 
                         {/* Row 2: Status Penalty Tax */}
-                        <div className="grid grid-cols-3 gap-4 items-center py-3 border-b border-slate-200/40">
-                          <span className="text-[10px] font-bold text-slate-600 font-mono">
+                        <div className="grid grid-cols-3 gap-4 items-center py-4 border-b border-white/5">
+                          <span className="text-[10px] font-bold text-zinc-400 font-mono">
                             Brand Surcharge
                           </span>
-                          <span className="text-sm font-black text-red-500 text-center">
+                          <span className="text-sm font-black text-red-400 text-center">
                             ₹{result.statusTax.toLocaleString()}
                           </span>
-                          <span className="text-sm font-black text-green-600 text-center">
-                            ₹0{" "}
-                            <span className="text-[9px] text-green-500/60 font-sans block">
+                          <span className="text-sm font-black text-green-400 text-center flex flex-col items-center">
+                            <span>₹0</span>
+                            <span className="text-[9px] text-green-500/60 font-sans mt-0.5">
                               (Pure Utility)
                             </span>
                           </span>
                         </div>
 
                         {/* Row 3: Target Price */}
-                        <div className="grid grid-cols-3 gap-4 items-center py-3">
-                          <span className="text-[10px] font-bold text-slate-600 font-mono">
+                        <div className="grid grid-cols-3 gap-4 items-center py-4">
+                          <span className="text-[10px] font-bold text-zinc-400 font-mono">
                             Cost Target
                           </span>
-                          <span className="text-sm font-black text-slate-400 text-center">
+                          <span className="text-sm font-black text-zinc-500 text-center line-through decoration-red-500/50">
                             ₹{getNumericPrice(result).toLocaleString()}
                           </span>
-                          <span className="text-sm font-black text-slate-950 text-center font-mono">
+                          <span className="text-sm font-black text-white text-center font-mono bg-white/5 py-1 rounded-md border border-white/10">
                             {result.vettoContrast.fairPriceTarget}
                           </span>
                         </div>
                       </div>
 
                       {/* Direct Live Swap Button */}
-                      <div className="space-y-2">
+                      <div className="space-y-3 pt-4">
                         <button
                           type="button"
                           onClick={() =>
@@ -4580,12 +4589,12 @@ export default function App() {
                               result.vettoContrast.alternativeName,
                             )
                           }
-                          className="w-full bg-slate-950 hover:bg-slate-900 border border-slate-900 text-white p-5 rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
+                          className="w-full bg-white hover:bg-zinc-200 text-black p-6 rounded-2xl font-black uppercase text-[11px] tracking-widest flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:scale-[1.02] active:scale-[0.98]"
                         >
-                          <RefreshCw className="w-4 h-4 animate-spin-slow text-amber-400" />
+                          <RefreshCw className="w-5 h-5 animate-spin-slow text-amber-500" />
                           Compare & Check Alternate Instantly
                         </button>
-                        <p className="text-[9px] font-mono text-center text-slate-400 uppercase tracking-widest">
+                        <p className="text-[9px] font-mono text-center text-zinc-500 uppercase tracking-widest">
                           Clicking immediately re-routes Vetto to check this
                           recommended alternative.
                         </p>
@@ -4593,14 +4602,15 @@ export default function App() {
                     </div>
 
                     <div className="w-full lg:w-96 shrink-0">
-                      <div className="p-10 bg-slate-50 border border-slate-100 rounded-[2.5rem] space-y-8 flex flex-col h-full hover:bg-white transition-colors">
-                        <div className="flex items-center gap-3">
-                          <ShieldCheck className="w-4 h-4 text-slate-300" />
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <div className="p-10 bg-zinc-950/80 border border-white/5 rounded-[2.5rem] space-y-8 flex flex-col h-full shadow-2xl relative overflow-hidden group/tip">
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent opacity-0 group-hover/tip:opacity-100 transition-opacity duration-500" />
+                        <div className="flex items-center gap-3 relative z-10">
+                          <ShieldCheck className="w-5 h-5 text-zinc-500" />
+                          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
                             Expert Tip
                           </span>
                         </div>
-                        <p className="text-sm font-bold text-slate-600 leading-relaxed italic">
+                        <p className="text-sm font-medium text-zinc-300 leading-relaxed italic relative z-10">
                           &ldquo;{result.vettoContrast.procurementGuidance}
                           &rdquo;
                         </p>
@@ -4611,7 +4621,7 @@ export default function App() {
               )}
 
               {/* Final Plan */}
-              <div className="bg-slate-950 text-white rounded-[2.5rem] p-8 md:p-16 space-y-16 overflow-hidden relative">
+              <div className="bg-zinc-950 text-white rounded-[2.5rem] p-8 md:p-16 space-y-16 overflow-hidden relative border border-white/5 shadow-2xl">
                 <motion.div
                   animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }}
                   transition={{ duration: 10, repeat: Infinity }}
@@ -4627,14 +4637,14 @@ export default function App() {
                         Our Final Advice on {result.productName}
                       </span>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-accent-blue animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
                   </div>
 
-                  <h2 className="text-3xl md:text-6xl font-black leading-[1.1] tracking-tighter max-w-4xl italic">
-                    &ldquo;{result.whyBest}&rdquo;
+                  <h2 className="text-3xl md:text-6xl font-black leading-[1.05] tracking-tighter max-w-4xl font-display">
+                    &ldquo;<span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">{result.whyBest}</span>&rdquo;
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-white/10">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-white/5">
                     {[
                       {
                         label: "When to Buy",
@@ -4654,14 +4664,14 @@ export default function App() {
                     ].map((step, i) => (
                       <div key={i} className="space-y-6 group/step">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover/step:bg-white transition-colors">
-                            <step.icon className="w-4 h-4 text-white/40 group-hover/step:text-slate-950" />
+                          <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center group-hover/step:border-white/30 transition-colors shadow-inner">
+                            <step.icon className="w-5 h-5 text-zinc-500 group-hover/step:text-white transition-colors" />
                           </div>
-                          <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">
+                          <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] font-mono">
                             {step.label}
                           </span>
                         </div>
-                        <p className="text-lg md:text-xl font-bold text-white/80 leading-snug">
+                        <p className="text-lg md:text-xl font-bold text-white/90 leading-snug">
                           {step.val}
                         </p>
                       </div>
@@ -4669,26 +4679,26 @@ export default function App() {
                   </div>
 
                   <div className="pt-16 flex flex-col lg:flex-row gap-12 items-stretch">
-                    <div className="p-10 bg-white shadow-2xl rounded-[2.5rem] text-slate-950 flex-1 hover:-translate-y-1 transition-transform">
-                      <span className="text-[11px] font-black text-slate-300 uppercase block mb-4 tracking-widest">
+                    <div className="p-10 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] text-black flex-1 hover:-translate-y-1 transition-transform border border-white/20 group/rec">
+                      <span className="text-[11px] font-black text-zinc-400 uppercase block mb-4 tracking-widest">
                         Personalized Recommendation
                       </span>
-                      <p className="text-lg font-bold leading-relaxed italic">
+                      <p className="text-xl md:text-2xl font-bold leading-relaxed font-serif italic text-zinc-900 group-hover/rec:text-black transition-colors">
                         &ldquo;{result.personalizedInsight}&rdquo;
                       </p>
-                      <div className="mt-8 pt-8 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                      <div className="mt-8 pt-8 border-t border-zinc-200 flex items-center justify-between">
+                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">
                           {result.postOutputHook}
                         </span>
-                        <Fingerprint className="w-5 h-5 text-slate-200" />
+                        <Fingerprint className="w-5 h-5 text-zinc-300" />
                       </div>
                     </div>
-                    <div className="lg:w-80 flex flex-col justify-center space-y-6">
-                      <p className="text-lg font-black text-white/90 leading-tight italic tracking-tight">
-                        {result.socialHook}
+                    <div className="lg:w-80 flex flex-col justify-center space-y-6 p-8 bg-zinc-900/40 border border-white/5 rounded-[2.5rem] backdrop-blur-sm">
+                      <p className="text-lg font-black text-white/90 leading-tight italic tracking-tight font-serif">
+                        "{result.socialHook}"
                       </p>
-                      <div className="h-px bg-white/10 w-24" />
-                      <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">
+                      <div className="h-px bg-white/10 w-full" />
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">
                         Vetto Shopping Guard
                       </p>
                     </div>
@@ -4698,16 +4708,16 @@ export default function App() {
 
               {/* Final Conclusion & Action Buttons */}
               <div className="space-y-8 pt-12">
-                <div className="bg-slate-900 text-white rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:scale-110 transition-transform duration-1000">
+                <div className="bg-zinc-900 text-white rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group border border-white/5">
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-1000">
                     <ShieldCheck className="w-48 h-48 text-white" />
                   </div>
 
-                  <div className="relative z-10 space-y-6">
-                    <div className="space-y-2">
-                      <h3 className="text-xl md:text-2xl font-black tracking-tight">
+                  <div className="relative z-10 space-y-8">
+                    <div className="space-y-3">
+                      <h3 className="text-2xl md:text-3xl font-black tracking-tight font-display">
                         Our Recommendation for{" "}
-                        <span className="text-amber-400 font-serif italic font-medium">
+                        <span className="text-accent font-serif italic font-medium drop-shadow-sm">
                           {result.productName}
                         </span>
                       </h3>
@@ -4869,32 +4879,54 @@ export default function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="h-full min-h-[400px] md:min-h-[600px] flex flex-col items-center justify-center text-center p-8 md:p-20"
+              className="h-full min-h-[500px] md:min-h-[700px] flex flex-col items-center justify-center text-center p-8 md:p-24 relative overflow-hidden"
             >
-              <div className="relative mb-16">
-                <div className="w-40 h-40 rounded-full glass-panel flex items-center justify-center relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute -inset-1 bg-accent/20 blur opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <Cpu className="w-16 h-16 text-accent/40 group-hover:text-accent transition-all duration-1000 rotate-12 group-hover:rotate-0" />
-                </div>
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 glass-panel rounded-full border border-accent/20">
-                  <span className="font-mono text-[8px] uppercase tracking-[0.4em] text-accent font-bold">
-                    System Ready
+              {/* Background ambient lighting */}
+              <div className="ambient-glow" />
+              
+              <div className="relative mb-20">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="w-48 h-48 rounded-full glass-panel flex items-center justify-center relative overflow-hidden group shadow-2xl"
+                >
+                  <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  <div className="absolute -inset-1 bg-accent/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  <Cpu className="w-20 h-20 text-accent/30 group-hover:text-accent transition-all duration-1000 rotate-12 group-hover:rotate-0 drop-shadow-[0_0_15px_rgba(229,193,88,0.3)]" />
+                </motion.div>
+                <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-6 py-2 glass-panel rounded-full border border-accent/20 backdrop-blur-xl">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent font-black">
+                    Vetto Engine Live
                   </span>
                 </div>
               </div>
 
-              <h3 className="text-slate-900 font-bold text-4xl sm:text-6xl mb-8 leading-[1.1] tracking-tight max-w-2xl px-4 md:px-0">
+              <motion.h3 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.8 }}
+                className="text-white font-display font-black text-5xl sm:text-7xl lg:text-[5.5rem] mb-10 leading-[1.05] tracking-tighter max-w-4xl px-4 md:px-0 drop-shadow-sm"
+              >
                 Filter the noise. <br />
-                <span className="text-accent">Find Real Value.</span>
-              </h3>
+                <span className="text-gradient">Find Real Value.</span>
+              </motion.h3>
 
-              <p className="max-w-xl text-lg sm:text-2xl font-serif italic text-slate-400 leading-relaxed mb-12 md:mb-16 px-4 md:px-0">
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className="max-w-2xl text-xl sm:text-3xl font-serif italic text-zinc-400 leading-relaxed mb-16 md:mb-24 px-4 md:px-0 font-medium"
+              >
                 Bypass modern marketing traps. We translate complex specs into
                 the singular truth of savings.
-              </p>
+              </motion.p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl pb-12">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl pb-16 relative z-10"
+              >
                 {[
                   {
                     icon: Cpu,
@@ -4918,49 +4950,52 @@ export default function App() {
                     icon: ShieldCheck,
                     title: "Financial Integrity",
                     tag: "Savings Advisor",
-                    desc: "Unmasking the hidden 'Status Taxes' and 'Marketing Traps' that erode household savings. Data-backed binary buy/sell choices.",
+                    desc: "Unmasking the hidden 'Status Taxes' and 'Marketing Traps' that erode household savings.",
                   },
-                ].map((node) => (
-                  <div
+                ].map((node, i) => (
+                  <motion.div
                     key={node.title}
-                    className="p-8 glass-card transition-all group hover:bg-slate-50 relative overflow-hidden text-left bg-white border-slate-100"
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="p-8 glass-card transition-all group hover:bg-zinc-900/60 relative overflow-hidden text-left bg-zinc-950/40 border-white/5 shadow-xl hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between min-h-[280px]"
                   >
-                    <node.icon className="absolute -right-6 -bottom-6 w-32 h-32 text-slate-100 group-hover:text-slate-200 transition-all duration-700" />
-                    <div className="relative z-10 space-y-4">
+                    <node.icon className="absolute -right-8 -bottom-8 w-40 h-40 text-white/5 group-hover:text-accent/10 transition-all duration-700 group-hover:scale-110 group-hover:rotate-6" />
+                    <div className="relative z-10 space-y-6">
                       <div className="flex items-center justify-between">
-                        <node.icon className="w-5 h-5 text-accent opacity-60" />
-                        <span className="font-mono text-[7px] font-black uppercase tracking-[0.4em] border border-slate-200 px-2 py-0.5 text-slate-400 group-hover:text-accent group-hover:border-accent/20 transition-colors">
+                        <node.icon className="w-6 h-6 text-accent/60 group-hover:text-accent transition-colors" />
+                        <span className="font-mono text-[8px] font-black uppercase tracking-[0.4em] border border-white/10 rounded-full px-3 py-1 text-zinc-500 group-hover:text-accent group-hover:border-accent/30 transition-colors backdrop-blur-sm">
                           {node.tag}
                         </span>
                       </div>
                       <div>
-                        <h4 className="text-[12px] font-black text-slate-900 mb-2 uppercase tracking-widest">
+                        <h4 className="text-sm font-black text-white mb-3 uppercase tracking-widest leading-tight">
                           {node.title}
                         </h4>
-                        <p className="text-sm font-medium text-slate-500 leading-relaxed group-hover:text-slate-700 transition-colors">
+                        <p className="text-xs font-medium text-zinc-400 leading-relaxed group-hover:text-zinc-300 transition-colors">
                           {node.desc}
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
-              <div className="w-full max-w-lg pt-16 border-t border-slate-100 grid grid-cols-2 gap-8 opacity-60">
-                <div className="text-left space-y-2">
-                  <div className="font-mono text-[8px] text-accent tracking-[0.4em] uppercase font-black">
+              <div className="w-full max-w-lg pt-16 border-t border-white/5 grid grid-cols-2 gap-8 opacity-80">
+                <div className="text-left space-y-3">
+                  <div className="font-mono text-[9px] text-accent tracking-[0.4em] uppercase font-black flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                     Status
                   </div>
-                  <div className="font-mono text-[10px] text-slate-900">
+                  <div className="font-mono text-[11px] text-zinc-300 font-medium">
                     99.9% Logic Stability
                   </div>
                 </div>
-                <div className="text-right space-y-2">
-                  <div className="font-mono text-[8px] text-accent tracking-[0.4em] uppercase font-black">
+                <div className="text-right space-y-3">
+                  <div className="font-mono text-[9px] text-accent tracking-[0.4em] uppercase font-black">
                     Community
                   </div>
-                  <div className="font-mono text-[10px] text-slate-900">
-                    100+ Active Members
+                  <div className="font-mono text-[11px] text-zinc-300 font-medium">
+                    1,400+ Data Points
                   </div>
                 </div>
               </div>
@@ -4968,24 +5003,27 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <footer className="bg-white border-t border-slate-100 py-24 mt-32">
-          <div className="max-w-7xl mx-auto px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-              <div className="space-y-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-slate-900 border-2 border-accent flex items-center justify-center p-2">
+        <footer className="bg-zinc-950 border-t border-white/5 py-32 mt-32 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-30" />
+          <div className="ambient-glow opacity-30 right-0 top-0 translate-x-1/2 -translate-y-1/2" />
+          
+          <div className="max-w-7xl mx-auto px-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
+              <div className="space-y-12">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center p-2.5 shadow-[inset_0_2px_10px_rgba(255,255,255,0.05)]">
                     <ShieldCheck className="w-full h-full text-accent" />
                   </div>
-                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+                  <h2 className="text-3xl font-black text-white uppercase tracking-tighter">
                     Vetto
                   </h2>
                 </div>
                 <div className="space-y-6">
-                  <h3 className="text-4xl md:text-5xl font-black text-slate-900 leading-[1.1] tracking-tighter">
+                  <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05] tracking-tighter font-display">
                     Stop overpaying for{" "}
-                    <span className="text-accent">marketing hype.</span>
+                    <span className="text-gradient">marketing hype.</span>
                   </h3>
-                  <p className="text-lg text-slate-500 font-medium max-w-lg leading-relaxed">
+                  <p className="text-lg md:text-xl text-zinc-400 font-medium max-w-lg leading-relaxed font-serif italic">
                     Every day, we are pushed to buy overpriced, low-quality
                     products backed by sponsored reviews. Vetto helps you bypass
                     the marketing premium to protect your hard-earned savings.
@@ -4993,29 +5031,29 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col md:items-end gap-10">
+              <div className="flex flex-col md:items-end gap-12">
                 <div className="grid grid-cols-2 gap-6 w-full md:w-auto">
-                  <div className="p-8 bg-slate-50 rounded-[2rem] text-center border border-slate-100 space-y-2">
-                    <div className="text-4xl font-black text-slate-900">0%</div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                  <div className="p-8 bg-zinc-900/40 rounded-[2rem] text-center border border-white/5 space-y-3 backdrop-blur-sm hover:bg-zinc-900/60 transition-colors">
+                    <div className="text-5xl font-black text-white font-display">0%</div>
+                    <div className="text-[10px] font-black text-accent uppercase tracking-[0.4em]">
                       Affiliate Bias
                     </div>
                   </div>
-                  <div className="p-8 bg-slate-50 rounded-[2rem] text-center border border-slate-100 space-y-2">
-                    <div className="text-4xl font-black text-slate-900">
+                  <div className="p-8 bg-zinc-900/40 rounded-[2rem] text-center border border-white/5 space-y-3 backdrop-blur-sm hover:bg-zinc-900/60 transition-colors">
+                    <div className="text-5xl font-black text-white font-display">
                       100%
                     </div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                    <div className="text-[10px] font-black text-accent uppercase tracking-[0.4em]">
                       Real Truth
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-2 text-center md:text-right">
-                  <p className="text-[11px] font-black text-slate-900 uppercase tracking-[0.4em]">
+                <div className="space-y-4 text-center md:text-right pt-8 border-t border-white/5 md:border-none md:pt-0 w-full md:w-auto">
+                  <p className="text-[11px] font-black text-zinc-300 uppercase tracking-[0.5em]">
                     Designed for 1.4 Billion Indians
                   </p>
-                  <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest leading-none">
+                  <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest leading-none">
                     © 2026 Vetto • Built to Protect.
                   </p>
                 </div>

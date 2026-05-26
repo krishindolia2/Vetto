@@ -768,7 +768,7 @@ function simplifyProductNameForSearch(name: string): string {
     /with\s+facetime/gi, /international\s+version/gi, /unlocked/gi, 
     /refurbished/gi, /renewed/gi, /with\s+free\s+[^&]+/gi, 
     /active\s+noise\s+cancelling/gi, /wireless\s+charging/gi,
-    /super\s+retina\s+xdr/gi, /display/gi, /5G/g, /4G/g, /LTE/gi
+    /super\s+retina\s+xdr/gi, /display/gi
   ];
   
   phrasesToRemove.forEach(p => {
@@ -1105,8 +1105,8 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-3.1-pro-preview",
-    "gemini-2.5-flash"
+    "gemini-2.5-flash",
+    "gemini-3.1-flash-lite"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1595,7 +1595,8 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
     const preFetchedPrices = await preFetchLivePricesAndLinks(parsedQuery, parsedBudget);
 
     let promptText = `CURRENT DATE: ${currentDate}
-Establish Strategic Audit for: ${parsedQuery || "Analyzed Visual Evidence"}
+Original User Query: "${query}"
+Establish Strategic Audit for Resolved Target: ${parsedQuery || "Analyzed Visual Evidence"}
 Target Capital: ${parsedBudget || 'Unlimited'}
 Strategic Context: ${useCase || 'General Deployment'}${historyText}`;
 
@@ -1655,11 +1656,17 @@ STRICT PRICING & SCORING PROTOCOLS:
     - In "priceIntegrity.procurementLinks", you MUST determine the realistic "stockStatus" of the product on each retailer platform (e.g. 'In Stock', 'Only 3 left', 'Out of Stock').
     - If the product is highly popular and selling fast, reflect true consumer dynamics by using tags like 'Only a few left' or 'Only 2 left' to give the user honest heads-up alerts. Defensively default to 'In Stock' if widely available.
 
+12. SMART QUERY RESOLUTION:
+    - You must directly address the specific nuance of the "Original User Query" in your final response.
+    - If the user asks a yes/no question like "is this product worth it?", your "aamAadmiSummary" and "finalDecision" must explicitly answer "Yes" or "No" based on your findings.
+    - If the user asks for "best product under 10k", acknowledge their specific request and frame the recommendation around why this is the best for that budget.
+    - Differentiate your tone and response structure based on the specific question asked in the Original User Query, rather than providing a generic product summary.
+
 TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are the user's smart elder brother. No technical jargon. Accuracy in pricing is our lifeblood. Ensure "Status Tax" feels like a real penalty for buying a badge.`;
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-3.1-pro-preview";
+    const modelToUse = "gemini-2.5-flash";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];
@@ -1851,20 +1858,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
                                      
           let forcedOos = false;
           if (isPlaceholderPrice) {
-            if (refPrice > 0 && !isNaN(refPrice)) {
-              let percentage = 1.0;
-              if (finalPlatformLower.includes("flipkart")) percentage = 0.985;
-              else if (finalPlatformLower.includes("ajio")) percentage = 0.975;
-              else if (finalPlatformLower.includes("myntra")) percentage = 1.012;
-              else if (finalPlatformLower.includes("croma")) percentage = 1.018;
-              else if (finalPlatformLower.includes("reliance")) percentage = 1.014;
-              else if (finalPlatformLower.includes("google")) percentage = 1.008;
-              
-              priceStr = formatIndianRetailPrice(refPrice, percentage);
-            } else {
-              priceStr = "Out of Stock";
-              forcedOos = true;
-            }
+            priceStr = "Out of Stock";
+            forcedOos = true;
           }
 
           if (forcedOos || /out of stock/i.test(priceStr) || /out of stock/i.test(link.stockStatus)) {
@@ -1955,41 +1950,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           isBestDeal: lowestPriceIdx !== -1 && idx === lowestPriceIdx
         }));
 
-        // Budget Guard: Safe-guard and scale down prices if the resolved lowest price exceeds user budget
-        const parsedBudgetAmount = parseInt(String(parsedBudget).replace(/[^\d]/g, ''));
-        if (!isNaN(parsedBudgetAmount) && parsedBudgetAmount > 100 && lowestPrice > parsedBudgetAmount && lowestPriceIdx !== -1) {
-          console.log(`[Budget Guard] Recommending product lowest price (₹${lowestPrice}) exceeds user budget (₹${parsedBudgetAmount}). Healing and scaling down comparison prices...`);
-          // Use 0.96 scaling factor of the budget to make sure prices sit comfortably inside (e.g. ₹28,800 instead of ₹30,000)
-          const scaleFactor = (parsedBudgetAmount * 0.96) / lowestPrice;
-          
-          healedLinks = healedLinks.map((link: any) => {
-            const curPrice = parseInt(link.price.replace(/[^\d]/g, ''));
-            if (!isNaN(curPrice)) {
-              const healedVal = Math.round(curPrice * scaleFactor);
-              return {
-                ...link,
-                price: `₹${healedVal.toLocaleString('en-IN')}`
-              };
-            }
-            return link;
-          });
-          
-          // Re-evaluate lowestPrice and bestDeal
-          lowestPrice = Infinity;
-          lowestPriceIdx = -1;
-          healedLinks.forEach((link: any, idx: number) => {
-            const numPrice = parseInt(link.price.replace(/[^\d]/g, ''));
-            if (!isNaN(numPrice) && numPrice < lowestPrice) {
-              lowestPrice = numPrice;
-              lowestPriceIdx = idx;
-            }
-          });
-          
-          healedLinks = healedLinks.map((link: any, idx: number) => ({
-            ...link,
-            isBestDeal: lowestPriceIdx !== -1 && idx === lowestPriceIdx
-          }));
-        }
+        // Removed fake budget scaling logic to preserve true platform prices
+
         
         auditData.priceIntegrity.procurementLinks = healedLinks;
         
@@ -2023,7 +1985,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           ? auditData.statusTax 
           : parseInt(String(auditData.statusTax || "").replace(/[^\d]/g, ''));
           
-        if (isNaN(currentSurchargeTax) || currentSurchargeTax <= 0 || currentSurchargeTax >= lowestPrice) {
+        if (isNaN(currentSurchargeTax) || currentSurchargeTax < 0 || currentSurchargeTax >= lowestPrice) {
           currentSurchargeTax = Math.round(lowestPrice * 0.22); // Real premium ratio
         }
         auditData.statusTax = currentSurchargeTax;
@@ -2075,18 +2037,17 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     if (cacheKey) {
       // 1. Save to global persistent Firestore Cache
       if (backendDb) {
-        try {
-          const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
-          await setDoc(cacheDocRef, {
-            data: auditData,
-            timestamp: Date.now(),
-            query: parsedQuery,
-            createdAt: serverTimestamp()
-          });
+        const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
+        setDoc(cacheDocRef, {
+          data: auditData,
+          timestamp: Date.now(),
+          query: parsedQuery,
+          createdAt: serverTimestamp()
+        }).then(() => {
           console.log(`[Cache Engine] Successfully stored audit in Firestore for query: ${parsedQuery} (ID: ${cacheKey})`);
-        } catch (cacheStoreErr) {
+        }).catch((cacheStoreErr) => {
           console.error("[Cache Engine] Firestore write failure:", cacheStoreErr);
-        }
+        });
       }
 
       // 2. Save to local in-memory container fallback
