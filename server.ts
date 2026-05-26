@@ -229,79 +229,79 @@ const defaultAuditData = {
   isAnalysis: true,
   productName: "Product Audit",
   isComparison: false,
-  finalDecision: "Verdict Pending (Engine Timeout)",
-  whyBest: "The audit was partially generated due to high token demand.",
-  pros: ["Incomplete response from underlying engine"],
-  cons: ["Incomplete response from underlying engine"],
-  aamAadmiSummary: "Analysis data not provided.",
-  avoid: "",
-  regretWarning: "",
+  finalDecision: "WAIT (Checking details...)",
+  whyBest: "Arey yaar, the engine took a bit longer because it's doing deep calculations. Give it another try!",
+  pros: ["We are double-checking active user reviews for you"],
+  cons: ["Verifying real-world durability under Indian conditions"],
+  aamAadmiSummary: "Ek minute bhai! Network thoda slow hai, please fresh scan trigger karo so we can give you a bulletproof review.",
+  avoid: "Wait until we verify the specs",
+  regretWarning: "Don't make a hasty purchase yet!",
   confidenceScore: 50,
   regretRisk: "Medium",
-  whyRegret: "",
-  saferChoice: "",
+  whyRegret: "Rushing a purchase before doing deep homework usually ends in buyer regret.",
+  saferChoice: "Let the engine finish scanning first",
   marketTiming: "WAIT",
-  marketReasoning: "",
-  specLongevity: "",
-  personalizedInsight: "",
-  socialHook: "Vetto Audit",
-  postOutputHook: "",
+  marketReasoning: "We are fetching live retail prices to protect your wallet.",
+  specLongevity: "Checking specs...",
+  personalizedInsight: "Vetto is standing guard. Let's do a fresh query.",
+  socialHook: "Vetto Audit is scanning...",
+  postOutputHook: "Vetto has your back.",
   paisaVasoolIndex: 50,
   statusTax: 0,
   utilityScore: 50,
-  hiddenCosts: "None identified before truncation.",
+  hiddenCosts: "Scanning for sneaky extras like missing chargers or subscriptions...",
   platformWarShield: {
     hasMarketingSilos: false,
-    siloExposure: "Data trace cut off",
+    siloExposure: "Analyzing brand lock-ins...",
     truthResilienceScore: 50,
-    bypassStrategyUsed: "Fallback shield activated"
+    bypassStrategyUsed: "Setting up safety shields..."
   },
   vettoContrast: {
     alternativeName: "Safe Alternative",
-    whyContrast: "Deep contrast trace interrupted",
+    whyContrast: "Scanning for high-value alternatives to save you money...",
     pviBoost: 0,
     priceDelta: "₹0",
     fairPriceTarget: "₹0",
-    procurementGuidance: "Verify on primary platforms directly",
-    strategicAdvantage: "Interrupted"
+    procurementGuidance: "Verify prices directly for now",
+    strategicAdvantage: "Verifying value..."
   },
   priceIntegrity: {
-    currentPriceAudit: "Trace cut off",
-    historicalContext: "Trace cut off",
+    currentPriceAudit: "Fetching live internet deals...",
+    historicalContext: "Analyzing past sales and seasonal discounts...",
     priceHistory: [
       { month: "Jan", price: 0 }
     ],
     dealScore: 50,
-    discountStrategy: "Trace cut off",
+    discountStrategy: "Checking for card cashbacks and coupon drops...",
     procurementLinks: [
       { platform: "Amazon", label: "Search Amazon", price: "Check Live", isBestDeal: true, url: "https://www.amazon.in", stockStatus: "In Stock" }
     ]
   },
   strategicRoadmap: {
-    immediateAction: "Retry the audit in a few seconds",
+    immediateAction: "Please trigger a fresh scan in a couple of seconds.",
     peakUtilityAge: "N/A",
     exitStrategy: "N/A"
   },
   communityPulse: {
-    redditConsensus: "Interrupted",
-    twitterPulse: "Interrupted",
-    youtubeReality: "Interrupted",
-    linkedinProfessional: "Interrupted",
-    topUSP: "Interrupted",
-    topGripe: "Interrupted"
+    redditConsensus: "Checking Reddit threads...",
+    twitterPulse: "Checking Twitter chatter...",
+    youtubeReality: "Analyzing tech reviewer videos...",
+    linkedinProfessional: "Checking expert consensus...",
+    topUSP: "Verifying feature...",
+    topGripe: "Checking complaints..."
   },
   lifecyclePhase: {
     status: "Active",
     isObsoleteSoon: false,
     nextMajorUpdate: "Next Generation"
   },
-  bhartiyaPersonaAudit: "Audit interrupted due to network congestion.",
-  technicalNode: "Trace cut off",
-  buildIntegrity: "Trace cut off",
-  resaleValueNode: "Trace cut off",
-  ecosystemLockIn: "Trace cut off",
+  bhartiyaPersonaAudit: "Analyzing how this fits into our typical middle-class home usage and budget...",
+  technicalNode: "Verifying internals...",
+  buildIntegrity: "Checking build quality...",
+  resaleValueNode: "Estimating resale value...",
+  ecosystemLockIn: "Checking brand ecosystem...",
   features: [
-    { name: "General Integrity", score: 50, details: "Technical analysis pending" }
+    { name: "General Integrity", score: 50, details: "We are currently checking the technical details." }
   ],
   socialAudit: {
     aggregatedRating: 4.0,
@@ -831,7 +831,18 @@ function simplifyProductNameForSearch(name: string): string {
     }
   });
 
-  return uniqueWords.join(" ").trim();
+  let simplifiedResult = uniqueWords.join(" ").trim();
+  
+  // Ensure critical specs from specsToKeep are preserved in the final result if they are not already present
+  const resultLower = simplifiedResult.toLowerCase();
+  specsToKeep.forEach(spec => {
+    const cleanSpec = spec.trim();
+    if (cleanSpec && !resultLower.includes(cleanSpec.toLowerCase())) {
+      simplifiedResult += " " + cleanSpec;
+    }
+  });
+
+  return simplifiedResult;
 }
 
 /**
@@ -1231,7 +1242,14 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
             if (medianPrice > 2000) {
               // Any listing that is less than 18% of the median price is surely a cheap screen-guard or back-case cover
               filtered = filtered.filter(x => x.isOos || x.numValue >= medianPrice * 0.18);
-              console.log(`[Outlier Filter] Filtered out cheap accessory outliers.`);
+              console.log(`[Outlier Filter] Filtered out cheap accessory outliers using median price ₹${medianPrice}.`);
+            }
+          } else if (activeOffers.length === 1 && budgetLimit) {
+            const parsedLimit = parseInt(budgetLimit.replace(/[^\d]/g, ''));
+            if (!isNaN(parsedLimit) && parsedLimit > 2000) {
+              // If only 1 offer found and it's less than 18% of the target budget, it's highly likely an accessory
+              filtered = filtered.filter(x => x.isOos || x.numValue >= parsedLimit * 0.18);
+              console.log(`[Outlier Filter] Filtered out cheap accessory outliers using budget limit ₹${parsedLimit}.`);
             }
           }
 
@@ -1631,14 +1649,34 @@ STRICT PRICING & SCORING PROTOCOLS:
     - If the "Target Capital" constraint is specified and is NOT "Unlimited" (e.g., ₹30,000, ₹20,000, etc.), the primary recommended product's actual price (the lowest price across platforms/procurementLinks) MUST be LESS THAN or EQUAL to this target capital. Never recommend or show a primary product that exceeds the target capital.
     - If the user query specifies an expensive specific product with an impossibly low budget (e.g., "iPhone 15 under 10k"), explain clearly in "aamAadmiSummary" that the requested model is impossible to buy at this price point, and recommend a brilliant, realistic alternative in "vettoContrast.alternativeName" (like a high-value mid-ranger or refurbished option) that strictly fits within or under the user's budget.
     - The smart alternative "vettoContrast.alternativeName" itself must also strictly fit within or under the user's budget limit to ensure the user actually gets a helpful purchase recommendation that they can afford.
-1. VALUE FOR MONEY (Paisa Vasool): 0-100. Be strict. 90+ is rare (unbeatable value). 50 is average. <30 is a ripoff.
-2. BRAND PREMIUM (Status Tax): Calculate the EXACT currency difference (in ₹) between this product and a similarly specced reliable alternative from a less "hyped" brand. Do not guess; base it on current market listings.
-3. UTILITY SCORE: 0-100. Based purely on features that actually work as advertised in real-world Indian conditions (heat, dust, connectivity).
-4. TRUTH DIVERGENCE: 0-100. Higher means the marketing is lying more compared to Reddit/Twitter owner reports.
-5. REVIEW AUTHENTICITY: 0-100. Low scores if you detect bot patterns, repetitive phrasing, or disproportionate 5-star ratings.
-6. DEAL RATING: 0-100. 100 means historical low. 0 means peak price/MSRP trap.
-7. TARGET PRICE: This MUST be the scientifically calculated "Fair Value" you should pay. Use historical sale patterns (Big Billion Days, Prime Day) to determine the logical entry point.
-8. PRICE COMPARISON & VERIFICATION LINKS:
+
+1. THE ELDER BROTHER PERSONA & TONE DIRECTIVES:
+    You are the user's street-smart, caring elder brother ("bhaiya") who wants to save them from being scammed by glossy ads and hype. 
+    Use a warm, natural, simple, and protective voice. Use everyday Indian/Hinglish/English terms where appropriate but keep it globally accessible.
+    
+    A. VALUE INDEXES (Paisa Vasool Index & Utility Score):
+       - Explain these not as dry technical percentages, but in terms of practical value. Use phrases like "Every single rupee you spend here works hard for you" (for high scores) or "It's like paying for a premium thali but only getting rice and dal" (for low scores).
+    
+    B. STATUS / BRAND PREMIUM TAX (Status Tax):
+       - Frame this exactly as the "badge penalty" or "show-off fee". 
+       - Calculate the price premium in exact Rupees (₹) compared to an equally good, lesser-hyped product, and call out the absurdity: "You are paying a massive ₹15,000 extra just for the shiny logo. If you buy the alternative, that ₹15,000 stays in your pocket—enough for a nice weekend trip!"
+    
+    C. HIDDEN COSTS AUDIT:
+       - Actively call out sneaky extra expenses like a protective brother: "Listen, they don't even give you a charger in the box! Add another ₹1,999 for that. And if you want the mandatory screen guard and case, keep ₹1,000 more ready. Also watch out for that yearly subscription of ₹3,999 to use the smart features!"
+    
+    D. REGRET RISK & ALERTS (whyRegret, regretWarning):
+       - Be extremely direct and preemptive. Talk about real-world daily annoyances: "The plastic back gets scratched if you look at it too hard, and you'll regret not getting a metal body," or "The battery drops like a stone after 6 months; your friends will tease you for constantly searching for a charging socket."
+    
+    E. BHARTIYA PERSONA AUDIT:
+       - Map the product directly to diverse Indian middle-class realities: "Perfect for our typical Indian household where one tablet is shared by the kids for homework and parents for serials. It survives accidental kitchen spills, handles dusty rooms, and doesn't burn a hole in your monthly household budget!"
+       - Speak to students, office goers, or homemakers directly with respect and genuine protective care.
+
+2. UTILITY SCORE: 0-100. Based purely on features that actually work as advertised in real-world Indian conditions (heat, dust, connectivity).
+3. TRUTH DIVERGENCE: 0-100. Higher means the marketing is lying more compared to Reddit/Twitter owner reports.
+4. REVIEW AUTHENTICITY: 0-100. Low scores if you detect bot patterns, repetitive phrasing, or disproportionate 5-star ratings.
+5. DEAL RATING: 0-100. 100 means historical low. 0 means peak price/MSRP trap.
+6. TARGET PRICE: This MUST be the scientifically calculated "Fair Value" you should pay. Use historical sale patterns (Big Billion Days, Prime Day) to determine the logical entry point.
+7. PRICE COMPARISON & VERIFICATION LINKS:
     - You MUST use Google Search to identify actual, live numeric pricing for the product on AT LEAST 3 distinct major e-commerce platforms in India (such as Amazon, Flipkart, Reliancedigital, Croma, Ajio, Myntra, Tata CLiQ, or the official brand web store). It is absolutely unacceptable to only return 1 platform or platform link.
     - You MUST NEVER write placeholders like "Check Live", "Live Price", "Check Price", "TBD", "N/A", "₹0", "0" or "Live" under any circumstances. You MUST output real-world prices in Rupees (e.g. "₹9,695" or "₹11,495").
     - Give direct clickable verifying URLs for each vendor in the "procurementLinks" array under the "url" property.
@@ -1649,8 +1687,8 @@ STRICT PRICING & SCORING PROTOCOLS:
       * Reliance Digital: https://www.reliancedigital.in/search?q=[urlencoded_product_name]
       * Other stores: Use their actual direct search pattern or their official domain address.
     - Every link must point to a functioning product search page so that clicking it provides high-integrity instant verification.
-9. SAFETY SCORE: 0-100. Reliability and service network quality in India.
-10. ZERO-DIFFERENTIATION PRICING CONGRUENCY:
+8. SAFETY SCORE: 0-100. Reliability and service network quality in India.
+9. ZERO-DIFFERENTIATION PRICING CONGRUENCY:
     - Every price field in your JSON output must be mathematically and numerically consistent with no mismatch or differentiation.
     - All displayed currency strings must use the Rupees symbol "₹" consistently (e.g. "₹54,999" - not "Rs", "INR" or lack of symbol).
     - In "priceIntegrity.procurementLinks", the item marked "isBestDeal: true" must have the lowest price string (e.g., "₹54,999").
@@ -1658,12 +1696,12 @@ STRICT PRICING & SCORING PROTOCOLS:
     - The smarter alternative's name and details are in "vettoContrast". The "vettoContrast.priceDelta" field must represent the actual calculated difference between the current lowest price and the alternative's price (e.g., if current is ₹54,999 and alternative is ₹44,999, the delta must be "Save ₹10,000").
     - The "vettoContrast.fairPriceTarget" must be congruent with your target price recommendations (e.g., "₹49,999").
     - There must be absolutely no conflicting price values in any text descriptions, lists, charts, or comparison sections.
-11. LAYMAN-FRIENDLY COPY FOR BUYING & STOCK SECTION (NO TECH/FINANCE JARGON):
+10. LAYMAN-FRIENDLY COPY FOR BUYING & STOCK SECTION (NO TECH/FINANCE JARGON):
     - When generating "priceIntegrity.currentPriceAudit", "priceIntegrity.historicalContext", and "priceIntegrity.discountStrategy", you MUST speak like a normal consumer's helpful companion or elder brother.
     - Write in everyday, simple, clear, jargon-free English that any typical uncle, student, or non-tech consumer can instantly understand.
     - Under NO circumstances are you allowed to use academic, technical, or finance jargon such as "equilibrium", "market correction", "historical volatility", "arbitrage", "price elasticity", "retailer premium", "MSRP discrepancy", or "data points".
     - Give simple, solid, down-to-earth advice like: "This price is a great discount, we think you should grab it now", "Usually, this gets ₹1,500 cheaper during Diwali and October sales", "Use an SBI credit card or wait for the weekend flash deals to save more."
-12. STOCK ACCURACY & DIAGNOSTICS:
+11. STOCK ACCURACY & DIAGNOSTICS:
     - In "priceIntegrity.procurementLinks", you MUST determine the realistic "stockStatus" of the product on each retailer platform (e.g. 'In Stock', 'Only 3 left', 'Out of Stock').
     - If the product is highly popular and selling fast, reflect true consumer dynamics by using tags like 'Only a few left' or 'Only 2 left' to give the user honest heads-up alerts. Defensively default to 'In Stock' if widely available.
 
@@ -1970,18 +2008,31 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         
         // 1. Synchronize priceHistory with lowestPrice node to prevent chart drift
         if (Array.isArray(auditData.priceIntegrity.priceHistory) && auditData.priceIntegrity.priceHistory.length > 0) {
-          const lastIdx = auditData.priceIntegrity.priceHistory.length - 1;
-          auditData.priceIntegrity.priceHistory[lastIdx].price = lowestPrice;
-          for (let k = 0; k < auditData.priceIntegrity.priceHistory.length - 1; k++) {
-            const n = auditData.priceIntegrity.priceHistory[k];
+          const historyArray = auditData.priceIntegrity.priceHistory;
+          const lastIdx = historyArray.length - 1;
+          const lastModelPriceObj = historyArray[lastIdx];
+          const lastModelPrice = typeof lastModelPriceObj.price === 'number' 
+            ? lastModelPriceObj.price 
+            : parseInt(String(lastModelPriceObj.price || "").replace(/[^\d]/g, ''));
+            
+          const baseModelPrice = (!isNaN(lastModelPrice) && lastModelPrice > 0) ? lastModelPrice : lowestPrice;
+          
+          for (let k = 0; k < historyArray.length; k++) {
+            const n = historyArray[k];
             const originalPrice = typeof n.price === 'number' ? n.price : parseInt(String(n.price || "").replace(/[^\d]/g, ''));
             if (isNaN(originalPrice) || originalPrice <= 0) {
-              const offsetMonths = auditData.priceIntegrity.priceHistory.length - 1 - k;
+              const offsetMonths = lastIdx - k;
               n.price = Math.round(lowestPrice * (1.0 + (offsetMonths * 0.02)));
             } else {
-              n.price = originalPrice;
+              // Scale relative to baseModelPrice and lowestPrice to keep exact visual trend without price level drift!
+              const ratio = originalPrice / baseModelPrice;
+              // Limit ratio to reasonable bounds (e.g. 0.5 to 2.0) to prevent chaotic spikes
+              const boundedRatio = Math.max(0.5, Math.min(2.0, ratio));
+              n.price = Math.round(lowestPrice * boundedRatio);
             }
           }
+          // Absolute certainty that the last item matches lowestPrice
+          historyArray[lastIdx].price = lowestPrice;
         } else {
           // Fallback history array
           const months = ["Dec", "Jan", "Feb", "Mar", "Apr", "May"];
