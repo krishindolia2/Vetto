@@ -165,12 +165,12 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 8, baseDelay 
       
       // Clean up config for models that do not support thinking (only Gemini 3 series does)
       if (!currentModel.includes("gemini-3")) {
-        if (callParams.config?.thinkingConfig) {
-          console.log(`[Resiliency Engine] Stripping thinkingConfig for non-Gemini-3 model: ${currentModel}`);
-          const newConfig = { ...callParams.config };
-          delete newConfig.thinkingConfig;
-          callParams.config = newConfig;
-        }
+        const newConfig = { ...callParams.config };
+        // Optimize token limits to enforce ultra-low latency for pre-fetch logic
+        if (!newConfig.maxOutputTokens) newConfig.maxOutputTokens = 800;
+        console.log(`[Resiliency Engine] Stripping thinkingConfig for non-Gemini-3 model: ${currentModel}`);
+        delete newConfig.thinkingConfig;
+        callParams.config = newConfig;
       }
 
       return await ai.models.generateContent(callParams);
@@ -2001,7 +2001,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-3.1-pro-preview";
+    const modelToUse = "gemini-3.5-flash";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];
@@ -2062,7 +2062,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       try {
         let stream: any;
         let lastErr: any;
-        const streamFallbackModels = ["gemini-3.1-pro-preview", "gemini-3.5-flash", "gemini-3.5-flash"];
+        const streamFallbackModels = ["gemini-3.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite"];
         let activeStreamModel = modelToUse;
 
         // Resilient retry with model fallback rotation
