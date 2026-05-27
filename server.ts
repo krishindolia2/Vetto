@@ -2062,18 +2062,32 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       try {
         let stream: any;
         let lastErr: any;
-        // Simple retry for stream initialization
-        for (let attempt = 0; attempt < 3; attempt++) {
+        const streamFallbackModels = ["gemini-3.1-pro-preview", "gemini-3.5-flash", "gemini-3.5-flash"];
+        let activeStreamModel = modelToUse;
+
+        // Resilient retry with model fallback rotation
+        for (let attempt = 0; attempt < 4; attempt++) {
           try {
+            if (attempt > 0) {
+              const rotated = streamFallbackModels[attempt % streamFallbackModels.length];
+              if (rotated !== activeStreamModel) {
+                console.log(`[Launch Guard] Stream init failure. Rotating to fallback model: ${rotated}`);
+                activeStreamModel = rotated;
+              }
+            }
+            
             stream = await ai.models.generateContentStream({
-              model: modelToUse,
+              model: activeStreamModel,
               contents: [{ role: "user", parts }],
               config: genConfig,
             });
             break;
           } catch (e: any) {
             lastErr = e;
-            if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+            
+            // If the error is a 503, 429, or 500, we should backoff and try the fallback model next loop
+            console.warn(`[Launch Guard] Gemini transient failure on ${activeStreamModel} (Code: ${e?.status || e?.code}). Retrying... (Attempt ${attempt + 1}/4)`);
+            if (attempt < 3) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
           }
         }
         if (!stream) throw lastErr;
