@@ -128,12 +128,12 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 8, baseDelay 
   
   // Standard production stable models to maximize availability and optimize cost billing
   const fallbackModels = [
-    "gemini-3.5-flash",
-    "gemini-3.1-flash-lite",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
     "gemini-1.5-flash"
   ];
 
-  const targetModel = params.model || "gemini-3.5-flash";
+  const targetModel = params.model || "gemini-1.5-flash";
   let currentModel = targetModel;
   
   // Track models that have failed with permissions / 403 to prevent infinite loops
@@ -1372,7 +1372,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-3.1-flash-lite"
+    "gemini-1.5-flash-8b"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -2001,7 +2001,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-3.1-pro";
+    const modelToUse = "gemini-1.5-pro";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];
