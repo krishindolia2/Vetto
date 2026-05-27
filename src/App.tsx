@@ -1554,7 +1554,7 @@ export default function App() {
                       {images.map((img, idx) => (
                         <div
                           key={idx}
-                          className="relative group/img w-20 h-20 bg-zinc-950 border border-white/10 rounded-xl overflow-hidden shadow-sm"
+                          className="relative group/img w-20 h-20 bg-slate-50 border border-black/5 rounded-xl overflow-hidden shadow-sm"
                         >
                           <img
                             src={img.url}
@@ -3611,39 +3611,39 @@ export default function App() {
                 {/* Best Prices Around You */}
                 <div className="glass-panel overflow-hidden">
                   <div className="p-6 md:p-16 space-y-10 md:space-y-12">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-10 md:pb-12 border-b border-slate-100">
-                      <div className="space-y-3">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-10 md:pb-12 border-b border-black/5">
+                      <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                          <Tag className="w-4 h-4 text-slate-950" />
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">
+                          <Tag className="w-5 h-5 text-accent" />
+                          <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500 font-mono">
                             Where to Buy & Stock Check
                           </h3>
                         </div>
-                        <p className="text-2xl font-black tracking-tight text-slate-900">
+                        <p className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 font-display">
                           Current Best Prices
                         </p>
                       </div>
-                      <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-6 bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-sm">
                         <div className="text-left md:text-right">
-                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2 font-mono">
                             Is this a Good Deal?
                           </span>
-                          <div className="flex items-baseline md:justify-end gap-2">
-                            <span className="text-3xl sm:text-4xl font-black text-slate-900">
+                          <div className="flex items-baseline md:justify-end gap-2 mb-2">
+                            <span className="text-4xl sm:text-5xl font-black text-slate-900 font-display tracking-tighter">
                               {result?.priceIntegrity?.dealScore ?? 0}
                             </span>
-                            <span className="text-xs font-bold text-slate-400">
+                            <span className="text-sm font-bold text-slate-400">
                               / 100
                             </span>
                           </div>
                           <div
                             className={cn(
-                              "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mt-1.5 border",
+                              "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm",
                               (result?.priceIntegrity?.dealScore ?? 0) >= 80
-                                ? "text-emerald-700 bg-emerald-50 border-emerald-100"
+                                ? "text-emerald-700 bg-emerald-50 border-emerald-200"
                                 : (result?.priceIntegrity?.dealScore ?? 0) >= 60
-                                  ? "text-sky-700 bg-sky-50 border-sky-100"
-                                  : "text-rose-700 bg-rose-50 border-rose-100",
+                                  ? "text-sky-700 bg-sky-50 border-sky-200"
+                                  : "text-rose-700 bg-rose-50 border-rose-200",
                             )}
                           >
                             {(result?.priceIntegrity?.dealScore ?? 0) >= 80
@@ -4528,10 +4528,10 @@ export default function App() {
                               className={cn(
                                 "h-full rounded-full transition-all duration-1000",
                                 feature.score > 80
-                                  ? "bg-gradient-to-r from-green-500 to-green-400 shadow-[0_0_10px_rgba(74,222,128,0.6)]"
+                                  ? "bg-emerald-500"
                                   : feature.score > 50
-                                    ? "bg-gradient-to-r from-amber-500 to-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]"
-                                    : "bg-gradient-to-r from-red-500 to-red-400 shadow-[0_0_10px_rgba(248,113,113,0.6)]",
+                                    ? "bg-amber-500"
+                                    : "bg-rose-500",
                               )}
                               style={{ width: `${feature.score}%` }}
                             />
@@ -4573,44 +4573,44 @@ export default function App() {
                       </div>
 
                       <div className="space-y-6">
-                        <p className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none font-display">
+                        <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-none font-display">
                           Upgrade to:{" "}
-                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200 block mt-3 drop-shadow-sm">
+                          <span className="text-accent block mt-3 drop-shadow-sm">
                             {result?.vettoContrast?.alternativeName || ""}
                           </span>
                         </p>
-                        <p className="text-lg md:text-xl font-medium text-zinc-300 leading-relaxed italic border-l-4 border-amber-500/30 pl-8">
+                        <p className="text-xl md:text-2xl font-medium text-slate-700 leading-relaxed italic border-l-4 border-accent/30 pl-8">
                           &ldquo;{result?.vettoContrast?.whyContrast || ""}&rdquo;
                         </p>
                       </div>
 
                       {/* Interactive Side-by-Side Scorecard */}
-                      <div className="bg-zinc-950/60 rounded-3xl border border-white/10 p-8 space-y-5 shadow-2xl backdrop-blur-md">
+                      <div className="bg-white rounded-3xl border border-black/5 p-8 space-y-5 shadow-xl backdrop-blur-md">
                         <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block font-mono">
                           Side-by-Side Scorecard
                         </span>
 
-                        <div className="grid grid-cols-3 gap-4 text-center items-center py-3 border-b border-white/5">
-                          <span className="text-[9px] font-black text-zinc-500 uppercase text-left">
+                        <div className="grid grid-cols-3 gap-4 text-center items-center py-3 border-b border-black/5">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase text-left tracking-wider">
                             Metrics
                           </span>
-                          <span className="text-xs font-black text-zinc-400 truncate">
+                          <span className="text-xs font-black text-slate-600 truncate">
                             {result?.productName || ""}
                           </span>
-                          <span className="text-xs font-black text-amber-400 truncate">
+                          <span className="text-xs font-black text-accent truncate">
                             {result?.vettoContrast?.alternativeName || ""}
                           </span>
                         </div>
 
                         {/* Row 1: PVI */}
-                        <div className="grid grid-cols-3 gap-4 items-center py-4 border-b border-white/5">
-                          <span className="text-[10px] font-bold text-zinc-400 font-mono">
+                        <div className="grid grid-cols-3 gap-4 items-center py-4 border-b border-black/5">
+                          <span className="text-xs font-bold text-slate-500 font-mono">
                             Value Score
                           </span>
-                          <span className="text-sm font-black text-red-400 text-center drop-shadow-[0_0_5px_rgba(248,113,113,0.5)]">
+                          <span className="text-sm font-black text-rose-500 text-center">
                             {result?.paisaVasoolIndex ?? 0} / 100
                           </span>
-                          <span className="text-sm font-black text-green-400 text-center font-mono drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]">
+                          <span className="text-sm font-black text-emerald-600 text-center font-mono">
                             {Math.min(
                               100,
                               (result?.paisaVasoolIndex ?? 0) +
@@ -4621,14 +4621,14 @@ export default function App() {
                         </div>
 
                         {/* Row 2: Status Penalty Tax */}
-                        <div className="grid grid-cols-3 gap-4 items-center py-4 border-b border-white/5">
-                          <span className="text-[10px] font-bold text-zinc-400 font-mono">
+                        <div className="grid grid-cols-3 gap-4 items-center py-4 border-b border-black/5">
+                          <span className="text-xs font-bold text-slate-500 font-mono">
                             Brand Surcharge
                           </span>
-                          <span className="text-sm font-black text-red-400 text-center">
+                          <span className="text-sm font-black text-rose-500 text-center">
                             ₹{(result?.statusTax ?? 0).toLocaleString()}
                           </span>
-                          <span className="text-sm font-black text-green-400 text-center flex flex-col items-center">
+                          <span className="text-sm font-black text-emerald-600 text-center flex flex-col items-center">
                             <span>₹0</span>
                             <span className="text-[9px] text-green-500/60 font-sans mt-0.5">
                               (Pure Utility)
@@ -4638,13 +4638,13 @@ export default function App() {
 
                         {/* Row 3: Target Price */}
                         <div className="grid grid-cols-3 gap-4 items-center py-4">
-                          <span className="text-[10px] font-bold text-zinc-400 font-mono">
+                          <span className="text-xs font-bold text-slate-500 font-mono">
                             Cost Target
                           </span>
-                          <span className="text-sm font-black text-zinc-500 text-center line-through decoration-red-500/50">
+                          <span className="text-sm font-black text-slate-400 text-center line-through decoration-rose-500/50">
                             {getNumericPrice(result) === 0 ? "Out of Stock" : `₹${getNumericPrice(result).toLocaleString()}`}
                           </span>
-                          <span className="text-sm font-black text-white text-center font-mono bg-white/5 py-1 rounded-md border border-white/10">
+                          <span className="text-sm font-black text-accent text-center font-mono bg-slate-50 py-1 rounded-md border border-slate-200">
                             {result?.vettoContrast?.fairPriceTarget || ""}
                           </span>
                         </div>
@@ -4660,7 +4660,7 @@ export default function App() {
                               triggerAuditForAlternative(altName);
                             }
                           }}
-                          className="w-full bg-white hover:bg-zinc-200 text-black p-6 rounded-2xl font-black uppercase text-[11px] tracking-widest flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                          className="w-full bg-accent hover:bg-accent-dark text-white p-6 rounded-2xl font-black uppercase text-[11px] tracking-widest flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
                         >
                           <RefreshCw className="w-5 h-5 animate-spin-slow text-amber-500" />
                           Compare & Check Alternate Instantly
@@ -4673,7 +4673,7 @@ export default function App() {
                     </div>
 
                     <div className="w-full lg:w-96 shrink-0">
-                      <div className="p-10 bg-zinc-950/80 border border-white/5 rounded-[2.5rem] space-y-8 flex flex-col h-full shadow-2xl relative overflow-hidden group/tip">
+                      <div className="p-10 bg-white border border-black/5 rounded-[2.5rem] space-y-8 flex flex-col h-full shadow-xl relative overflow-hidden group/tip">
                         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent opacity-0 group-hover/tip:opacity-100 transition-opacity duration-500" />
                         <div className="flex items-center gap-3 relative z-10">
                           <ShieldCheck className="w-5 h-5 text-zinc-500" />
@@ -4692,30 +4692,30 @@ export default function App() {
               )}
 
               {/* Final Plan */}
-              <div className="bg-zinc-950 text-white rounded-[2.5rem] p-8 md:p-16 space-y-16 overflow-hidden relative border border-white/5 shadow-2xl">
+              <div className="bg-white text-slate-900 rounded-[2.5rem] p-8 md:p-16 space-y-16 overflow-hidden relative border border-black/5 shadow-2xl">
                 <motion.div
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }}
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.06, 0.03] }}
                   transition={{ duration: 10, repeat: Infinity }}
                   className="absolute top-0 right-0 p-12 pointer-events-none"
                 >
-                  <CircuitBoard className="w-96 h-96 text-white" />
+                  <CircuitBoard className="w-96 h-96 text-slate-300" />
                 </motion.div>
 
                 <div className="relative z-10 space-y-12">
                   <div className="flex items-center gap-4">
-                    <div className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full">
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 font-mono">
+                    <div className="px-5 py-2 bg-slate-50 border border-slate-100 rounded-full shadow-sm">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500 font-mono">
                         Our Final Advice on {result?.productName || ""}
                       </span>
                     </div>
-                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_10px_rgba(0,113,227,0.4)]" />
                   </div>
 
-                  <h2 className="text-3xl md:text-6xl font-black leading-[1.05] tracking-tighter max-w-4xl font-display">
-                    &ldquo;<span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">{result?.whyBest || ""}</span>&rdquo;
+                  <h2 className="text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter max-w-4xl font-display text-slate-900">
+                    &ldquo;<span className="text-accent">{result?.whyBest || ""}</span>&rdquo;
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-white/5">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-slate-100">
                     {[
                       {
                         label: "When to Buy",
@@ -4733,16 +4733,16 @@ export default function App() {
                         val: result?.strategicRoadmap?.exitStrategy || "",
                       },
                     ].map((step, i) => (
-                      <div key={i} className="space-y-6 group/step">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center group-hover/step:border-white/30 transition-colors shadow-inner">
-                            <step.icon className="w-5 h-5 text-zinc-500 group-hover/step:text-white transition-colors" />
+                      <div key={i} className="space-y-6 group/step bg-slate-50 p-8 rounded-3xl border border-black/5 hover:border-black/10 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center group-hover/step:border-accent transition-colors shadow-sm">
+                            <step.icon className="w-6 h-6 text-slate-400 group-hover/step:text-accent transition-colors" />
                           </div>
-                          <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] font-mono">
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] font-mono">
                             {step.label}
                           </span>
                         </div>
-                        <p className="text-lg md:text-xl font-bold text-white/90 leading-snug">
+                        <p className="text-xl font-bold text-slate-800 leading-snug">
                           {step.val}
                         </p>
                       </div>
@@ -4750,26 +4750,26 @@ export default function App() {
                   </div>
 
                   <div className="pt-16 flex flex-col lg:flex-row gap-12 items-stretch">
-                    <div className="p-10 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2.5rem] text-black flex-1 hover:-translate-y-1 transition-transform border border-white/20 group/rec">
-                      <span className="text-[11px] font-black text-zinc-400 uppercase block mb-4 tracking-widest">
+                    <div className="p-10 bg-white shadow-[0_12px_32px_rgba(0,0,0,0.04)] rounded-[2.5rem] flex-1 hover:-translate-y-1 transition-transform border border-black/5 group/rec">
+                      <span className="text-xs font-bold text-accent uppercase block mb-6 tracking-widest font-mono">
                         Personalized Recommendation
                       </span>
-                      <p className="text-xl md:text-2xl font-bold leading-relaxed font-serif italic text-zinc-900 group-hover/rec:text-black transition-colors">
+                      <p className="text-2xl font-bold leading-relaxed font-serif text-slate-800 group-hover/rec:text-slate-900 transition-colors">
                         &ldquo;{result?.personalizedInsight || ""}&rdquo;
                       </p>
-                      <div className="mt-8 pt-8 border-t border-zinc-200 flex items-center justify-between">
-                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">
+                      <div className="mt-10 pt-8 border-t border-slate-100 flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
                           {result?.postOutputHook || ""}
                         </span>
-                        <Fingerprint className="w-5 h-5 text-zinc-300" />
+                        <Fingerprint className="w-6 h-6 text-slate-300" />
                       </div>
                     </div>
-                    <div className="lg:w-80 flex flex-col justify-center space-y-6 p-8 bg-zinc-900/40 border border-white/5 rounded-[2.5rem] backdrop-blur-sm">
-                      <p className="text-lg font-black text-white/90 leading-tight italic tracking-tight font-serif">
+                    <div className="lg:w-80 flex flex-col justify-center space-y-6 p-10 bg-slate-50 border border-black/5 rounded-[2.5rem]">
+                      <p className="text-xl font-bold text-slate-800 leading-snug italic tracking-tight font-serif">
                         "{result?.socialHook || ""}"
                       </p>
-                      <div className="h-px bg-white/10 w-full" />
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">
+                      <div className="h-px bg-slate-200 w-full" />
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] font-mono">
                         Vetto Shopping Guard
                       </p>
                     </div>
@@ -4779,25 +4779,25 @@ export default function App() {
 
               {/* Final Conclusion & Action Buttons */}
               <div className="space-y-8 pt-12">
-                <div className="bg-zinc-900 text-white rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group border border-white/5">
-                  <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-1000">
-                    <ShieldCheck className="w-48 h-48 text-white" />
+                <div className="bg-white text-slate-900 rounded-[2.5rem] p-10 md:p-14 relative overflow-hidden group border border-black/5 shadow-xl">
+                  <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-1000">
+                    <ShieldCheck className="w-48 h-48 text-accent" />
                   </div>
 
-                  <div className="relative z-10 space-y-8">
-                    <div className="space-y-3">
-                      <h3 className="text-2xl md:text-3xl font-black tracking-tight font-display">
+                  <div className="relative z-10 space-y-10">
+                    <div className="space-y-4">
+                      <h3 className="text-3xl md:text-4xl font-black tracking-tight font-display text-slate-900">
                         Our Recommendation for{" "}
-                        <span className="text-accent font-serif italic font-medium drop-shadow-sm">
+                        <span className="text-accent font-serif italic drop-shadow-sm">
                           {result?.productName || ""}
                         </span>
                       </h3>
-                      <p className="text-base md:text-lg font-medium leading-relaxed italic text-white/80">
+                      <p className="text-xl md:text-2xl font-bold leading-relaxed text-slate-700">
                         &ldquo;{result?.finalDecision || ""}&rdquo;
                       </p>
                     </div>
 
-                    <div className="flex flex-wrap gap-4 items-center">
+                    <div className="flex flex-wrap gap-4 items-center pt-4">
                       <button
                         onClick={() => {
                           try {
@@ -5028,7 +5028,7 @@ export default function App() {
                     key={node.title}
                     whileHover={{ y: -8, scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className="p-8 glass-card transition-all group hover:bg-zinc-900/60 relative overflow-hidden text-left bg-zinc-950/40 border-white/5 shadow-xl hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col justify-between min-h-[280px]"
+                    className="p-8 glass-card transition-all group hover:bg-slate-50/60 relative overflow-hidden text-left bg-white border-black/5 shadow-md hover:shadow-xl flex flex-col justify-between min-h-[280px]"
                   >
                     <node.icon className="absolute -right-8 -bottom-8 w-40 h-40 text-white/5 group-hover:text-accent/10 transition-all duration-700 group-hover:scale-110 group-hover:rotate-6" />
                     <div className="relative z-10 space-y-6">
@@ -5074,7 +5074,7 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <footer className="bg-zinc-950 border-t border-white/5 py-32 mt-32 relative overflow-hidden">
+        <footer className="bg-white border-t border-black/5 py-32 mt-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-30" />
           <div className="ambient-glow opacity-30 right-0 top-0 translate-x-1/2 -translate-y-1/2" />
           
