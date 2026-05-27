@@ -1,0 +1,382 @@
+[
+  {
+    "agent": "Rohan_Gamer",
+    "category": "electronics",
+    "query": "best gaming laptop under 70k",
+    "budget": "70000",
+    "resolvedProduct": "Lenovo LOQ 15IAX9 (Intel i5-12450HX, 16GB, 512GB, RTX 3050)",
+    "latencySec": "15.04",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 0,
+      "utilityScore": 85,
+      "aamAadmiSummary": "Bhai, under 70k this is a solid deal with great cooling, bas battery backup thoda kam milega.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Rohan_Gamer",
+    "category": "electronics",
+    "query": "OnePlus Nord 4 12GB 256GB",
+    "budget": "32000",
+    "resolvedProduct": "OnePlus Nord 4 5G (12GB RAM, 256GB)",
+    "latencySec": "41.67",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 85,
+      "statusTax": 3000,
+      "utilityScore": 88,
+      "aamAadmiSummary": "Arey bhaiya, phone toh solid hai par abhi ₹32,999 me budget se thoda bahar ja raha hai, thoda ruko ya card discount lagao!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Priya_Blogger",
+    "category": "fashion",
+    "query": "Adidas Samba vs Nike AF1",
+    "budget": "10000",
+    "resolvedProduct": "Nike Air Force 1 '07",
+    "latencySec": "16.17",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 1500,
+      "utilityScore": 85,
+      "aamAadmiSummary": "Bhai, if you want comfort and a solid daily look, the AF1 is a much better deal than the flat Samba.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Priya_Blogger",
+    "category": "fashion",
+    "query": "Zara puffer jacket",
+    "budget": "8000",
+    "resolvedProduct": "Zara Water-Repellent and Windproof Puffer Jacket with Hoodie",
+    "latencySec": "48.92",
+    "score": 100,
+    "passedChecksCount": 7,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "WAIT",
+      "paisaVasoolIndex": 40,
+      "statusTax": 3500,
+      "utilityScore": 50,
+      "aamAadmiSummary": "Arey yaar, this Zara puffer is completely out of stock everywhere and is way too mehenga for the basic warmth it offers.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Amit_Commuter",
+    "category": "automotive",
+    "query": "Royal Enfield Himalayan 450",
+    "budget": "300000",
+    "resolvedProduct": "Royal Enfield Himalayan 450",
+    "latencySec": "13.08",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "WAIT",
+      "paisaVasoolIndex": 60,
+      "statusTax": 15000,
+      "utilityScore": 88,
+      "aamAadmiSummary": "Bhai, wait for a bit because the on-road price crosses your 3 Lakh budget.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Amit_Commuter",
+    "category": "automotive",
+    "query": "best electric scooter under 1.2 lakh",
+    "budget": "120000",
+    "resolvedProduct": "Ola S1 X (3 kWh)",
+    "latencySec": "22.72",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 0,
+      "utilityScore": 82,
+      "aamAadmiSummary": "Bhaiya, budget ke hisab se range badhiya hai, par service center ke chakkar kaatne pad sakte hain.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Sneha_Homemaker",
+    "category": "electronics",
+    "query": "best phone under 15000",
+    "budget": "15000",
+    "resolvedProduct": "POCO M7 5G (6GB RAM, 128GB Storage)",
+    "latencySec": "38.82",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 0,
+      "utilityScore": 90,
+      "aamAadmiSummary": "Bhaiya, if you want a simple phone with a killer battery that won't break easily, this is a solid choice for daily use!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Sneha_Homemaker",
+    "category": "electronics",
+    "query": "best ANC headphones under 20k",
+    "budget": "20000",
+    "resolvedProduct": "Sony WH-CH720N Wireless Noise Cancelling Headphones",
+    "latencySec": "24.01",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 95,
+      "statusTax": 0,
+      "utilityScore": 90,
+      "aamAadmiSummary": "Arey bhaiya, under 10k this is a steal deal for peaceful WFH, no need to spend the full 20k!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Kabir_IT",
+    "category": "electronics",
+    "query": "is Samsung Galaxy S24 Ultra worth the high price?",
+    "budget": "100000",
+    "resolvedProduct": "Samsung Galaxy S24 Ultra 12GB 256GB",
+    "latencySec": "13.51",
+    "score": 100,
+    "passedChecksCount": 7,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 53,
+      "statusTax": 25000,
+      "utilityScore": 95,
+      "aamAadmiSummary": "Arey yaar, it is a beast of a phone, but wait for restocks and price drops before buying.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Kabir_IT",
+    "category": "electronics",
+    "query": "Mi powerbank 20000mAh",
+    "budget": "3000",
+    "resolvedProduct": "Mi Power Bank 3i 20000mAh",
+    "latencySec": "14.46",
+    "score": 100,
+    "passedChecksCount": 7,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "WAIT",
+      "paisaVasoolIndex": 85,
+      "statusTax": 0,
+      "utilityScore": 80,
+      "aamAadmiSummary": "Arey yaar, this powerbank is completely out of stock everywhere right now, so wait or look at alternatives.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Varun_Fitness",
+    "category": "fashion",
+    "query": "best running shoes under 4000",
+    "budget": "4000",
+    "resolvedProduct": "Nike Revolution 7 Running Shoes",
+    "latencySec": "29.33",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 500,
+      "utilityScore": 85,
+      "aamAadmiSummary": "Bhai, under 3k budget me Nike brand and lightweight comfort ka solid combo hai, aankh band karke le lo!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Varun_Fitness",
+    "category": "fashion",
+    "query": "is Levis 511 slim fit jeans worth the price?",
+    "budget": "3500",
+    "resolvedProduct": "Levi's Men 511 Slim Fit Jeans",
+    "latencySec": "14.82",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 98,
+      "statusTax": 0,
+      "utilityScore": 95,
+      "aamAadmiSummary": "Bhai, ₹1,119 mein original Levi's 511 milna jackpot hai, aankh band karke le lo!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Divya_Office",
+    "category": "fashion",
+    "query": "Nike Jordan 1 Low under 10k",
+    "budget": "10000",
+    "resolvedProduct": "Nike Jordan 1 Low",
+    "latencySec": "23.65",
+    "score": 100,
+    "passedChecksCount": 7,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "WAIT",
+      "paisaVasoolIndex": 40,
+      "statusTax": 4000,
+      "utilityScore": 50,
+      "aamAadmiSummary": "Arey yaar, Jordan 1 Low is completely out of stock at retail right now, and resellers will charge you double!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Divya_Office",
+    "category": "fashion",
+    "query": "Myntra Roadster t-shirt",
+    "budget": "1000",
+    "resolvedProduct": "Roadster Men Solid Round Neck T-Shirt",
+    "latencySec": "12.08",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 75,
+      "statusTax": 0,
+      "utilityScore": 80,
+      "aamAadmiSummary": "Bhai, ₹399 me daily wear ke liye badhiya hai, bas isse premium quality ki umeed mat rakhna.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Kabir_Car",
+    "category": "automotive",
+    "query": "Tata Nexon EV",
+    "budget": "1600000",
+    "resolvedProduct": "Tata Nexon EV Fearless 45",
+    "latencySec": "0.28",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 0,
+      "utilityScore": 90,
+      "aamAadmiSummary": "Bhaiya, if you want a safe, spacious family EV with a solid 320+ km real range, this fits your 16 Lakh budget perfectly.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Kabir_Car",
+    "category": "automotive",
+    "query": "is MG Comet EV worth buying for office parking?",
+    "budget": "800000",
+    "resolvedProduct": "MG Comet EV Executive",
+    "latencySec": "15.03",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 0,
+      "utilityScore": 95,
+      "aamAadmiSummary": "Bhai, office parking ke jhanjhat ke liye isse sasta aur chota option nahi milega, aankh band karke le lo!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Sneha_Professional",
+    "category": "electronics",
+    "query": "iPad Air M2 vs iPad Pro M4",
+    "budget": "80000",
+    "resolvedProduct": "Apple iPad Air 11-inch (M2) 128GB Wi-Fi",
+    "latencySec": "29.50",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 63,
+      "statusTax": 35000,
+      "utilityScore": 85,
+      "aamAadmiSummary": "Arey bhaiya, Pro ke chakkar mein paise mat phuko; the Air M2 is more than enough for your design work and saves you serious cash!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Sneha_Professional",
+    "category": "electronics",
+    "query": "is MacBook Air M3 8GB RAM worth buying in 2026?",
+    "budget": "90000",
+    "resolvedProduct": "Apple MacBook Air M3 13.6-inch (8GB RAM, 256GB SSD)",
+    "latencySec": "25.01",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 60,
+      "statusTax": 25000,
+      "utilityScore": 65,
+      "aamAadmiSummary": "Arey bhaiya, 8GB RAM in 2026 is a trap, isse accha wait karo ya 16GB variant le lo!",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Amit_OffRoad",
+    "category": "automotive",
+    "query": "Ather 450x vs Ola S1 Pro",
+    "budget": "150000",
+    "resolvedProduct": "Ola S1 Pro Gen 3",
+    "latencySec": "81.50",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 88,
+      "statusTax": 0,
+      "utilityScore": 92,
+      "aamAadmiSummary": "Bhai, agar range aur features chahiye toh Ola S1 Pro le lo, par service ka thoda dhyan rakhna.",
+      "procurementLinksCount": 4
+    }
+  },
+  {
+    "agent": "Amit_OffRoad",
+    "category": "automotive",
+    "query": "Thar Roxx 4x4",
+    "budget": "2000000",
+    "resolvedProduct": "Mahindra Thar Roxx MX5 4WD Diesel",
+    "latencySec": "32.48",
+    "score": 100,
+    "passedChecksCount": 8,
+    "failedChecks": [],
+    "rawOutputSummary": {
+      "finalDecision": "BUY",
+      "paisaVasoolIndex": 90,
+      "statusTax": 0,
+      "utilityScore": 95,
+      "aamAadmiSummary": "Bhai, budget ke andar fit hai aur solid road presence ke sath asli off-roading maza degi, aankh band karke le lo!",
+      "procurementLinksCount": 4
+    }
+  }
+]

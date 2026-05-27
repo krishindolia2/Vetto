@@ -1392,19 +1392,22 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       }
 
       const preFetchPrompt = `Identify if the query is a broad category request (e.g. "best gaming phone", "good sneakers") or a specific product (e.g. "iPhone 15", "Nike Air Force 1").
-      If it is a broad category, you MUST first select the single absolutely best specific product that fits this category and budget.
-      Then, identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs or search result URLs for THAT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India.
+      If it is a broad category, you MUST select a single specific product that strictly fits under or equals the target budget of ₹${budgetLimit || 'N/A'}.
+      CRITICAL BUDGET RULE: The selected product's lowest live price MUST be less than or equal to the budget constraint of ₹${budgetLimit || 'N/A'}. Under no circumstances are you allowed to select a product that exceeds the budget limit (even by a single rupee). If the closest popular option is ₹71,999 for a ₹70,000 budget, you MUST reject it and select a slightly lower-tier model (e.g. a variant or brand that costs ₹66,990) that is strictly under the limit.
+      Then, identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs or search result URLs for THAT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming strictly to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India.
       
       ${platformRestrictionRule}
       
-      CRITICAL ACCURACY & SPECIFICATION VARIANT RULES:
-      1. ONLY return pricing and stock status for the EXACT technical specifications (specifically matching RAM capacity like 8GB/12GB/16GB, storage capacity like 128GB/256GB/512GB, and generation/processor like M2/M3/M4) requested or fitting closest to the optional budget: "${budgetLimit || 'N/A'}".
-      2. If that specific model or spec variant is not available, or is out of stock on a retailer platform, you MUST set its "price" to "Out of Stock", "stockStatus" to "Out of Stock", "url" to "", and "exactVariantMatch" as false. Do NOT provide a product URL if it is out of stock.
-      3. NEVER substitute or return the price of a different variant (for example, do NOT return the ₹44,999 price of a 12GB variant when the user query is looking for the 8GB variant). If the closest available listing is a different variant, mark "exactVariantMatch" as false, "price" as "Out of Stock", and "url" to "".
-      4. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, tempered glass protectors, refurbished/used units, or parts.
-      5. You MUST search the internet right now using search grounding to get the live, precise price that an ordinary consumer sees today when clicking to buy. Do not guess or use outdated release prices.
-      6. For "url", you MUST return a working product page URL. If you cannot find the EXACT product page URL for the SPECIFIC model, you must mark it Out of Stock. If it is genuinely in stock, return the exact URL. If you cannot find it, leave "url" empty and mark it Out of Stock!
-      7. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian platform, return "Out of Stock".
+       CRITICAL ACCURACY, SPECIFICATION VARIANT, & LINK-SYNC RULES:
+      1. ONLY return pricing and stock status for the EXACT technical specifications (specifically matching RAM capacity like 8GB/12GB/16GB, storage capacity like 128GB/256GB/512GB, and generation/processor like i5/i7/Ryzen 5/Ryzen 7/M2/M3/M4) requested or fitting closest to the optional budget: "${budgetLimit || 'N/A'}".
+      2. PRICE-TO-LINK SYNCHRONIZATION SAFEGUARD: The price you return for a platform MUST be the exact active price displayed on the returned URL page today. Under no circumstances are you allowed to pair a low price found in an outdated snippet with a URL that points to a higher-priced listing or a different specification variant. If you cannot find a direct product URL offering that exact price, you MUST update the price to match the URL's current price, or mark it Out of Stock.
+      3. VARIANT CONSISTENCY RULE: If the query or budget is for a specific configuration (e.g. "Ryzen 5" vs "Ryzen 7" or "16GB RAM" vs "8GB RAM"), the URL you return MUST point strictly to that exact configuration. Never return a URL for a more expensive or cheaper specification variant. If the exact variant is not available, mark that platform Out of Stock.
+      4. If that specific model or spec variant is not available, or is out of stock on a retailer platform, you MUST set its "price" to "Out of Stock", "stockStatus" to "Out of Stock", "url" to "", and "exactVariantMatch" as false. Do NOT provide a product URL if it is out of stock.
+      5. NEVER substitute or return the price of a different variant. If the closest available listing is a different variant, mark "exactVariantMatch" as false, "price" as "Out of Stock", and "url" to "".
+      6. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, bags, refurbished/used units, or parts.
+      7. You MUST search the internet right now using search grounding to get the live, precise price that an ordinary consumer sees today when clicking to buy. Do not guess or use outdated release prices.
+      8. For "url", you MUST return a working direct product page URL. If you cannot find the EXACT product page URL for the SPECIFIC model, you must mark it Out of Stock. If it is genuinely in stock, return the exact URL. If you cannot find it, leave "url" empty and mark it Out of Stock!
+      9. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian platform, return "Out of Stock".
 
       Return the results in a strict JSON object format containing "resolvedProductName", "queryType" (must be "category", "comparison", or "specific"), "referencePrice" (an estimated average retail price of the core main product itself in India, e.g., "₹45,000"), and "prices" array.
       
@@ -2025,7 +2028,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     let finalSystemPrompt = systemPrompt + 
       "\n\nCRITICAL REQUIREMENT FOR ZERO LATENCY & SPEED:\n" +
       "Your response must comply 100% with the strict JSON structure. Because the structure is extensive, YOU MUST keep every text value extremely short, terse, and punchy. " +
-      "Each text field (definitions, details, summaries, reasons) must be at most 1 short sentence or quick phrase. Do not generate multi-sentence text. This is absolutely essential to achieve ultra-fast generation and low latency.";
+      "Each text field (definitions, details, summaries, reasons) must be at most 1 short sentence or quick phrase. Do not generate multi-sentence text. This is absolutely essential to achieve ultra-fast generation and low latency." +
+      "\n\nCRITICAL HINGLISH PERSONA REQUIREMENT:\n" +
+      "To ensure we preserve Vetto's authentic Bhartiya tone, the 'aamAadmiSummary' field MUST ALWAYS include at least one friendly Indian/Hinglish term (e.g. 'Bhai', 'Bhaiya', 'Arey yaar', 'le lo', 'mat lena', 'mehenga', 'sasta') directly in the single short sentence. Never return a purely formal English sentence under any circumstances.";
 
     if (preFetchedPrices && preFetchedPrices.length > 0) {
       finalSystemPrompt += `\n\nCRITICAL REAL-TIME CURRENT PRICING DATAFEED:\nYou MUST use the following exact prices and URLs for the platforms in your JSON's "priceIntegrity.procurementLinks" array. Do NOT make up other prices or change these fields. Use exactly these values:\n${JSON.stringify(preFetchedPrices.map(p => ({ platform: p.platform, price: p.price, url: p.url, isBestDeal: p.isBestDeal })), null, 2)}`;
@@ -2515,7 +2520,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         }
 
         // 4. Force synchronization on high-level textual summaries to eradicate mismatching numbers
-        auditData.priceIntegrity.currentPriceAudit = `₹${lowestPrice.toLocaleString('en-IN')} • Verified lowest available price among active sellers online.`;
+        auditData.priceIntegrity.currentPriceAudit = `₹${lowestPrice.toLocaleString('en-IN')} • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!`;
 
         // 5. Enforce strict, stable, mathematical alignment for "marketTiming" and "finalDecision" to eliminate random flipping
         const pvi = Number(auditData.paisaVasoolIndex || 0);
