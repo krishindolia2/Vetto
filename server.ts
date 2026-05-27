@@ -1307,18 +1307,21 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
             }
           }
 
-          // 4. Platform Domain matching
+          // 4. Platform Domain matching and high-confidence product page check
+          const isProductPage = path.includes("/dp/") || path.includes("/p/") || path.includes("-p-") || path.includes("/product/") || path.includes("/buy/");
+          
           if (pLower.includes("amazon") && (uriLower.includes("amazon.in") || uriLower.includes("amazon.com"))) {
-            return uri;
+            if (isProductPage) return uri;
+            else if (!uriLower.includes("/s?")) return uri; // accept if not a basic search page
           }
           if (pLower.includes("flipkart") && uriLower.includes("flipkart.com")) {
-            return uri;
+            if (isProductPage) return uri;
           }
           if (pLower.includes("croma") && uriLower.includes("croma.com")) {
-            return uri;
+            if (isProductPage) return uri;
           }
           if (pLower.includes("reliance") && (uriLower.includes("reliancedigital") || uriLower.includes("reliance.com"))) {
-            return uri;
+            if (isProductPage) return uri;
           }
           if (pLower.includes("myntra") && uriLower.includes("myntra.com")) {
             return uri;
@@ -1369,9 +1372,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-3.1-flash-lite",
-    "gemini-3.5-flash",
-    "gemini-1.5-flash"
+    "gemini-3.1-flash-lite"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1443,12 +1444,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         contents: [{ role: "user", parts: [{ text: preFetchPrompt }] }],
         config: {
           tools: [{ googleSearch: {} }],
-          temperature: 0.0,
-          ...(modelToUse.includes("gemini-3") ? {
-            thinkingConfig: {
-              thinkingLevel: ThinkingLevel.MINIMAL
-            }
-          } : {})
+          temperature: 0.0
         }
       });
 
@@ -2005,7 +2001,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-3.5-flash";
+    const modelToUse = "gemini-3.1-pro";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];

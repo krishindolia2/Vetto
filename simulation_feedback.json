@@ -1,92 +1,324 @@
 [
   {
-    "agent": "Rohan",
-    "category": "electronics",
-    "query": "best phone under 40k",
-    "budget": "40000",
-    "resolvedProduct": "Poco F6 (8GB RAM, 256GB Storage)",
-    "latencySec": "1.56",
-    "score": 100,
-    "passedChecks": [
-      "Resolved category query to: \"Poco F6 (8GB RAM, 256GB Storage)\"",
-      "Budget fits: Deal price is ₹29,999 (Budget: ₹40,000)",
-      "Link for Flipkart is appropriate for electronics.",
-      "OOS item on Amazon correctly has an empty URL string.",
-      "OOS item on Reliance Digital correctly has an empty URL string.",
-      "OOS item on Google Shopping correctly has an empty URL string.",
-      "Price history latest node matches the lowest deal price perfectly (₹29999).",
-      "Passed clean jargon audit (no academic or commercial jargon detected).",
-      "Passed tone verification (friendly elder brother Hinglish tone detected)."
-    ],
-    "failedChecks": [],
-    "feedback": "Yo, Rohan here! Checked Vetto for \"best phone under 40k\". The engine recommended the \"Poco F6 (8GB RAM, 256GB Storage)\". Honestly, the \"aamAadmiSummary\" is total gold, feels like my gym senior or PG roommate giving honest advice. It caught that the marketing specs of this phone don't tell the full story about sustained gaming performance. Pricing-wise, the Croma/Amazon compare was spot on, and I love that they didn't push me to some random third-party sites. Latency was super crisp, only 1.56 seconds! 10/10 from me, completely ready!",
-    "rawOutputSummary": {
-      "finalDecision": "BUY",
-      "paisaVasoolIndex": 95,
-      "statusTax": 0,
-      "utilityScore": 90,
-      "aamAadmiSummary": "Bhai, if gaming is your main priority, this phone is a beast that fits your budget perfectly and saves you 10k.",
-      "procurementLinksCount": 4
-    }
+    "agentId": 1,
+    "role": "Gamer",
+    "query": "best gaming laptop under 70k",
+    "latencyMs": 980,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Lenovo LOQ 15IAX9 (i5-12450HX / 16GB / 512GB / RTX 3050)",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "amazon",
+      "flipkart",
+      "croma",
+      "reliance digital"
+    ]
   },
   {
-    "agent": "Priya",
-    "category": "fashion",
-    "query": "Adidas Samba vs Nike Dunk",
-    "budget": "10000",
-    "resolvedProduct": "Adidas Samba OG",
-    "latencySec": "0.28",
-    "score": 100,
-    "passedChecks": [
-      "Resolved category query to: \"Adidas Samba OG\"",
-      "Intelligent Warning Pass: Deal price (₹10999) exceeds budget constraint (₹10000) for explicit model search, but bhaiya warned the user correctly: \"Bhai, the Samba looks amazing but at ₹10,999 it exceeds your ₹10,000 budget; wai...\"",
-      "Link for Myntra is appropriate for fashion.",
-      "Link for Ajio is appropriate for fashion.",
-      "Link for Flipkart is appropriate for fashion.",
-      "OOS item on Amazon correctly has an empty URL string.",
-      "Price history latest node matches the lowest deal price perfectly (₹10999).",
-      "Passed clean jargon audit (no academic or commercial jargon detected).",
-      "Passed tone verification (friendly elder brother Hinglish tone detected)."
+    "agentId": 2,
+    "role": "Fashionista",
+    "query": "white sneakers for men",
+    "latencyMs": 71591,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 71591ms"
     ],
-    "failedChecks": [],
-    "feedback": "Hey, Priya here! I searched for \"Adidas Samba vs Nike Dunk\". The system successfully mapped my query to \"Adidas Samba OG\". As a sneakerhead, the size warning inside \"bhartiyaPersonaAudit\" was a lifesaver—it warned me that Sambas run a bit narrow and to size up by half. The Ajio and Myntra live pricing comparison was 100% accurate, which is amazing because fashion prices fluctuate like crazy in India. No dead links were found, and the out of stock sites properly had empty clicks. Loved it, this is exactly what I've been waiting for!",
-    "rawOutputSummary": {
-      "finalDecision": "BUY",
-      "paisaVasoolIndex": 78,
-      "statusTax": 3000,
-      "utilityScore": 70,
-      "aamAadmiSummary": "Bhai, the Samba looks amazing but at ₹10,999 it exceeds your ₹10,000 budget; wait for a sale or grab the Gazelle instead.",
-      "procurementLinksCount": 4
-    }
+    "resolvedProduct": "Puma Smashic Comfort Sneakers",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "myntra",
+      "ajio",
+      "flipkart",
+      "amazon india"
+    ]
   },
   {
-    "agent": "Amit",
-    "category": "automotive",
-    "query": "Royal Enfield Himalayan",
-    "budget": "300000",
-    "resolvedProduct": "Royal Enfield Himalayan 450 Base Variant",
-    "latencySec": "1.76",
-    "score": 100,
-    "passedChecks": [
-      "Resolved category query to: \"Royal Enfield Himalayan 450 Base Variant\"",
-      "Intelligent Warning Pass: Deal price (₹305736) exceeds budget constraint (₹300000) for explicit model search, but bhaiya warned the user correctly: \"Bhai, the bike is a beast for Ladakh, but it slightly crosses your ₹3 Lakh budge...\"",
-      "Link for ZigWheels is appropriate for automotive.",
-      "OOS item on BikeWale correctly has an empty URL string.",
-      "OOS item on BikeDekho correctly has an empty URL string.",
-      "OOS item on Royal Enfield correctly has an empty URL string.",
-      "Price history latest node matches the lowest deal price perfectly (₹305736).",
-      "Passed clean jargon audit (no academic or commercial jargon detected).",
-      "Passed tone verification (friendly elder brother Hinglish tone detected)."
+    "agentId": 3,
+    "role": "Automotive Enthusiast",
+    "query": "best mileage bike",
+    "latencyMs": 25970,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 25970ms"
     ],
-    "failedChecks": [],
-    "feedback": "Namaste, Amit here. I did a deep dive search on \"Royal Enfield Himalayan\". The output resolved beautifully to \"Royal Enfield Himalayan 450 Base Variant\". As someone who plans long highway tours, the warning about the real-world mileage and the Himalayan's weight balance was very genuine and accurate. Crucially, the procurement section did NOT spam me with Amazon or Ajio links for a 411cc adventure tourer—instead it gave me direct BikeWale and brand-site references. The pricing congruent check passed, meaning the historical price chart matches the lowest deal. Very premium and extremely helpful. Full marks!",
-    "rawOutputSummary": {
-      "finalDecision": "BUY",
-      "paisaVasoolIndex": 60,
-      "statusTax": 15000,
-      "utilityScore": 80,
-      "aamAadmiSummary": "Bhai, the bike is a beast for Ladakh, but it slightly crosses your ₹3 Lakh budget and will tire you out in daily Pune traffic.",
-      "procurementLinksCount": 4
-    }
+    "resolvedProduct": "Hero Splendor Plus",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "zigwheels",
+      "bikewale",
+      "bikedekho",
+      "official brand store"
+    ]
+  },
+  {
+    "agentId": 4,
+    "role": "Student",
+    "query": "is iPad 9th gen worth it?",
+    "latencyMs": 51707,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 51707ms"
+    ],
+    "resolvedProduct": "Apple iPad 9th Gen 64GB Wi-Fi",
+    "finalDecision": "WAIT",
+    "platformsFound": [
+      "croma",
+      "reliance digital",
+      "flipkart",
+      "amazon"
+    ]
+  },
+  {
+    "agentId": 5,
+    "role": "Tech Reviewer",
+    "query": "MacBook Air M2 vs M3",
+    "latencyMs": 40544,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 40544ms"
+    ],
+    "resolvedProduct": "Apple MacBook Air M2 13-inch (8GB/256GB)",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "croma",
+      "reliance digital",
+      "flipkart",
+      "amazon"
+    ]
+  },
+  {
+    "agentId": 6,
+    "role": "Home Buyer",
+    "query": "best washing machine under 20k",
+    "latencyMs": 21713,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 21713ms"
+    ],
+    "resolvedProduct": "Samsung 7 kg 5 Star Inverter Fully Automatic Top Load (WA70T4262GS/TL)",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "amazon",
+      "flipkart",
+      "croma",
+      "reliance digital"
+    ]
+  },
+  {
+    "agentId": 7,
+    "role": "Sneakerhead",
+    "query": "Nike Air Force 1",
+    "latencyMs": 33567,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 33567ms"
+    ],
+    "resolvedProduct": "Nike Air Force 1 '07",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "myntra",
+      "ajio",
+      "flipkart",
+      "amazon"
+    ]
+  },
+  {
+    "agentId": 8,
+    "role": "Commuter",
+    "query": "Ola S1 Pro vs Ather 450X",
+    "latencyMs": 19840,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 19840ms"
+    ],
+    "resolvedProduct": "Ola S1 Pro vs Ather 450X",
+    "finalDecision": "RUN",
+    "platformsFound": [
+      "zigwheels",
+      "bikewale",
+      "bikedekho",
+      "ather energy"
+    ]
+  },
+  {
+    "agentId": 9,
+    "role": "Photographer",
+    "query": "Sony A7IV",
+    "latencyMs": 21289,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 21289ms"
+    ],
+    "resolvedProduct": "Sony A7IV Body Only",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "amazon",
+      "croma",
+      "reliance digital",
+      "flipkart"
+    ]
+  },
+  {
+    "agentId": 10,
+    "role": "Hype Beast",
+    "query": "Yeezy Boost 350",
+    "latencyMs": 46363,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 46363ms"
+    ],
+    "resolvedProduct": "Adidas Yeezy Boost 350",
+    "finalDecision": "WAIT",
+    "platformsFound": [
+      "amazon",
+      "flipkart",
+      "ajio",
+      "myntra"
+    ]
+  },
+  {
+    "agentId": 11,
+    "role": "Family Car Buyer",
+    "query": "safest family car under 15 lakhs",
+    "latencyMs": 27340,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 27340ms"
+    ],
+    "resolvedProduct": "Tata Nexon Creative",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "zigwheels",
+      "tata motors",
+      "carwale",
+      "cardekho"
+    ]
+  },
+  {
+    "agentId": 12,
+    "role": "Audiophile",
+    "query": "best noise cancelling headphones",
+    "latencyMs": 20,
+    "status": "PASS",
+    "issues": [],
+    "platformsFound": []
+  },
+  {
+    "agentId": 13,
+    "role": "Bargain Hunter",
+    "query": "cheapest 5g phone",
+    "latencyMs": 24,
+    "status": "PASS",
+    "issues": [],
+    "platformsFound": []
+  },
+  {
+    "agentId": 14,
+    "role": "Gym Rat",
+    "query": "best gym shoes",
+    "latencyMs": 26,
+    "status": "PASS",
+    "issues": [],
+    "platformsFound": []
+  },
+  {
+    "agentId": 15,
+    "role": "Offroader",
+    "query": "Mahindra Thar",
+    "latencyMs": 24,
+    "status": "PASS",
+    "issues": [],
+    "platformsFound": []
+  },
+  {
+    "agentId": 16,
+    "role": "Premium Buyer",
+    "query": "iPhone 15 Pro Max",
+    "latencyMs": 26835,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 26835ms"
+    ],
+    "resolvedProduct": "iPhone 15 Pro Max 256GB",
+    "finalDecision": "WAIT",
+    "platformsFound": [
+      "croma",
+      "reliance digital",
+      "flipkart",
+      "amazon"
+    ]
+  },
+  {
+    "agentId": 17,
+    "role": "Winter Shopper",
+    "query": "north face winter jacket",
+    "latencyMs": 21098,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 21098ms"
+    ],
+    "resolvedProduct": "The North Face Windcheater Hooded Jacket",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "myntra",
+      "ajio",
+      "amazon",
+      "flipkart"
+    ]
+  },
+  {
+    "agentId": 18,
+    "role": "Daily Rider",
+    "query": "Honda Activa 6G",
+    "latencyMs": 26420,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 26420ms"
+    ],
+    "resolvedProduct": "Honda Activa 6G",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "zigwheels",
+      "bikewale",
+      "bikedekho",
+      "honda india"
+    ]
+  },
+  {
+    "agentId": 19,
+    "role": "Smart Home Fan",
+    "query": "Amazon Echo Dot",
+    "latencyMs": 20616,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 20616ms"
+    ],
+    "resolvedProduct": "Amazon Echo Pop",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "amazon",
+      "flipkart",
+      "croma",
+      "google shopping"
+    ]
+  },
+  {
+    "agentId": 20,
+    "role": "Skeptical Buyer",
+    "query": "is Samsung S24 ultra worth 1.3 lakhs?",
+    "latencyMs": 26010,
+    "status": "FAIL",
+    "issues": [
+      "Latency warning: Took 26010ms"
+    ],
+    "resolvedProduct": "Samsung Galaxy S24 Ultra 12GB 256GB",
+    "finalDecision": "BUY",
+    "platformsFound": [
+      "croma",
+      "flipkart",
+      "amazon",
+      "reliance digital"
+    ]
   }
 ]
