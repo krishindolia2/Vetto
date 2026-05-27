@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import os from "os";
 import crypto from "crypto";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
@@ -396,7 +397,7 @@ function deepMerge(target: any, source: any): any {
 const auditCache = new Map<string, { data: any, timestamp: number }>();
 const CACHE_TTL = 1000 * 60 * 60 * 120; // 120 hours (5 days) to extremely optimize API cost billing while maintaining high trust and performance
 
-const cachePath = path.join(process.cwd(), "audit_cache_persistent.json");
+const cachePath = path.join(os.tmpdir(), "audit_cache_persistent.json");
 
 // Load persistent cache from disk on startup
 try {
@@ -768,6 +769,13 @@ function getReferencePrice(auditData: any, parsedQuery: string, budget: string):
   return 12000; // Sensible generic fallback
 }
 
+// Helper to classify if an automotive item is a two-wheeler (scooter, bike, etc.)
+function isTwoWheeler(prodName: string, query: string): boolean {
+  const combined = `${prodName} ${query}`.toLowerCase();
+  const bikeKeywords = ['bike', 'motorcycle', 'royal enfield', 'ather', 'ola s1', 'scooter', 'yamaha', 'pulsar', 'activa', 'splendor', 'himalayan', 'tvs', 'ktm', 'bullet', 'pulsar', 'apache', 'suzuki access', 'jupiter', 'dio'];
+  return bikeKeywords.some(kw => combined.includes(kw));
+}
+
 // Detect category based on product identity and search params to align platform selection
 function detectProductCategory(prodName: string, query: string): 'electronics' | 'fashion' | 'automotive' | 'general' {
   const combined = `${prodName} ${query}`.toLowerCase();
@@ -775,7 +783,7 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
   const fashionKeywords = [
     'sneaker', 'shoe', 'slipper', 'sandal', 'boot', 'nike', 'adidas', 'puma', 'reebok', 'samba', 'dunk', 'jordan', 
     'clothing', 'shirt', 'tshirt', 'jeans', 'pant', 'jacket', 'trousers', 'wear', 'apparel', 'perfume', 'watch', 
-    'bag', 'backpack', 'wallet', 'comet', 'woodland', 'crocs', 'fashion', 't-shirt', 'hoodie', 'socks', 'sweatshirt'
+    'bag', 'backpack', 'wallet', 'comet shoes', 'comet sneakers', 'woodland', 'crocs', 'fashion', 't-shirt', 'hoodie', 'socks', 'sweatshirt'
   ];
   
   const electronicsKeywords = [
@@ -788,14 +796,15 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
   const automotiveKeywords = [
     'car', 'bike', 'vehicle', 'motorcycle', 'tyre', 'tire', 'helmet', 'dashcam', 'gps tracker', 'alloy wheels',
     'car perfume', 'tata', 'mahindra', 'hyundai', 'maruti suzuki', 'honda', 'yamaha', 'royal enfield', 'ather', 'ola s1',
-    'scooter', 'inflator', 'car wash', 'lubricant', 'engine oil'
+    'scooter', 'inflator', 'car wash', 'lubricant', 'engine oil', 'ev', 'electric vehicle', 'mg comet', 'byd', 'mg motor',
+    'suv', 'sedan', 'hatchback', 'nexon', 'punch', 'thar', 'creta', 'seltos', 'xuv700', 'scorpio', 'fortuner'
   ];
   
   const hasFashion = fashionKeywords.some(kw => combined.includes(kw));
   const hasElectronics = electronicsKeywords.some(kw => combined.includes(kw));
   const hasAutomotive = automotiveKeywords.some(kw => combined.includes(kw));
   
-  if (hasAutomotive && !hasElectronics && !hasFashion) {
+  if (hasAutomotive) {
     return 'automotive';
   } else if (hasFashion && !hasElectronics) {
     return 'fashion';
@@ -1067,6 +1076,17 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
     isGenericOrMismatched = true;
   }
 
+  // Deep URL accessory check to force self-healing
+  const urlLower = targetUrl.toLowerCase();
+  const accessoryKeywords = ["cover", "case", "tempered", "pouch", "guard", "strap", "sleeve", "cable", "keychain", "cleaning-kit", "tripod", "lens-protector"];
+  const nameLower = decodedProdName.toLowerCase();
+  const isAccessoryLink = accessoryKeywords.some(kw => urlLower.includes(kw)) && !accessoryKeywords.some(kw => nameLower.includes(kw));
+
+  if (isAccessoryLink) {
+    isGenericOrMismatched = true;
+    console.log(`[URL Cleaner] Detected accessory link: ${targetUrl} for product: ${decodedProdName}. Forcing fallback.`);
+  }
+
   if (!isGenericOrMismatched) {
     try {
       const parsedUrl = new URL(targetUrl);
@@ -1087,6 +1107,16 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
         platformDomainMatch = false;
       } else if (platformLower.includes("ajio") && !host.includes("ajio.com")) {
         platformDomainMatch = false;
+      } else if (platformLower.includes("carwale") && !host.includes("carwale.com")) {
+        platformDomainMatch = false;
+      } else if (platformLower.includes("bikewale") && !host.includes("bikewale.com")) {
+        platformDomainMatch = false;
+      } else if (platformLower.includes("cardekho") && !host.includes("cardekho.com")) {
+        platformDomainMatch = false;
+      } else if (platformLower.includes("bikedekho") && !host.includes("bikedekho.com")) {
+        platformDomainMatch = false;
+      } else if (platformLower.includes("zigwheels") && !host.includes("zigwheels.com")) {
+        platformDomainMatch = false;
       }
 
       if (!platformDomainMatch) {
@@ -1094,7 +1124,7 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
       } else {
         // Belong to the correct platform. Define generic homes/carts/help/login pages as generic
         const genericPaths = ["", "/", "/index.html", "/index.php", "/login", "/signup", "/register", "/cart", "/checkout"];
-        if (genericPaths.includes(path)) {
+        if (genericPaths.includes(path) || path.length < 5) {
           isGenericOrMismatched = true;
         }
       }
@@ -1104,7 +1134,10 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
       const nakedDomains = [
         "amazon.in", "amazon.in/", "flipkart.com", "flipkart.com/", 
         "croma.com", "croma.com/", "reliancedigital.in", "reliancedigital.in/", 
-        "myntra.com", "myntra.com/", "ajio.com", "ajio.com/"
+        "myntra.com", "myntra.com/", "ajio.com", "ajio.com/",
+        "carwale.com", "carwale.com/", "bikewale.com", "bikewale.com/",
+        "cardekho.com", "cardekho.com/", "bikedekho.com", "bikedekho.com/",
+        "zigwheels.com", "zigwheels.com/"
       ];
       if (nakedDomains.includes(cleanUrlStr) || cleanUrlStr.length < 5) {
         isGenericOrMismatched = true;
@@ -1131,6 +1164,16 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
       targetUrl = `https://www.myntra.com/search?q=${encodedPlusProdName}`;
     } else if (platformLower.includes("ajio")) {
       targetUrl = `https://www.ajio.com/search/?text=${encodedPlusProdName}`;
+    } else if (platformLower.includes("carwale")) {
+      targetUrl = `https://www.carwale.com/search/?q=${encodedPlusProdName}`;
+    } else if (platformLower.includes("bikewale")) {
+      targetUrl = `https://www.bikewale.com/search/?q=${encodedPlusProdName}`;
+    } else if (platformLower.includes("cardekho")) {
+      targetUrl = `https://www.cardekho.com/search/${encodedPlusProdName}`;
+    } else if (platformLower.includes("bikedekho")) {
+      targetUrl = `https://www.bikedekho.com/search/${encodedPlusProdName}`;
+    } else if (platformLower.includes("zigwheels")) {
+      targetUrl = `https://www.zigwheels.com/search/?q=${encodedPlusProdName}`;
     } else {
       // For automotive brands or any other custom platform, let's direct to their official website search or search Google
       if (platformLower.includes("tata")) {
@@ -1166,7 +1209,7 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
 }
 
 // Extract working grounding URLs straight from the Google Search Grounding Metadata chunks
-function extractGroundingUrlForPlatform(response: any, platformName: string): string | null {
+function extractGroundingUrlForPlatform(response: any, platformName: string, productQuery?: string): string | null {
   try {
     const chunks = response?.candidates?.[0]?.groundingMetadata?.groundingChunks;
     if (Array.isArray(chunks)) {
@@ -1176,6 +1219,45 @@ function extractGroundingUrlForPlatform(response: any, platformName: string): st
         if (uri && typeof uri === 'string') {
           const uriLower = uri.toLowerCase();
           
+          let parsedUrl: URL;
+          try {
+            parsedUrl = new URL(uri);
+          } catch (e) {
+            continue;
+          }
+          const host = parsedUrl.hostname.toLowerCase();
+          const path = parsedUrl.pathname.toLowerCase();
+
+          // 1. Generic Link Check
+          const genericPaths = ["", "/", "/index.html", "/index.php", "/login", "/signup", "/register", "/cart", "/checkout", "/help", "/about", "/terms"];
+          if (genericPaths.includes(path) || path.length < 5) {
+            continue;
+          }
+
+          // 2. Low Quality check
+          const isLowQuality = path.includes("/help/") || 
+                              path.includes("/display.html") || 
+                              path.includes("/seller") ||
+                              path.includes("/display/") ||
+                              path.includes("/about") ||
+                              path.includes("/contact");
+          if (isLowQuality) {
+            continue;
+          }
+
+          // 3. Accessory Leak Check
+          if (productQuery) {
+            const queryLower = productQuery.toLowerCase();
+            const accessoryKeywords = ["cover", "case", "tempered", "pouch", "guard", "strap", "sleeve", "cable", "keychain", "cleaning-kit", "tripod", "lens-protector"];
+            const hasAccessoryKeywordInUrl = accessoryKeywords.some(kw => path.includes(kw) || uriLower.includes(kw));
+            const queryWantsAccessory = accessoryKeywords.some(kw => queryLower.includes(kw));
+            if (hasAccessoryKeywordInUrl && !queryWantsAccessory) {
+              console.log(`[Grounding URL Filter] Rejected accessory leak link: ${uri} for query: ${productQuery}`);
+              continue;
+            }
+          }
+
+          // 4. Platform Domain matching
           if (pLower.includes("amazon") && (uriLower.includes("amazon.in") || uriLower.includes("amazon.com"))) {
             return uri;
           }
@@ -1195,6 +1277,21 @@ function extractGroundingUrlForPlatform(response: any, platformName: string): st
             return uri;
           }
           if (pLower.includes("tatacliq") && uriLower.includes("tatacliq.com")) {
+            return uri;
+          }
+          if (pLower.includes("carwale") && uriLower.includes("carwale.com")) {
+            return uri;
+          }
+          if (pLower.includes("bikewale") && uriLower.includes("bikewale.com")) {
+            return uri;
+          }
+          if (pLower.includes("cardekho") && uriLower.includes("cardekho.com")) {
+            return uri;
+          }
+          if (pLower.includes("bikedekho") && uriLower.includes("bikedekho.com")) {
+            return uri;
+          }
+          if (pLower.includes("zigwheels") && uriLower.includes("zigwheels.com")) {
             return uri;
           }
 
@@ -1239,7 +1336,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       } else if (category === 'electronics') {
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an ELECTRONICS product query. You MUST actively restrict the e-commerce platforms and links to: Croma, Reliance Digital, Amazon India, and Flipkart. Do NOT look up or return prices/links for Myntra, Ajio, or other irrelevant sites.`;
       } else if (category === 'automotive') {
-        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE (cars, bikes, parts, accessories) query. You MUST actively restrict the e-commerce platforms and links to: Amazon India, Flipkart, and the official brand store web page (e.g. Maruti Suzuki, Tata Motors, Hyundai India, Honda, Ather Energy, Ola Electric, Royal Enfield, Yamaha, etc.). Do NOT look up or return prices/links for Myntra, Ajio, Croma, or Reliance Digital.`;
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE (cars, bikes) query. You MUST actively restrict the platforms and links to: CarWale, BikeWale, CarDekho, BikeDekho, ZigWheels, and the official brand store web page (e.g. Maruti Suzuki, Tata Motors, Hyundai India, Honda, Ather Energy, Ola Electric, Royal Enfield, Yamaha, etc.). Do NOT look up or return prices/links for Amazon, Flipkart, Myntra, Ajio, Croma, or Reliance Digital under any circumstances.`;
       } else {
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra, or Tata CLiQ.`;
       }
@@ -1259,12 +1356,13 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       6. For "url", you MUST return a working product page URL. If you cannot find the EXACT product page URL for the SPECIFIC model, you must mark it Out of Stock. If it is genuinely in stock, return the exact URL. If you cannot find it, leave "url" empty and mark it Out of Stock!
       7. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian platform, return "Out of Stock".
 
-      Return the results in a strict JSON object format containing "resolvedProductName", "queryType" (must be "category", "comparison", or "specific"), and "prices" array.
+      Return the results in a strict JSON object format containing "resolvedProductName", "queryType" (must be "category", "comparison", or "specific"), "referencePrice" (an estimated average retail price of the core main product itself in India, e.g., "₹45,000"), and "prices" array.
       
       Example output format:
       {
         "resolvedProductName": "iQOO Neo 10 Pro 12GB 256GB",
         "queryType": "specific",
+        "referencePrice": "₹37,999",
         "prices": [
           {
             "platform": "Amazon",
@@ -1344,26 +1442,62 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
             return { item, priceStr, numValue, originalPriceStr, isOos };
           }).filter(x => x !== null) as any[];
 
-          // Dynamic Outlier Filtering Guard: Remove low prices that correspond to cases, covers or glass protectors
-          let filtered = parsedWithValues.filter(x => x.isOos || (!isNaN(x.numValue) && x.numValue > 100));
-          const activeOffers = filtered.filter(x => !x.isOos && !isNaN(x.numValue));
+          // Parse referencePrice
+          let estRefPrice = 0;
+          if (parsed.referencePrice) {
+            estRefPrice = parseInt(String(parsed.referencePrice).replace(/[^\d]/g, ''));
+          }
           
-          if (activeOffers.length >= 2) {
-            const sortedValues = activeOffers.map(x => x.numValue).sort((a, b) => a - b);
-            const medianPrice = sortedValues[Math.floor(sortedValues.length / 2)];
-            if (medianPrice > 2000) {
-              // Any listing that is less than 18% of the median price is surely a cheap screen-guard or back-case cover
-              filtered = filtered.filter(x => x.isOos || x.numValue >= medianPrice * 0.18);
-              console.log(`[Outlier Filter] Filtered out cheap accessory outliers using median price ₹${medianPrice}.`);
-            }
-          } else if (activeOffers.length === 1 && budgetLimit) {
-            const parsedLimit = parseInt(budgetLimit.split('.')[0].replace(/[^\d]/g, ''));
-            if (!isNaN(parsedLimit) && parsedLimit > 2000) {
-              // If only 1 offer found and it's less than 18% of the target budget, it's highly likely an accessory
-              filtered = filtered.filter(x => x.isOos || x.numValue >= parsedLimit * 0.18);
-              console.log(`[Outlier Filter] Filtered out cheap accessory outliers using budget limit ₹${parsedLimit}.`);
+          // If no referencePrice was parsed, let's estimate one from active offers that are likely not accessories
+          if (!estRefPrice || isNaN(estRefPrice)) {
+            const possibleMainPrices = parsedWithValues
+              .filter(x => !x.isOos && !isNaN(x.numValue) && x.numValue > 1000)
+              .map(x => x.numValue);
+            if (possibleMainPrices.length > 0) {
+              estRefPrice = Math.max(...possibleMainPrices);
             }
           }
+          
+          // If still no reference price, let's use the budget limit if provided
+          if ((!estRefPrice || isNaN(estRefPrice)) && budgetLimit) {
+            estRefPrice = parseInt(budgetLimit.split('.')[0].replace(/[^\d]/g, ''));
+          }
+
+          // Fallback based on category
+          if (!estRefPrice || isNaN(estRefPrice)) {
+            const combinedLower = resolvedName.toLowerCase();
+            if (combinedLower.includes("laptop") || combinedLower.includes("macbook")) {
+              estRefPrice = 50000;
+            } else if (combinedLower.includes("phone") || combinedLower.includes("iphone") || combinedLower.includes("samsung galaxy")) {
+              estRefPrice = 25000;
+            } else if (combinedLower.includes("buds") || combinedLower.includes("earphones") || combinedLower.includes("airpods")) {
+              estRefPrice = 3000;
+            } else {
+              estRefPrice = 5000;
+            }
+          }
+
+          console.log(`[Outlier Filter] Calculated robust reference price: ₹${estRefPrice.toLocaleString('en-IN')}`);
+
+          // Now filter out cheap accessory outliers with absolute mathematical precision!
+          // Any active offer less than 20% of the reference price is marked as Out of Stock
+          const filtered = parsedWithValues.map(x => {
+            if (x.isOos) return x;
+            if (isNaN(x.numValue)) {
+              return { ...x, isOos: true, priceStr: "Out of Stock" };
+            }
+            const isOutlier = x.numValue < estRefPrice * 0.20;
+            if (isOutlier) {
+              console.log(`[Outlier Filter] Marked cheap accessory outlier as Out of Stock: ${x.item.platform} price ${x.priceStr} (too low for reference ₹${estRefPrice})`);
+              return {
+                ...x,
+                isOos: true,
+                priceStr: "Out of Stock",
+                numValue: NaN
+              };
+            }
+            return x;
+          });
 
           if (filtered.length > 0) {
             const healed: any[] = [];
@@ -1376,19 +1510,11 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               let url = String(item.url || "").trim();
               
               const platformLower = platform.toLowerCase();
-              const isGenericModelUrl = !url || 
-                                        url === "https://www.amazon.in" || 
-                                        url === "https://www.flipkart.com" || 
-                                        url === "https://www.croma.com" || 
-                                        url === "https://www.reliancedigital.in" ||
-                                        url.includes("placeholder") ||
-                                        url.length < 30; // Generic listing homepage urls are usually short
 
               // Direct Alignment: ALWAYS prioritize actual crawled URL from grounding chunks to prevent LLM hallucinated dead-links
-              const groundingUrl = extractGroundingUrlForPlatform(response, platform);
+              const groundingUrl = extractGroundingUrlForPlatform(response, platform, cleanQuery);
               if (groundingUrl && groundingUrl.length > 25) {
                 const gLower = groundingUrl.toLowerCase();
-                // Ensure it's a real product or search page, not a help / login / cart / seller page
                 const isLowQualityLink = gLower.includes("/help/") || 
                                          gLower.includes("/display.html") || 
                                          gLower.includes("/login") || 
@@ -1414,7 +1540,6 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
                 lowestIdx = index;
               }
 
-              // Guard redirect. If out of stock on that platform, force user link to empty
               let redirectUrl = url;
               if (isOos) {
                 redirectUrl = "";
@@ -1429,7 +1554,6 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
                 stockStatus
               });
             });
-
             
             return { resolvedProductName: resolvedName, queryType: parsed.queryType || "specific", prices: healed };
           }
@@ -1918,7 +2042,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     // Only add thinkingConfig if using a gemini-3.x thinking reasoning model
     if (modelToUse.startsWith("gemini-3")) {
       genConfig.thinkingConfig = {
-        thinkingLevel: ThinkingLevel.LOW,
+        thinkingLevel: ThinkingLevel.MINIMAL,
       };
     }
 
@@ -2065,6 +2189,41 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             console.log(`[Price Engine] Aligned refPrice with lowest verified pre-fetched deal price: ₹${refPrice.toLocaleString('en-IN')}`);
           }
         }
+
+        // Pre-parse brand details for automotive remapping and back-filling
+        const prodLower = prodName.toLowerCase();
+        let brandName = "Official Brand Store";
+        let brandUrl = `https://www.google.com/search?q=${encodedProdName}+official+website`;
+        
+        if (prodLower.includes("tata")) {
+          brandName = "Tata Motors";
+          brandUrl = "https://www.tatamotors.com";
+        } else if (prodLower.includes("mahindra")) {
+          brandName = "Mahindra Auto";
+          brandUrl = "https://auto.mahindra.com";
+        } else if (prodLower.includes("hyundai")) {
+          brandName = "Hyundai India";
+          brandUrl = "https://www.hyundai.com/in";
+        } else if (prodLower.includes("maruti") || prodLower.includes("suzuki")) {
+          brandName = "Maruti Suzuki";
+          brandUrl = "https://www.marutisuzuki.com";
+        } else if (prodLower.includes("honda")) {
+          brandName = "Honda India";
+          brandUrl = "https://www.hondacarindia.com";
+        } else if (prodLower.includes("ather")) {
+          brandName = "Ather Energy";
+          brandUrl = "https://www.atherenergy.com";
+        } else if (prodLower.includes("ola")) {
+          brandName = "Ola Electric";
+          brandUrl = "https://www.olaelectric.com";
+        } else if (prodLower.includes("royal enfield")) {
+          brandName = "Royal Enfield";
+          brandUrl = "https://www.royalenfield.com";
+        } else if (prodLower.includes("yamaha")) {
+          brandName = "Yamaha India";
+          brandUrl = "https://www.yamaha-motor-india.com";
+        }
+
         const existingPlatforms = new Set<string>();
         let healedLinks: any[] = [];
         
@@ -2112,14 +2271,35 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
               rawUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
             }
           } else if (category === 'automotive') {
-            if (platformLower.includes("myntra") || platformLower.includes("croma")) {
-              platform = "Amazon";
-              label = "Buy on Amazon India";
-              rawUrl = `https://www.amazon.in/s?k=${encodedProdName}`;
-            } else if (platformLower.includes("ajio") || platformLower.includes("reliance")) {
-              platform = "Flipkart";
-              label = "Buy on Flipkart";
-              rawUrl = `https://www.flipkart.com/search?q=${encodedProdName}`;
+            const isTwoWh = isTwoWheeler(prodName, parsedQuery);
+            if (isTwoWh) {
+              if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
+                platform = "BikeWale";
+                label = "Check BikeWale Price";
+                rawUrl = `https://www.bikewale.com/search/?q=${encodedProdName}`;
+              } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
+                platform = "BikeDekho";
+                label = "Check BikeDekho Price";
+                rawUrl = `https://www.bikedekho.com/search/${encodedProdName}`;
+              } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
+                platform = "ZigWheels";
+                label = "ZigWheels Comparison";
+                rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
+              }
+            } else {
+              if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
+                platform = "CarWale";
+                label = "Check CarWale Price";
+                rawUrl = `https://www.carwale.com/search/?q=${encodedProdName}`;
+              } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
+                platform = "CarDekho";
+                label = "Check CarDekho Price";
+                rawUrl = `https://www.cardekho.com/search/${encodedProdName}`;
+              } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
+                platform = "ZigWheels";
+                label = "ZigWheels Comparison";
+                rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
+              }
             }
           }
           
@@ -2136,15 +2316,18 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
               .replace(/urlencoded_product_name/gi, encodedProdName);
           }
           
-          // Strip Google redirects, tracking parameters, and heal any generic/mismatched links
-          const cleanedUrl = cleanAndResolveUrl(rawUrl, platform, prodName);
-          
           // Failsafe alignment check: reject if link price is a massive low outlier compared to standard core retail refPrice (indicating cheap accessory leak)
           const linkNumValue = parseInt(priceStr.replace(/[^\d]/g, ''));
+          let isAccessoryOutlier = false;
           if (!isNaN(linkNumValue) && refPrice > 3000 && linkNumValue < refPrice * 0.18) {
             console.log(`[Safety Guard] Replaced accessory/low-outlier placeholder price "${priceStr}" for platform "${platform}" based on reference price ₹${refPrice.toLocaleString('en-IN')}`);
-            priceStr = "Live Price"; // This forces self-healing based on refPrice!
+            priceStr = "Out of Stock"; // This forces self-healing and sets stockStatus correctly!
+            isAccessoryOutlier = true;
           }
+
+          // Strip Google redirects, tracking parameters, and heal any generic/mismatched links
+          const urlToClean = isAccessoryOutlier ? "" : rawUrl;
+          const cleanedUrl = cleanAndResolveUrl(urlToClean, platform, prodName);
 
           // Self-heal prices if they are placeholders or non-numeric
           const isPlaceholderPrice = !priceStr || 
@@ -2168,7 +2351,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             label: label.includes("Check") || label.includes("Search") ? `Buy on ${platform}` : label,
             price: priceStr,
             isBestDeal: link.isBestDeal || false,
-            url: cleanedUrl,
+            url: (priceStr === "Out of Stock" || link.stockStatus === "Out of Stock") ? "" : cleanedUrl,
             stockStatus: link.stockStatus || "In Stock"
           });
         });
@@ -2194,46 +2377,22 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             { name: "Reliance Digital", label: "Buy on Reliance Digital", path: `https://www.reliancedigital.in/search?q=${encodedPlusQueryForSearch}`, pct: 1.002 }
           ];
         } else if (category === 'automotive') {
-          // Identify brand to set the brand store URL and name dynamically
-          const prodLower = prodName.toLowerCase();
-          let brandName = "Official Brand Store";
-          let brandUrl = `https://www.google.com/search?q=${encodedQueryForSearch}+official+website`;
-          
-          if (prodLower.includes("tata")) {
-            brandName = "Tata Motors";
-            brandUrl = "https://www.tatamotors.com";
-          } else if (prodLower.includes("mahindra")) {
-            brandName = "Mahindra Auto";
-            brandUrl = "https://auto.mahindra.com";
-          } else if (prodLower.includes("hyundai")) {
-            brandName = "Hyundai India";
-            brandUrl = "https://www.hyundai.com/in";
-          } else if (prodLower.includes("maruti") || prodLower.includes("suzuki")) {
-            brandName = "Maruti Suzuki";
-            brandUrl = "https://www.marutisuzuki.com";
-          } else if (prodLower.includes("honda")) {
-            brandName = "Honda India";
-            brandUrl = "https://www.hondacarindia.com";
-          } else if (prodLower.includes("ather")) {
-            brandName = "Ather Energy";
-            brandUrl = "https://www.atherenergy.com";
-          } else if (prodLower.includes("ola")) {
-            brandName = "Ola Electric";
-            brandUrl = "https://www.olaelectric.com";
-          } else if (prodLower.includes("royal enfield")) {
-            brandName = "Royal Enfield";
-            brandUrl = "https://www.royalenfield.com";
-          } else if (prodLower.includes("yamaha")) {
-            brandName = "Yamaha India";
-            brandUrl = "https://www.yamaha-motor-india.com";
+          const isTwoWh = isTwoWheeler(prodName, parsedQuery);
+          if (isTwoWh) {
+            standardPlatforms = [
+              { name: "BikeWale", label: "Check BikeWale Price", path: `https://www.bikewale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+              { name: "BikeDekho", label: "Check BikeDekho Price", path: `https://www.bikedekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.998 },
+              { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.002 },
+              { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+            ];
+          } else {
+            standardPlatforms = [
+              { name: "CarWale", label: "Check CarWale Price", path: `https://www.carwale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+              { name: "CarDekho", label: "Check CarDekho Price", path: `https://www.cardekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.995 },
+              { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.005 },
+              { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+            ];
           }
-          
-          standardPlatforms = [
-            { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
-            { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.990 },
-            { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 },
-            { name: "Google Shopping", label: "Google Product Listings", path: `https://www.google.com/search?q=${encodedQueryForSearch}&tbm=shop`, pct: 1.010 }
-          ];
         } else {
           standardPlatforms = [
             { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },

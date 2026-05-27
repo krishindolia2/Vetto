@@ -381,5 +381,379 @@
       }
     },
     "timestamp": 1779798392331
+  },
+  "aXBob25lIDE1IHZzIGlwaG9uZSAxNiBwcm8tODUwMDAtcHJvZmVzc2lvbmFsIHBob3RvZ3JhcGh5IGhlYXZ5IG11bHRpdGFza2luZw__": {
+    "data": {
+      "isAnalysis": true,
+      "productName": "Apple iPhone 15 128GB",
+      "isComparison": true,
+      "finalDecision": "WAIT",
+      "whyBest": "It fits your 85k budget perfectly while saving you over 25k compared to the 16 Pro.",
+      "pros": [
+        "Excellent value at under 60k",
+        "USB-C port and Dynamic Island",
+        "Great main 48MP camera"
+      ],
+      "cons": [
+        "60Hz refresh rate screen",
+        "No dedicated telephoto lens",
+        "Slower USB 2.0 transfer speeds"
+      ],
+      "aamAadmiSummary": "Bhaiya, if you want a solid iPhone without burning a hole in your pocket, the iPhone 15 is the smartest choice. It fits your 85k budget perfectly and leaves you with extra cash for accessories.",
+      "avoid": "Avoid buying the 128GB if you shoot heavy 4K video; get 256GB instead.",
+      "regretWarning": "You might feel bad about the 60Hz screen when cheap Androids have 120Hz.",
+      "confidenceScore": 92,
+      "regretRisk": "Medium",
+      "whyRegret": "Stuttery scrolling if you are used to high refresh rate screens.",
+      "saferChoice": "iPhone 15 256GB for extra storage peace of mind.",
+      "marketTiming": "WAIT",
+      "marketReasoning": "Prices have stabilized beautifully making it a great value buy now.",
+      "specLongevity": "4 years",
+      "personalizedInsight": "For professional photography, use third-party apps to bypass Apple's default over-sharpening.",
+      "socialHook": "Why pay the Pro tax when iPhone 15 does 90%?",
+      "postOutputHook": "Save your 25k and buy a great gimbal instead!",
+      "paisaVasoolIndex": 63,
+      "statusTax": 15000,
+      "utilityScore": 85,
+      "hiddenCosts": "20W Charger adapter and high-quality protective case.",
+      "platformWarShield": {
+        "hasMarketingSilos": true,
+        "siloExposure": "Apple pushes the 16 Pro for 'AI' which is barely used daily.",
+        "truthResilienceScore": 85,
+        "bypassStrategyUsed": "Focus on core camera output and daily battery life instead of AI hype."
+      },
+      "vettoContrast": {
+        "alternativeName": "Apple iPhone 16 Pro",
+        "whyContrast": "Offers 120Hz ProMotion, 5x zoom, and faster A18 Pro chip for heavy multitasking.",
+        "pviBoost": 10,
+        "priceDelta": "Save ₹15,000",
+        "fairPriceTarget": "₹43,990",
+        "procurementGuidance": "Buy only if you absolutely need 120Hz and ProRes video.",
+        "strategicAdvantage": "Dedicated telephoto lens and faster USB 3 transfer speeds."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹58,990 • Verified lowest available price among active sellers online.",
+        "historicalContext": "Prices drop by a few thousands during major sales, but this current deal is quite fair.",
+        "priceHistory": [
+          {
+            "month": "Dec 2025",
+            "price": 62990
+          },
+          {
+            "month": "Feb 2026",
+            "price": 60990
+          },
+          {
+            "month": "Apr 2026",
+            "price": 59900
+          },
+          {
+            "month": "May 2026",
+            "price": 58990
+          }
+        ],
+        "dealScore": 85,
+        "discountStrategy": "Buy with an HDFC card for additional instant discount or check local stores.",
+        "procurementLinks": [
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "₹59,900",
+            "isBestDeal": false,
+            "url": "https://www.croma.com/apple-iphone-15-128gb-blue-/p/300684",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "₹58,990",
+            "isBestDeal": true,
+            "url": "https://www.reliancedigital.in/apple-iphone-15-128gb-black/p/494366567",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon India",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Grab the Reliance Digital deal before stock runs out.",
+        "peakUtilityAge": "36 months",
+        "exitStrategy": "Trade in during the 2028 festive sales."
+      },
+      "communityPulse": {
+        "redditConsensus": "Great battery life and USB-C convenience, but 60Hz is annoying.",
+        "twitterPulse": "Best base iPhone in years, highly recommended for normal users.",
+        "youtubeReality": "Most reviewers agree the Pro is overkill for 95% of buyers.",
+        "linkedinProfessional": "Widely adopted as a reliable corporate secondary device.",
+        "topUSP": "48MP main camera details",
+        "topGripe": "Slow 60Hz display refresh rate"
+      },
+      "lifecyclePhase": {
+        "status": "Mature",
+        "isObsoleteSoon": false,
+        "nextMajorUpdate": "September 2026"
+      },
+      "bhartiyaPersonaAudit": "Perfect for the Indian middle class wanting premium status without paying 1 Lakh+.",
+      "technicalNode": "Verifying internals...",
+      "buildIntegrity": "Checking build quality...",
+      "resaleValueNode": "Estimating resale value...",
+      "ecosystemLockIn": "Checking brand ecosystem...",
+      "features": [
+        {
+          "name": "Camera Quality",
+          "score": 88,
+          "details": "Superb 48MP main sensor but lacks optical zoom lens."
+        },
+        {
+          "name": "Display",
+          "score": 70,
+          "details": "Bright OLED screen but limited to outdated 60Hz."
+        },
+        {
+          "name": "Battery Life",
+          "score": 85,
+          "details": "Easily lasts a full day of mixed usage."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4.5,
+        "sentimentSplit": {
+          "positive": 80,
+          "negative": 12,
+          "mixed": 8
+        },
+        "criticsConsensus": "The best default iPhone for most people, bringing key Pro features down.",
+        "userRealityCheck": "Users love the lighter design and USB-C but complain about slow charging.",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 95,
+          "botSignalDetection": "Clean review patterns with genuine user feedback across platforms.",
+          "verifiedPurchaseTruth": "Highly reliable reviews focusing on real-world battery and camera upgrades.",
+          "divergenceIndex": 15,
+          "crossPlatformPatterns": [
+            {
+              "platform": "Amazon",
+              "sentiment": 85,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Flipkart",
+              "sentiment": 82,
+              "botRisk": "Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "Dynamic Island",
+              "reality": "A useful notch replacement that shows timers and music info."
+            }
+          ]
+        }
+      }
+    },
+    "timestamp": 1779857185198
+  },
+  "bmlrZSBhaXIgZm9yY2UgMSAwNy0yMDAwMC0_": {
+    "data": {
+      "isAnalysis": true,
+      "productName": "Nike Air Force 1 '07",
+      "isComparison": false,
+      "finalDecision": "BUY",
+      "whyBest": "It is the ultimate versatile sneaker that fits your budget perfectly and lasts for years.",
+      "pros": [
+        "Timeless classic design",
+        "Extremely durable leather",
+        "Goes with every outfit"
+      ],
+      "cons": [
+        "Creases very easily",
+        "Heavy for daily running",
+        "Warm in peak Indian summer"
+      ],
+      "aamAadmiSummary": "Bhai, at ₹9,695, this fits your ₹20,000 budget perfectly and is a solid, timeless choice.",
+      "avoid": "Avoid buying half a size up as they run slightly large.",
+      "regretWarning": "They will crease on day one if you don't use crease protectors.",
+      "confidenceScore": 92,
+      "regretRisk": "Medium",
+      "whyRegret": "Toe box creasing and yellowing soles over time.",
+      "saferChoice": "Adidas Stan Smith",
+      "marketTiming": "BUY",
+      "marketReasoning": "Price is stable and well below your ₹20k limit.",
+      "specLongevity": "5 years",
+      "personalizedInsight": "Buy crease protectors online for ₹200 to keep them looking fresh.",
+      "socialHook": "The ultimate sneaker classic that fits your budget perfectly.",
+      "postOutputHook": "Grab them before your size runs out!",
+      "paisaVasoolIndex": 85,
+      "statusTax": 3000,
+      "utilityScore": 80,
+      "hiddenCosts": "Crease protectors and sneaker cleaning kit.",
+      "platformWarShield": {
+        "hasMarketingSilos": false,
+        "siloExposure": "None",
+        "truthResilienceScore": 90,
+        "bypassStrategyUsed": "Direct retail check"
+      },
+      "vettoContrast": {
+        "alternativeName": "Adidas Forum Low",
+        "whyContrast": "Cheaper alternative with similar retro vibe.",
+        "pviBoost": 10,
+        "priceDelta": "Save ₹3,000",
+        "fairPriceTarget": "₹6,695",
+        "procurementGuidance": "Buy during festive sales.",
+        "strategicAdvantage": "Better ankle strap support."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹9,695 • Verified lowest available price among active sellers online.",
+        "historicalContext": "Price stays flat around 9.6k, rarely drops below 9k.",
+        "priceHistory": [
+          {
+            "month": "Jan",
+            "price": 9695
+          },
+          {
+            "month": "Feb",
+            "price": 9695
+          },
+          {
+            "month": "Mar",
+            "price": 9695
+          },
+          {
+            "month": "Apr",
+            "price": 9695
+          },
+          {
+            "month": "May",
+            "price": 9695
+          }
+        ],
+        "dealScore": 85,
+        "discountStrategy": "Use bank cards on Myntra for extra 10% off.",
+        "procurementLinks": [
+          {
+            "platform": "Myntra",
+            "label": "Buy on Myntra",
+            "price": "₹9,695",
+            "isBestDeal": true,
+            "url": "https://www.myntra.com/shoes/nike/nike-men-air-force-1-07-sneakers/29872455/buy",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Ajio",
+            "label": "Buy on Ajio",
+            "price": "₹9,695",
+            "isBestDeal": false,
+            "url": "https://www.ajio.com/nike-air-force-1-07-lace-up-sneakers/p/460356007_white",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "₹9,695",
+            "isBestDeal": false,
+            "url": "https://www.flipkart.com/nike-air-force-1-07-sneakers-men/p/itm0788-001",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon India",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Order true to size from Myntra.",
+        "peakUtilityAge": "24 months",
+        "exitStrategy": "Use as beaters once creased."
+      },
+      "communityPulse": {
+        "redditConsensus": "Creases fast but looks better aged.",
+        "twitterPulse": "Always out of stock in popular sizes.",
+        "youtubeReality": "Heavy but extremely durable.",
+        "linkedinProfessional": "A staple in casual workwear.",
+        "topUSP": "Versatility",
+        "topGripe": "Creasing"
+      },
+      "lifecyclePhase": {
+        "status": "Peak",
+        "isObsoleteSoon": false,
+        "nextMajorUpdate": "None"
+      },
+      "bhartiyaPersonaAudit": "Perfect for college wear and casual outings in India.",
+      "technicalNode": "Verifying internals...",
+      "buildIntegrity": "Checking build quality...",
+      "resaleValueNode": "Estimating resale value...",
+      "ecosystemLockIn": "Checking brand ecosystem...",
+      "features": [
+        {
+          "name": "Comfort",
+          "score": 75,
+          "details": "Good cushioning but slightly heavy."
+        },
+        {
+          "name": "Durability",
+          "score": 90,
+          "details": "Thick leather holds up well."
+        },
+        {
+          "name": "Style",
+          "score": 95,
+          "details": "Matches literally any outfit."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4.6,
+        "sentimentSplit": {
+          "positive": 85,
+          "negative": 10,
+          "mixed": 5
+        },
+        "criticsConsensus": "An absolute must-have classic sneaker.",
+        "userRealityCheck": "Extremely stylish but creases easily.",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 95,
+          "botSignalDetection": "Clean review patterns with verified purchases.",
+          "verifiedPurchaseTruth": "Highly reliable feedback from long-term owners.",
+          "divergenceIndex": 15,
+          "crossPlatformPatterns": [
+            {
+              "platform": "Myntra",
+              "sentiment": 85,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Ajio",
+              "sentiment": 82,
+              "botRisk": "Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "Premium Leather",
+              "reality": "Standard coated leather that creases easily."
+            }
+          ]
+        }
+      }
+    },
+    "timestamp": 1779857752825
   }
 }
