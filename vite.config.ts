@@ -20,6 +20,12 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: {
         ignored: ['**/audit_cache_persistent.json', '**/node_modules/**']
+      },
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true
+        }
       }
     },
   };
