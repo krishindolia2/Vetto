@@ -800,9 +800,18 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
     'suv', 'sedan', 'hatchback', 'nexon', 'punch', 'thar', 'creta', 'seltos', 'xuv700', 'scorpio', 'fortuner'
   ];
   
-  const hasFashion = fashionKeywords.some(kw => combined.includes(kw));
-  const hasElectronics = electronicsKeywords.some(kw => combined.includes(kw));
-  const hasAutomotive = automotiveKeywords.some(kw => combined.includes(kw));
+  const matchKeyword = (kw: string) => {
+    if (kw.length <= 3) {
+      const escaped = kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+      return regex.test(combined);
+    }
+    return combined.includes(kw);
+  };
+  
+  const hasFashion = fashionKeywords.some(matchKeyword);
+  const hasElectronics = electronicsKeywords.some(matchKeyword);
+  const hasAutomotive = automotiveKeywords.some(matchKeyword);
   
   if (hasAutomotive) {
     return 'automotive';
@@ -812,6 +821,47 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
     return 'electronics';
   }
   return 'general';
+}
+
+// Simple consumer-friendly jargon sanitization helper (Jargon Shield)
+function sanitizeBannedJargon(text: string): string {
+  if (!text) return "";
+  let clean = text;
+  
+  const jargonReplacements: { pattern: RegExp, replacement: string }[] = [
+    { pattern: /\bdepreciation\b/gi, replacement: "price drop over time" },
+    { pattern: /\bvolatility\b/gi, replacement: "price ups and downs" },
+    { pattern: /\bequilibrium\b/gi, replacement: "stable pricing" },
+    { pattern: /\bmsrp\b/gi, replacement: "standard market price" },
+    { pattern: /\bmarket correction\b/gi, replacement: "price adjustment" },
+    { pattern: /\bportfolio\b/gi, replacement: "collection" },
+    { pattern: /\barbitrage\b/gi, replacement: "saving difference" },
+    { pattern: /\bprice elasticity\b/gi, replacement: "price sensitivity" }
+  ];
+  
+  jargonReplacements.forEach(({ pattern, replacement }) => {
+    clean = clean.replace(pattern, replacement);
+  });
+  
+  return clean;
+}
+
+// Recursively walks the output object and sanitizes all string fields
+function sanitizeObjectJargon(obj: any): any {
+  if (typeof obj === "string") {
+    return sanitizeBannedJargon(obj);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeObjectJargon(item));
+  }
+  if (obj !== null && typeof obj === "object") {
+    const cleaned: any = {};
+    for (const key in obj) {
+      cleaned[key] = sanitizeObjectJargon(obj[key]);
+    }
+    return cleaned;
+  }
+  return obj;
 }
 
 /**
@@ -1655,60 +1705,8 @@ app.post("/api/audit", securityGuard, async (req, res) => {
   // Is this any category or branded query that contains a budget constraint, or a broad category request?
   const isGenericCategoryQuery = (hasBudgetKeyword || hasBudgetInField || hasCategoryKeyword) && !hasUrl && !parsedQuery.toLowerCase().includes(" vs ");
 
-  if (isGenericCategoryQuery && ai && parsedQuery.length > 2) {
-    try {
-      console.log(`[Parser Resilience] Refining query: "${parsedQuery}" with budget limit: "${parsedBudget}"...`);
-      // Use gemini-3.1-flash-lite for ultra-fast, high-precision query refining and spec-resolution
-      const rewriteResponse = await callGeminiWithRetry({
-        model: "gemini-3.1-flash-lite",
-        contents: [{
-          role: "user",
-          parts: [{
-            text: `Analyze this shopping query: "${parsedQuery}" with a budget of: "${parsedBudget ? '₹' + parsedBudget : 'Unspecified'}". Your goal is to return a highly-specific, single retail-active product model name (including exact realistic variant like RAM/Storage if it's electronics, or Size/Color if relevant) that fits this budget in the Indian consumer market.
-
-Context & Hard Constraints:
-1. The model and specific variant you choose MUST be physically available and currently selling in India for a price strictly UNDER or EQUAL to the budget limit (if specified). For example, if the budget is ₹30,000, do NOT output a phone model like "iQOO Neo 9 Pro" because it sells for ₹35,000+.
-2. Resolve generic searches (e.g. "best phone under 30k", "best sneakers", "samsung under 20k") to the absolute best specific model currently active (e.g., "OnePlus Nord CE 4 8GB 128GB" or "Puma Smash v2 L").
-3. If the user query is already a specific product model (e.g. "iQOO Neo 10") and fits the budget, just return that exact model and its most popular variant (e.g. "iQOO Neo 10 8GB 256GB").
-4. If the query already specifies an exact configuration (e.g., "12GB 256GB"), preserve it.
-5. In India, typical smartphone variants are "8GB 128GB", "12GB 256GB". Laptops are "16GB 512GB SSD". If the product is not electronics (e.g., shoes, appliances), just return the exact model name.
-
-Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4 8GB 128GB" or "Nike Revolution 6"). Do not include any formatting, notes, markdown, or explanations. If you provide any conversational text, the system will break.`
-          }]
-        }],
-        config: {
-          temperature: 0.0,
-        }
-      });
-      
-      let resolvedName = rewriteResponse.text?.trim() || "";
-      // Strip any markdown code blocks, prefixes, or newlines just in case the model hallucinates format
-      resolvedName = resolvedName.replace(/```[a-zA-Z]*\n?/g, '').replace(/```/g, '').replace(/\n/g, ' ').trim();
-      
-      if (resolvedName && resolvedName.length > 3) {
-        console.log(`[Parser Resilience] Resolved query "${parsedQuery}" with budget "${parsedBudget}" to specific variant: "${resolvedName}"`);
-        parsedQuery = resolvedName;
-        isBudgetCategoryQuery = true;
-      }
-    } catch (rewriteErr: any) {
-      console.error("[Parser Resilience] Failed to resolve budget query:", rewriteErr);
-      const errStr = String(rewriteErr?.message || "").toLowerCase();
-      const isCriticalFail = errStr.includes("dunning") || 
-                             errStr.includes("billing") || 
-                             errStr.includes("deny for project") || 
-                             errStr.includes("permission_denied") || 
-                             errStr.includes("denied_access") ||
-                             errStr.includes("denied access") ||
-                             errStr.includes("forbidden") ||
-                             errStr.includes("unauthorized") ||
-                             errStr.includes("all models failed") ||
-                             rewriteErr?.status === 403 || 
-                             rewriteErr?.code === 403;
-      if (isCriticalFail) {
-        throw rewriteErr;
-      }
-    }
-  }
+  // Removed separate redundant query rewrite step to reduce sequential LLM latency by 2.5+ seconds.
+  // Query resolution is now handled natively and with higher-integrity search grounding directly inside preFetchLivePricesAndLinks!
 
   // 2. Resilience checks for chaotic, empty, or purely symbolic inputs
   const cleanText = parsedQuery.replace(/[^a-zA-Z0-9\s]/g, "").trim();
@@ -1882,6 +1880,7 @@ Return ONLY the final specific product model with variant (e.g., "OnePlus Nord 4
     const preFetchedPrices = preFetchResult?.prices || null;
     const resolvedProduct = preFetchResult?.resolvedProductName || parsedQuery;
     const queryType = preFetchResult?.queryType || "specific";
+    isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
 
     let promptText = `CURRENT DATE: ${currentDate}
 Original User Query: "${query}"
@@ -2546,6 +2545,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         auditData.finalDecision = stableVerdict;
       }
         
+      // Apply recursive jargon shield sanitization (Jargon Shield)
+      auditData = sanitizeObjectJargon(auditData);
+
       console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
       
         if (isSSE) {
