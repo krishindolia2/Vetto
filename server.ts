@@ -2039,13 +2039,6 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       maxOutputTokens: 8192,
     };
 
-    // Only add thinkingConfig if using a gemini-3.x thinking reasoning model
-    if (modelToUse.startsWith("gemini-3")) {
-      genConfig.thinkingConfig = {
-        thinkingLevel: ThinkingLevel.MINIMAL,
-      };
-    }
-
     // Fully eliminate the error combination: Tool use with responseMimeType "application/json" is unsupported
     if (!useSearchGrounding) {
       genConfig.responseMimeType = "application/json";
