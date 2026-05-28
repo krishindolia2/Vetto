@@ -1,0 +1,5136 @@
+[
+  {
+    "userId": 1,
+    "role": "IndependentUser_1",
+    "query": "Best LG Washing Machine",
+    "latencyMs": 22832,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 2,
+    "role": "IndependentUser_2",
+    "query": "Cheapest LG Refrigerator",
+    "latencyMs": 25620,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Entry-Level Single Door Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 3,
+    "role": "IndependentUser_3",
+    "query": "Top Rated LG AC",
+    "latencyMs": 24519,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Inverter Split AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 4,
+    "role": "IndependentUser_4",
+    "query": "Smart LG Microwave",
+    "latencyMs": 27166,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG 20L Solo Microwave Oven (MS2043DB)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 5,
+    "role": "IndependentUser_5",
+    "query": "Energy Efficient LG Dishwasher",
+    "latencyMs": 26397,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG 14 Place Setting Wi-Fi Dishwasher (DFB424FP)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 6,
+    "role": "IndependentUser_6",
+    "query": "Budget LG Water Purifier",
+    "latencyMs": 23641,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG WW131NP 8L RO Water Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 7,
+    "role": "IndependentUser_7",
+    "query": "Premium LG Geyser",
+    "latencyMs": 26768,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "LG Water Heater (Geyser)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 8,
+    "role": "IndependentUser_8",
+    "query": "Heavy Duty LG Vacuum Cleaner",
+    "latencyMs": 23270,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "LG VC53181NNTM Hand-held Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 9,
+    "role": "IndependentUser_9",
+    "query": "Silent LG Air Purifier",
+    "latencyMs": 25195,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG PuriCare Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 10,
+    "role": "IndependentUser_10",
+    "query": "Portable LG Fan",
+    "latencyMs": 25396,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Portable Fan / AeroFurniture",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 11,
+    "role": "IndependentUser_11",
+    "query": "Best LG Heater",
+    "latencyMs": 24710,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 12,
+    "role": "IndependentUser_12",
+    "query": "Cheapest LG Cooler",
+    "latencyMs": 24719,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "LG Air Cooler",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 13,
+    "role": "IndependentUser_13",
+    "query": "Top Rated LG Iron",
+    "latencyMs": 23824,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "LG Dry Iron (750W)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 14,
+    "role": "IndependentUser_14",
+    "query": "Smart LG Mixer Grinder",
+    "latencyMs": 28722,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 15,
+    "role": "IndependentUser_15",
+    "query": "Energy Efficient LG Juicer",
+    "latencyMs": 31158,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings B1700 Cold Press Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 16,
+    "role": "IndependentUser_16",
+    "query": "Budget LG Toaster",
+    "latencyMs": 35621,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG 28L Convection Microwave Oven (MC2886BRUM)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 17,
+    "role": "IndependentUser_17",
+    "query": "Premium LG Coffee Maker",
+    "latencyMs": 26319,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 18,
+    "role": "IndependentUser_18",
+    "query": "Heavy Duty LG Kettle",
+    "latencyMs": 27996,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells Aqua Plus 1.2 Litre Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 19,
+    "role": "IndependentUser_19",
+    "query": "Silent LG Induction",
+    "latencyMs": 23250,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "LG Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 20,
+    "role": "IndependentUser_20",
+    "query": "Portable LG Chimney",
+    "latencyMs": 28579,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Portable LG Chimney",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 21,
+    "role": "IndependentUser_21",
+    "query": "Cheapest Whirlpool Washing Machine",
+    "latencyMs": 26867,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Washing Machine (Cheapest Model)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 22,
+    "role": "IndependentUser_22",
+    "query": "Top Rated Whirlpool Refrigerator",
+    "latencyMs": 30574,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool 184 L Single Door Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 23,
+    "role": "IndependentUser_23",
+    "query": "Smart Whirlpool AC",
+    "latencyMs": 26087,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Smart AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 24,
+    "role": "IndependentUser_24",
+    "query": "Energy Efficient Whirlpool Microwave",
+    "latencyMs": 24904,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool 20 L Solo Microwave Oven (Magicook Pro 20SE)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 25,
+    "role": "IndependentUser_25",
+    "query": "Budget Whirlpool Dishwasher",
+    "latencyMs": 25397,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Dishwasher (Budget Series)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 26,
+    "role": "IndependentUser_26",
+    "query": "Premium Whirlpool Water Purifier",
+    "latencyMs": 26098,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Whirlpool Purasense 7 L RO + UV + UF Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 27,
+    "role": "IndependentUser_27",
+    "query": "Heavy Duty Whirlpool Geyser",
+    "latencyMs": 26174,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Croma 15 Litres 5 Star Vertical Storage Water Geyser",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 28,
+    "role": "IndependentUser_28",
+    "query": "Silent Whirlpool Vacuum Cleaner",
+    "latencyMs": 28459,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Silent Canister Vacuum Cleaner",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 29,
+    "role": "IndependentUser_29",
+    "query": "Portable Whirlpool Air Purifier",
+    "latencyMs": 26575,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Whirlpool Purafresh W210 Portable Room Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 30,
+    "role": "IndependentUser_30",
+    "query": "Best Whirlpool Fan",
+    "latencyMs": 22284,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Whirlpool Refrigerator Fan Motor",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 31,
+    "role": "IndependentUser_31",
+    "query": "Cheapest Whirlpool Heater",
+    "latencyMs": 23659,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 32,
+    "role": "IndependentUser_32",
+    "query": "Top Rated Whirlpool Cooler",
+    "latencyMs": 26447,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Whirlpool Air Cooler",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 33,
+    "role": "IndependentUser_33",
+    "query": "Smart Whirlpool Iron",
+    "latencyMs": 30869,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Steam Iron",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 34,
+    "role": "IndependentUser_34",
+    "query": "Energy Efficient Whirlpool Mixer Grinder",
+    "latencyMs": 23481,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 35,
+    "role": "IndependentUser_35",
+    "query": "Budget Whirlpool Juicer",
+    "latencyMs": 27426,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Slow Juicer XL",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 36,
+    "role": "IndependentUser_36",
+    "query": "Premium Whirlpool Toaster",
+    "latencyMs": 23216,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool 25 Litres Built-In Oven Toaster Grill (AMW250M)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 37,
+    "role": "IndependentUser_37",
+    "query": "Heavy Duty Whirlpool Coffee Maker",
+    "latencyMs": 26585,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool ACE 102 IXL Built-in Coffee Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 38,
+    "role": "IndependentUser_38",
+    "query": "Silent Whirlpool Kettle",
+    "latencyMs": 26372,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool Silent Double-Wall Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 39,
+    "role": "IndependentUser_39",
+    "query": "Portable Whirlpool Induction",
+    "latencyMs": 28306,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool NX20-D2 Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 40,
+    "role": "IndependentUser_40",
+    "query": "Best Whirlpool Chimney",
+    "latencyMs": 29174,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Whirlpool CGFL PRO 900 BLDC HAC BK HOOD Auto Clean Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 41,
+    "role": "IndependentUser_41",
+    "query": "Top Rated Bosch Washing Machine",
+    "latencyMs": 24730,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Front Load Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 42,
+    "role": "IndependentUser_42",
+    "query": "Smart Bosch Refrigerator",
+    "latencyMs": 26038,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Smart Bosch Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 43,
+    "role": "IndependentUser_43",
+    "query": "Energy Efficient Bosch AC",
+    "latencyMs": 32708,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Energy Efficient Bosch AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 44,
+    "role": "IndependentUser_44",
+    "query": "Budget Bosch Microwave",
+    "latencyMs": 28455,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 45,
+    "role": "IndependentUser_45",
+    "query": "Premium Bosch Dishwasher",
+    "latencyMs": 23242,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Premium Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 46,
+    "role": "IndependentUser_46",
+    "query": "Heavy Duty Bosch Water Purifier",
+    "latencyMs": 24661,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 47,
+    "role": "IndependentUser_47",
+    "query": "Silent Bosch Geyser",
+    "latencyMs": 30264,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 48,
+    "role": "IndependentUser_48",
+    "query": "Portable Bosch Vacuum Cleaner",
+    "latencyMs": 19575,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch GAS 18V-1 Professional Cordless Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 49,
+    "role": "IndependentUser_49",
+    "query": "Best Bosch Air Purifier",
+    "latencyMs": 27830,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 50,
+    "role": "IndependentUser_50",
+    "query": "Cheapest Bosch Fan",
+    "latencyMs": 26730,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Bathroom Extractor Fan 1500 DH 100 mm",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 51,
+    "role": "IndependentUser_51",
+    "query": "Top Rated Bosch Heater",
+    "latencyMs": 21462,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Tronic 3000 T 2.5-Gallon Electric Mini-Tank Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 52,
+    "role": "IndependentUser_52",
+    "query": "Smart Bosch Cooler",
+    "latencyMs": 23926,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Symphony Diet 3D 30i Portable Tower Air Cooler",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 53,
+    "role": "IndependentUser_53",
+    "query": "Energy Efficient Bosch Iron",
+    "latencyMs": 26381,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Sensixx'x TDA50 Steam Iron",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 54,
+    "role": "IndependentUser_54",
+    "query": "Budget Bosch Mixer Grinder",
+    "latencyMs": 25843,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch TrueMixx Pro 1000W Mixer Grinder",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 55,
+    "role": "IndependentUser_55",
+    "query": "Premium Bosch Juicer",
+    "latencyMs": 25826,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch Lifestyle MESM731M Slow Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 56,
+    "role": "IndependentUser_56",
+    "query": "Heavy Duty Bosch Toaster",
+    "latencyMs": 28594,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch TAT6A913 1080 W Pop Up Toaster",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 57,
+    "role": "IndependentUser_57",
+    "query": "Silent Bosch Coffee Maker",
+    "latencyMs": 24252,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch VeroCafe Series 2 Fully Automatic Espresso Machine (TIE20301IN)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 58,
+    "role": "IndependentUser_58",
+    "query": "Portable Bosch Kettle",
+    "latencyMs": 25408,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "BOSCH TWK6A813 Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 59,
+    "role": "IndependentUser_59",
+    "query": "Best Bosch Induction",
+    "latencyMs": 27353,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch PIB375FB1E 30 cm Induction Hob",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 60,
+    "role": "IndependentUser_60",
+    "query": "Cheapest Bosch Chimney",
+    "latencyMs": 25040,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "BOSCH Series 4 60cm 1300m3/hr Ducted Auto Clean Wall Mounted Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 61,
+    "role": "IndependentUser_61",
+    "query": "Smart Godrej Washing Machine",
+    "latencyMs": 30502,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Godrej 7 kg Fully-Automatic Top Loading Washing Machine (WTEON 700 AD)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 62,
+    "role": "IndependentUser_62",
+    "query": "Energy Efficient Godrej Refrigerator",
+    "latencyMs": 24877,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Godrej Energy Efficient Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 63,
+    "role": "IndependentUser_63",
+    "query": "Budget Godrej AC",
+    "latencyMs": 24228,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej 1 Ton 3 Star Split AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 64,
+    "role": "IndependentUser_64",
+    "query": "Premium Godrej Microwave",
+    "latencyMs": 28340,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej 20L Solo Microwave Oven (GMX 20SA2 BLM)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 65,
+    "role": "IndependentUser_65",
+    "query": "Heavy Duty Godrej Dishwasher",
+    "latencyMs": 24261,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej EON AA+ Counter Top Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 66,
+    "role": "IndependentUser_66",
+    "query": "Silent Godrej Water Purifier",
+    "latencyMs": 22439,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Azura RO Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 67,
+    "role": "IndependentUser_67",
+    "query": "Portable Godrej Geyser",
+    "latencyMs": 26656,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Portable Instant Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 68,
+    "role": "IndependentUser_68",
+    "query": "Best Godrej Vacuum Cleaner",
+    "latencyMs": 27767,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 69,
+    "role": "IndependentUser_69",
+    "query": "Cheapest Godrej Air Purifier",
+    "latencyMs": 25261,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej GAS TTWP 4 270 A Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 70,
+    "role": "IndependentUser_70",
+    "query": "Top Rated Godrej Fan",
+    "latencyMs": 25709,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Eon Link BLDC Ceiling Fan",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 71,
+    "role": "IndependentUser_71",
+    "query": "Smart Godrej Heater",
+    "latencyMs": 24722,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej 8 Kg 5 Star Inbuilt Heater Fully Automatic Top Load Washing Machine",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 72,
+    "role": "IndependentUser_72",
+    "query": "Energy Efficient Godrej Cooler",
+    "latencyMs": 29270,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej CoolBlast 87 Litres Desert Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 73,
+    "role": "IndependentUser_73",
+    "query": "Budget Godrej Iron",
+    "latencyMs": 22677,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Storwel Plain Almirah",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 74,
+    "role": "IndependentUser_74",
+    "query": "Premium Godrej Mixer Grinder",
+    "latencyMs": 28727,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Aero 750W Mixer Grinder",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 75,
+    "role": "IndependentUser_75",
+    "query": "Heavy Duty Godrej Juicer",
+    "latencyMs": 22379,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 76,
+    "role": "IndependentUser_76",
+    "query": "Silent Godrej Toaster",
+    "latencyMs": 25688,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Toaster",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 77,
+    "role": "IndependentUser_77",
+    "query": "Portable Godrej Coffee Maker",
+    "latencyMs": 23508,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Ecostar Tea Coffee Vending Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 78,
+    "role": "IndependentUser_78",
+    "query": "Best Godrej Kettle",
+    "latencyMs": 23625,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Electric Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 79,
+    "role": "IndependentUser_79",
+    "query": "Cheapest Godrej Induction",
+    "latencyMs": 22121,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 80,
+    "role": "IndependentUser_80",
+    "query": "Top Rated Godrej Chimney",
+    "latencyMs": 23926,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Interio Neo Smart Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 81,
+    "role": "IndependentUser_81",
+    "query": "Energy Efficient Voltas Washing Machine",
+    "latencyMs": 22152,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 7 kg 5 Star Semi-Automatic Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 82,
+    "role": "IndependentUser_82",
+    "query": "Budget Voltas Refrigerator",
+    "latencyMs": 30963,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko Single Door Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 83,
+    "role": "IndependentUser_83",
+    "query": "Premium Voltas AC",
+    "latencyMs": 27226,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas 1.5 Ton 5 Star Inverter Split AC (Premium Series)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 84,
+    "role": "IndependentUser_84",
+    "query": "Heavy Duty Voltas Microwave",
+    "latencyMs": 29404,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 20 Litres Solo Microwave Oven (MS20MPW10)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 85,
+    "role": "IndependentUser_85",
+    "query": "Silent Voltas Dishwasher",
+    "latencyMs": 22936,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 86,
+    "role": "IndependentUser_86",
+    "query": "Portable Voltas Water Purifier",
+    "latencyMs": 22418,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Minimagic Spring RV Plus Water Dispenser",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 87,
+    "role": "IndependentUser_87",
+    "query": "Best Voltas Geyser",
+    "latencyMs": 25942,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Crysta 15 Litre 5 Star Vertical Storage Geyser",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 88,
+    "role": "IndependentUser_88",
+    "query": "Cheapest Voltas Vacuum Cleaner",
+    "latencyMs": 25844,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 89,
+    "role": "IndependentUser_89",
+    "query": "Top Rated Voltas Air Purifier",
+    "latencyMs": 25272,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas VAP55TWV Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 90,
+    "role": "IndependentUser_90",
+    "query": "Smart Voltas Fan",
+    "latencyMs": 28319,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Rimflo BLDC Fan 1200mm",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 91,
+    "role": "IndependentUser_91",
+    "query": "Energy Efficient Voltas Heater",
+    "latencyMs": 22803,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Insta+ 3L 5 Star Instant Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 92,
+    "role": "IndependentUser_92",
+    "query": "Budget Voltas Cooler",
+    "latencyMs": 24988,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Grand 72 Litres Desert Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 93,
+    "role": "IndependentUser_93",
+    "query": "Premium Voltas Iron",
+    "latencyMs": 22542,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko I1000VD-BU 1000 W Dry Iron",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 94,
+    "role": "IndependentUser_94",
+    "query": "Heavy Duty Voltas Mixer Grinder",
+    "latencyMs": 23081,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 750W Mixer Grinder (G7503HP-BL)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 95,
+    "role": "IndependentUser_95",
+    "query": "Silent Voltas Juicer",
+    "latencyMs": 28167,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 500W Mixer Grinder (G5003HP-WH)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 96,
+    "role": "IndependentUser_96",
+    "query": "Portable Voltas Toaster",
+    "latencyMs": 25008,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 20 L Convection Microwave Oven (MC20SD)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 97,
+    "role": "IndependentUser_97",
+    "query": "Best Voltas Coffee Maker",
+    "latencyMs": 22692,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Philips HD7431/20 Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 98,
+    "role": "IndependentUser_98",
+    "query": "Cheapest Voltas Kettle",
+    "latencyMs": 24192,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko Electric Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 99,
+    "role": "IndependentUser_99",
+    "query": "Top Rated Voltas Induction",
+    "latencyMs": 25413,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Prestige PIC 6.1 V3 2200W Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 100,
+    "role": "IndependentUser_100",
+    "query": "Smart Voltas Chimney",
+    "latencyMs": 30243,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko Kitchen Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 101,
+    "role": "IndependentUser_101",
+    "query": "Budget Hitachi Washing Machine",
+    "latencyMs": 22968,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 102,
+    "role": "IndependentUser_102",
+    "query": "Premium Hitachi Refrigerator",
+    "latencyMs": 25161,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Premium Hitachi Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 103,
+    "role": "IndependentUser_103",
+    "query": "Heavy Duty Hitachi AC",
+    "latencyMs": 25876,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Heavy Duty Air Conditioner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 104,
+    "role": "IndependentUser_104",
+    "query": "Silent Hitachi Microwave",
+    "latencyMs": 24741,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 105,
+    "role": "IndependentUser_105",
+    "query": "Portable Hitachi Dishwasher",
+    "latencyMs": 21361,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Portable Hitachi Dishwasher",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 106,
+    "role": "IndependentUser_106",
+    "query": "Best Hitachi Water Purifier",
+    "latencyMs": 23550,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 107,
+    "role": "IndependentUser_107",
+    "query": "Cheapest Hitachi Geyser",
+    "latencyMs": 26983,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Hitachi Geyser",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 108,
+    "role": "IndependentUser_108",
+    "query": "Top Rated Hitachi Vacuum Cleaner",
+    "latencyMs": 23828,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi CV-BM16 Bagless Dry Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 109,
+    "role": "IndependentUser_109",
+    "query": "Smart Hitachi Air Purifier",
+    "latencyMs": 26554,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi EP-A3000 Air Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 110,
+    "role": "IndependentUser_110",
+    "query": "Energy Efficient Hitachi Fan",
+    "latencyMs": 22148,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Cooling Fan (Refrigerator Replacement)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 111,
+    "role": "IndependentUser_111",
+    "query": "Budget Hitachi Heater",
+    "latencyMs": 25441,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Room Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 112,
+    "role": "IndependentUser_112",
+    "query": "Premium Hitachi Cooler",
+    "latencyMs": 25309,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Hitachi Air Cooler",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 113,
+    "role": "IndependentUser_113",
+    "query": "Heavy Duty Hitachi Iron",
+    "latencyMs": 21143,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Crompton Rhino Plus 1250W 1.8 KG Heavyweight Dry Iron",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 114,
+    "role": "IndependentUser_114",
+    "query": "Silent Hitachi Mixer Grinder",
+    "latencyMs": 21586,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Premium Silent Mixer Grinder",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 115,
+    "role": "IndependentUser_115",
+    "query": "Portable Hitachi Juicer",
+    "latencyMs": 24753,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Portable Personal Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 116,
+    "role": "IndependentUser_116",
+    "query": "Best Hitachi Toaster",
+    "latencyMs": 28762,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi HTO-CF50 Premium Toaster Oven",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 117,
+    "role": "IndependentUser_117",
+    "query": "Cheapest Hitachi Coffee Maker",
+    "latencyMs": 21119,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 118,
+    "role": "IndependentUser_118",
+    "query": "Top Rated Hitachi Kettle",
+    "latencyMs": 21389,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Hitachi Electric Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 119,
+    "role": "IndependentUser_119",
+    "query": "Smart Hitachi Induction",
+    "latencyMs": 21373,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Prestige PIC 6.1 V3 2200W Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 120,
+    "role": "IndependentUser_120",
+    "query": "Energy Efficient Hitachi Chimney",
+    "latencyMs": 24578,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hitachi Premium 90cm Autoclean Kitchen Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 121,
+    "role": "IndependentUser_121",
+    "query": "Premium Daikin Washing Machine",
+    "latencyMs": 19342,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Daikin Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 122,
+    "role": "IndependentUser_122",
+    "query": "Heavy Duty Daikin Refrigerator",
+    "latencyMs": 24716,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin Deep Freezer",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 123,
+    "role": "IndependentUser_123",
+    "query": "Silent Daikin AC",
+    "latencyMs": 26688,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Daikin AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 124,
+    "role": "IndependentUser_124",
+    "query": "Portable Daikin Microwave",
+    "latencyMs": 26960,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bajaj 17L Solo Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 125,
+    "role": "IndependentUser_125",
+    "query": "Best Daikin Dishwasher",
+    "latencyMs": 24558,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 8 Place Setting Table Top Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 126,
+    "role": "IndependentUser_126",
+    "query": "Cheapest Daikin Water Purifier",
+    "latencyMs": 24687,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin MC30YVM7 Air Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 127,
+    "role": "IndependentUser_127",
+    "query": "Top Rated Daikin Geyser",
+    "latencyMs": 23966,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Daikin Geyser",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 128,
+    "role": "IndependentUser_128",
+    "query": "Smart Daikin Vacuum Cleaner",
+    "latencyMs": 24400,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Eureka Forbes Supervac 1600W Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 129,
+    "role": "IndependentUser_129",
+    "query": "Energy Efficient Daikin Air Purifier",
+    "latencyMs": 26402,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin MC40XVM6 Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 130,
+    "role": "IndependentUser_130",
+    "query": "Budget Daikin Fan",
+    "latencyMs": 23983,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin AC Outdoor Fan Blade",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 131,
+    "role": "IndependentUser_131",
+    "query": "Premium Daikin Heater",
+    "latencyMs": 27267,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells OFR 11 Fin Room Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 132,
+    "role": "IndependentUser_132",
+    "query": "Heavy Duty Daikin Cooler",
+    "latencyMs": 30698,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin 1.5 Ton 3 Star Inverter AC (MTKL50U)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 133,
+    "role": "IndependentUser_133",
+    "query": "Silent Daikin Iron",
+    "latencyMs": 22237,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin Air Purifier (MC30YVM7)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 134,
+    "role": "IndependentUser_134",
+    "query": "Portable Daikin Mixer Grinder",
+    "latencyMs": 22395,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Daikin Mixer Grinder (Fake/Unverified Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 135,
+    "role": "IndependentUser_135",
+    "query": "Best Daikin Juicer",
+    "latencyMs": 29459,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings B1700 Professional Cold Press Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 136,
+    "role": "IndependentUser_136",
+    "query": "Cheapest Daikin Toaster",
+    "latencyMs": 23685,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Daikin Toaster (Non-Existent Product)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 137,
+    "role": "IndependentUser_137",
+    "query": "Top Rated Daikin Coffee Maker",
+    "latencyMs": 29481,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips EP2220/10 Fully Automatic Coffee Machine",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 138,
+    "role": "IndependentUser_138",
+    "query": "Smart Daikin Kettle",
+    "latencyMs": 22124,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Daikin Kettle",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 139,
+    "role": "IndependentUser_139",
+    "query": "Energy Efficient Daikin Induction",
+    "latencyMs": 26257,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch PPI82560MS Built-in Induction Hob",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 140,
+    "role": "IndependentUser_140",
+    "query": "Budget Daikin Chimney",
+    "latencyMs": 24990,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Faber 60 cm 1200 m³/hr Autoclean Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 141,
+    "role": "IndependentUser_141",
+    "query": "Heavy Duty IFB Washing Machine",
+    "latencyMs": 23406,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Washing Machine Spare Part (PCB)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 142,
+    "role": "IndependentUser_142",
+    "query": "Silent IFB Refrigerator",
+    "latencyMs": 22102,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent IFB Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 143,
+    "role": "IndependentUser_143",
+    "query": "Portable IFB AC",
+    "latencyMs": 22379,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable IFB AC / Generic Tower Cooler",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 144,
+    "role": "IndependentUser_144",
+    "query": "Best IFB Microwave",
+    "latencyMs": 25850,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB 20L Solo Microwave Oven (20PM-MEC2)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 145,
+    "role": "IndependentUser_145",
+    "query": "Cheapest IFB Dishwasher",
+    "latencyMs": 28213,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Dishwasher (Entry-level)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 146,
+    "role": "IndependentUser_146",
+    "query": "Top Rated IFB Water Purifier",
+    "latencyMs": 19864,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 147,
+    "role": "IndependentUser_147",
+    "query": "Smart IFB Geyser",
+    "latencyMs": 24413,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Smart Geyser",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 148,
+    "role": "IndependentUser_148",
+    "query": "Energy Efficient IFB Vacuum Cleaner",
+    "latencyMs": 29171,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Fastclean Classic 1200W Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 149,
+    "role": "IndependentUser_149",
+    "query": "Budget IFB Air Purifier",
+    "latencyMs": 25325,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 150,
+    "role": "IndependentUser_150",
+    "query": "Premium IFB Fan",
+    "latencyMs": 22936,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Atomberg Renesa+ 1200mm BLDC Ceiling Fan",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 151,
+    "role": "IndependentUser_151",
+    "query": "Heavy Duty IFB Heater",
+    "latencyMs": 27494,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Maxi Dry EX Metallic Silver Dryer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 152,
+    "role": "IndependentUser_152",
+    "query": "Silent IFB Cooler",
+    "latencyMs": 28456,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB 1.5 Ton 3 Star Inverter Split AC (Silent Series)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 153,
+    "role": "IndependentUser_153",
+    "query": "Portable IFB Iron",
+    "latencyMs": 21712,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable IFB Iron",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 154,
+    "role": "IndependentUser_154",
+    "query": "Best IFB Mixer Grinder",
+    "latencyMs": 24483,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 155,
+    "role": "IndependentUser_155",
+    "query": "Cheapest IFB Juicer",
+    "latencyMs": 21018,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Juicer",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 156,
+    "role": "IndependentUser_156",
+    "query": "Top Rated IFB Toaster",
+    "latencyMs": 23430,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB AT2F62 900 W Pop Up Toaster",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 157,
+    "role": "IndependentUser_157",
+    "query": "Smart IFB Coffee Maker",
+    "latencyMs": 22382,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB 1.2 L Advanced Beverage Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 158,
+    "role": "IndependentUser_158",
+    "query": "Energy Efficient IFB Kettle",
+    "latencyMs": 23611,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB KE1302 Electric Kettle (1.7 L)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 159,
+    "role": "IndependentUser_159",
+    "query": "Budget IFB Induction",
+    "latencyMs": 28491,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 160,
+    "role": "IndependentUser_160",
+    "query": "Premium IFB Chimney",
+    "latencyMs": 25156,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB GS HS 90 BLDC Island Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 161,
+    "role": "IndependentUser_161",
+    "query": "Silent Haier Washing Machine",
+    "latencyMs": 24462,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Haier 8 Kg Direct Motion Motor Front Load (HW80-IM12929C)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 162,
+    "role": "IndependentUser_162",
+    "query": "Portable Haier Refrigerator",
+    "latencyMs": 35270,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Mini Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 163,
+    "role": "IndependentUser_163",
+    "query": "Best Haier AC",
+    "latencyMs": 26534,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Air Conditioner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 164,
+    "role": "IndependentUser_164",
+    "query": "Cheapest Haier Microwave",
+    "latencyMs": 23770,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier 20L Solo Microwave Oven (HIL2001MWPH)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 165,
+    "role": "IndependentUser_165",
+    "query": "Top Rated Haier Dishwasher",
+    "latencyMs": 32136,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 166,
+    "role": "IndependentUser_166",
+    "query": "Smart Haier Water Purifier",
+    "latencyMs": 24715,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier HWD-3MPFMR Water Dispenser",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 167,
+    "role": "IndependentUser_167",
+    "query": "Energy Efficient Haier Geyser",
+    "latencyMs": 27893,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier ES15V-SD 15 Litres 5 Star Storage Water Geyser",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 168,
+    "role": "IndependentUser_168",
+    "query": "Budget Haier Vacuum Cleaner",
+    "latencyMs": 28185,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier TH27U1 Smart Robot Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 169,
+    "role": "IndependentUser_169",
+    "query": "Premium Haier Air Purifier",
+    "latencyMs": 23498,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 170,
+    "role": "IndependentUser_170",
+    "query": "Heavy Duty Haier Fan",
+    "latencyMs": 25831,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier 1.6 Ton 5 Star Inverter Split AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 171,
+    "role": "IndependentUser_171",
+    "query": "Silent Haier Heater",
+    "latencyMs": 24544,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Silent Water Heater Series",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 172,
+    "role": "IndependentUser_172",
+    "query": "Portable Haier Cooler",
+    "latencyMs": 25541,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier 300L Visi Cooler",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 173,
+    "role": "IndependentUser_173",
+    "query": "Best Haier Iron",
+    "latencyMs": 26938,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier HSI-2200B 2200W Steam Iron",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 174,
+    "role": "IndependentUser_174",
+    "query": "Cheapest Haier Mixer Grinder",
+    "latencyMs": 21972,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 175,
+    "role": "IndependentUser_175",
+    "query": "Top Rated Haier Juicer",
+    "latencyMs": 26118,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Juicer",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 176,
+    "role": "IndependentUser_176",
+    "query": "Smart Haier Toaster",
+    "latencyMs": 25966,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier 35L Oven Toaster Grill (HILOTG3501GR)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 177,
+    "role": "IndependentUser_177",
+    "query": "Energy Efficient Haier Coffee Maker",
+    "latencyMs": 24593,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 178,
+    "role": "IndependentUser_178",
+    "query": "Budget Haier Kettle",
+    "latencyMs": 26136,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Haier Electric Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 179,
+    "role": "IndependentUser_179",
+    "query": "Premium Haier Induction",
+    "latencyMs": 24524,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier HIC-B3CGAFH 3 Burner 90cm Built-In Smart Hob",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 180,
+    "role": "IndependentUser_180",
+    "query": "Heavy Duty Haier Chimney",
+    "latencyMs": 28031,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier HIH-G60HM-G 60 cm Auto Clean Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 181,
+    "role": "IndependentUser_181",
+    "query": "Portable Panasonic Washing Machine",
+    "latencyMs": 22001,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 182,
+    "role": "IndependentUser_182",
+    "query": "Best Panasonic Refrigerator",
+    "latencyMs": 31867,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 183,
+    "role": "IndependentUser_183",
+    "query": "Cheapest Panasonic AC",
+    "latencyMs": 23747,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic AC (Cheapest Variant)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 184,
+    "role": "IndependentUser_184",
+    "query": "Top Rated Panasonic Microwave",
+    "latencyMs": 20156,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic 20L Solo Microwave Oven (NN-ST266BFDG, Black)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 185,
+    "role": "IndependentUser_185",
+    "query": "Smart Panasonic Dishwasher",
+    "latencyMs": 23630,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic Smart Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 186,
+    "role": "IndependentUser_186",
+    "query": "Energy Efficient Panasonic Water Purifier",
+    "latencyMs": 23399,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic TK-CS80-DA 6L RO + UV Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 187,
+    "role": "IndependentUser_187",
+    "query": "Budget Panasonic Geyser",
+    "latencyMs": 24297,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic DURO DIGI 15 L Storage Water Geyser",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 188,
+    "role": "IndependentUser_188",
+    "query": "Premium Panasonic Vacuum Cleaner",
+    "latencyMs": 25853,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic MC-CG304 Dry Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 189,
+    "role": "IndependentUser_189",
+    "query": "Heavy Duty Panasonic Air Purifier",
+    "latencyMs": 25980,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic F-PXM35AAD Air Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 190,
+    "role": "IndependentUser_190",
+    "query": "Silent Panasonic Fan",
+    "latencyMs": 24497,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic F-60SVN 1500 mm 5 Blades Ceiling Fan",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 191,
+    "role": "IndependentUser_191",
+    "query": "Portable Panasonic Heater",
+    "latencyMs": 21674,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic DS-FN1200 Portable Fan Heater",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 192,
+    "role": "IndependentUser_192",
+    "query": "Best Panasonic Cooler",
+    "latencyMs": 19900,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic 75L Desert Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 193,
+    "role": "IndependentUser_193",
+    "query": "Cheapest Panasonic Iron",
+    "latencyMs": 23875,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic NI-V100NAARM 1200 W Steam Iron",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 194,
+    "role": "IndependentUser_194",
+    "query": "Top Rated Panasonic Mixer Grinder",
+    "latencyMs": 26951,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic MX-AC400 550W Super Mixer Grinder",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 195,
+    "role": "IndependentUser_195",
+    "query": "Smart Panasonic Juicer",
+    "latencyMs": 23503,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic MJ-CB800 Juicer",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 196,
+    "role": "IndependentUser_196",
+    "query": "Energy Efficient Panasonic Toaster",
+    "latencyMs": 24618,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic NT-GT1 9L Oven Toaster Grill",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 197,
+    "role": "IndependentUser_197",
+    "query": "Budget Panasonic Coffee Maker",
+    "latencyMs": 25123,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic NC-GF1 Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 198,
+    "role": "IndependentUser_198",
+    "query": "Premium Panasonic Kettle",
+    "latencyMs": 26858,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Panasonic NC-SK1 Electric Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 199,
+    "role": "IndependentUser_199",
+    "query": "Heavy Duty Panasonic Induction",
+    "latencyMs": 26236,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic KY-A112AKFD Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 200,
+    "role": "IndependentUser_200",
+    "query": "Silent Panasonic Chimney",
+    "latencyMs": 24986,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Panasonic Silent Kitchen Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 201,
+    "role": "IndependentUser_201",
+    "query": "Best Sony Washing Machine",
+    "latencyMs": 22765,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "DMR 3kg Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 202,
+    "role": "IndependentUser_202",
+    "query": "Cheapest Sony Refrigerator",
+    "latencyMs": 21641,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sony Refrigerator (Non-Existent Product)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 203,
+    "role": "IndependentUser_203",
+    "query": "Top Rated Sony AC",
+    "latencyMs": 27925,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Sony Reon Pocket 5",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 204,
+    "role": "IndependentUser_204",
+    "query": "Smart Sony Microwave",
+    "latencyMs": 23424,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "IFB 20PM-MEC2 20 Litre Solo Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 205,
+    "role": "IndependentUser_205",
+    "query": "Energy Efficient Sony Dishwasher",
+    "latencyMs": 23340,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 8 Place Settings Table Top Dishwasher (DT8S)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 206,
+    "role": "IndependentUser_206",
+    "query": "Budget Sony Water Purifier",
+    "latencyMs": 24683,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Aquaguard Sure Delight 6 L Water Purifier (RO+UV+UF)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 207,
+    "role": "IndependentUser_207",
+    "query": "Premium Sony Geyser",
+    "latencyMs": 23318,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "AO Smith Elegance Prime Neo 15L Storage Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 208,
+    "role": "IndependentUser_208",
+    "query": "Heavy Duty Sony Vacuum Cleaner",
+    "latencyMs": 25364,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Eureka Forbes Atom 2-in-1 Handheld & Stick Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 209,
+    "role": "IndependentUser_209",
+    "query": "Silent Sony Air Purifier",
+    "latencyMs": 26658,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sony Air Purifier (Unofficial / OEM Import)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 210,
+    "role": "IndependentUser_210",
+    "query": "Portable Sony Fan",
+    "latencyMs": 26255,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sony Reon Pocket 5",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 211,
+    "role": "IndependentUser_211",
+    "query": "Best Sony Heater",
+    "latencyMs": 23143,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Sony Reon Pocket 5 Sensing Kit",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 212,
+    "role": "IndependentUser_212",
+    "query": "Cheapest Sony Cooler",
+    "latencyMs": 24122,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sony Reon Pocket Pro Plus",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 213,
+    "role": "IndependentUser_213",
+    "query": "Top Rated Sony Iron",
+    "latencyMs": 23289,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips GC1905 1440-Watt Steam Iron",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 214,
+    "role": "IndependentUser_214",
+    "query": "Smart Sony Mixer Grinder",
+    "latencyMs": 23823,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sony Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 215,
+    "role": "IndependentUser_215",
+    "query": "Energy Efficient Sony Juicer",
+    "latencyMs": 26281,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sony Juicer (Counterfeit / Non-Existent)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 216,
+    "role": "IndependentUser_216",
+    "query": "Budget Sony Toaster",
+    "latencyMs": 19386,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips Daily Collection Toaster HD2582/00",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 217,
+    "role": "IndependentUser_217",
+    "query": "Premium Sony Coffee Maker",
+    "latencyMs": 23851,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Gaggia Espresso Evolution",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 218,
+    "role": "IndependentUser_218",
+    "query": "Heavy Duty Sony Kettle",
+    "latencyMs": 29060,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Heavy Duty Sony Kettle (Counterfeit Listing)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 219,
+    "role": "IndependentUser_219",
+    "query": "Silent Sony Induction",
+    "latencyMs": 26681,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Silent Sony Induction (Counterfeit/Fake Product)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 220,
+    "role": "IndependentUser_220",
+    "query": "Portable Sony Chimney",
+    "latencyMs": 26304,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Portable Sony Chimney (Fake/Counterfeit Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 221,
+    "role": "IndependentUser_221",
+    "query": "Cheapest JBL Washing Machine",
+    "latencyMs": 23167,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "DMR 3 kg Portable Mini Washing Machine",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 222,
+    "role": "IndependentUser_222",
+    "query": "Top Rated JBL Refrigerator",
+    "latencyMs": 31441,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Godrej Qube 30L Personal Cooling Solution",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 223,
+    "role": "IndependentUser_223",
+    "query": "Smart JBL AC",
+    "latencyMs": 22864,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart JBL AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 224,
+    "role": "IndependentUser_224",
+    "query": "Energy Efficient JBL Microwave",
+    "latencyMs": 27503,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Samsung 23L Solo Microwave Oven (MS23A301TAK/TL)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 225,
+    "role": "IndependentUser_225",
+    "query": "Budget JBL Dishwasher",
+    "latencyMs": 27467,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko DT8B 8 Place Setting Table Top Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 226,
+    "role": "IndependentUser_226",
+    "query": "Premium JBL Water Purifier",
+    "latencyMs": 34357,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "AO Smith Z8 RO Water Purifier (Clarifying JBL Confusion)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 227,
+    "role": "IndependentUser_227",
+    "query": "Heavy Duty JBL Geyser",
+    "latencyMs": 23857,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells Monza EC 15 Litre Storage Water Geyser",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 228,
+    "role": "IndependentUser_228",
+    "query": "Silent JBL Vacuum Cleaner",
+    "latencyMs": 26912,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Ecovacs Deebot N30 Robot Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 229,
+    "role": "IndependentUser_229",
+    "query": "Portable JBL Air Purifier",
+    "latencyMs": 30233,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable JBL Air Purifier (White-Label/Fake)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 230,
+    "role": "IndependentUser_230",
+    "query": "Best JBL Fan",
+    "latencyMs": 27936,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "JBL PartyBox Encore Essential",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 231,
+    "role": "IndependentUser_231",
+    "query": "Cheapest JBL Heater",
+    "latencyMs": 23874,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "JBL ProTemp S 100W Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 232,
+    "role": "IndependentUser_232",
+    "query": "Top Rated JBL Cooler",
+    "latencyMs": 25089,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "JBL ProTemp Cooler x200",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 233,
+    "role": "IndependentUser_233",
+    "query": "Smart JBL Iron",
+    "latencyMs": 22991,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart JBL Iron (Fake/Scam Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 234,
+    "role": "IndependentUser_234",
+    "query": "Energy Efficient JBL Mixer Grinder",
+    "latencyMs": 24084,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "JBL Commercial Mixer (CSM 14)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 235,
+    "role": "IndependentUser_235",
+    "query": "Budget JBL Juicer",
+    "latencyMs": 26513,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "JBL Go 4 Portable Bluetooth Speaker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 236,
+    "role": "IndependentUser_236",
+    "query": "Premium JBL Toaster",
+    "latencyMs": 23430,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Premium JBL Toaster (Fake/Gimmick Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 237,
+    "role": "IndependentUser_237",
+    "query": "Heavy Duty JBL Coffee Maker",
+    "latencyMs": 31302,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Heavy Duty JBL Coffee Maker (Counterfeit Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 238,
+    "role": "IndependentUser_238",
+    "query": "Silent JBL Kettle",
+    "latencyMs": 28319,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent JBL Smart Kettle",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 239,
+    "role": "IndependentUser_239",
+    "query": "Portable JBL Induction",
+    "latencyMs": 29023,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "JBL Authentics 300",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 240,
+    "role": "IndependentUser_240",
+    "query": "Best JBL Chimney",
+    "latencyMs": 25805,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Elica WDFL 606 HAC MS NERO",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 241,
+    "role": "IndependentUser_241",
+    "query": "Top Rated Boat Washing Machine",
+    "latencyMs": 17031,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "DMR 3 kg Portable Mini Washing Machine",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 242,
+    "role": "IndependentUser_242",
+    "query": "Smart Boat Refrigerator",
+    "latencyMs": 26216,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Tropicool PortaChill 5 Litres Portable Chiller and Warmer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 243,
+    "role": "IndependentUser_243",
+    "query": "Energy Efficient Boat AC",
+    "latencyMs": 25111,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hifresh Tower Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 244,
+    "role": "IndependentUser_244",
+    "query": "Budget Boat Microwave",
+    "latencyMs": 26934,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Samsung 23L Solo Microwave Oven (MS23A301TAK/TL)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 245,
+    "role": "IndependentUser_245",
+    "query": "Premium Boat Dishwasher",
+    "latencyMs": 27186,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko DT8B 8 Place Setting Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 246,
+    "role": "IndependentUser_246",
+    "query": "Heavy Duty Boat Water Purifier",
+    "latencyMs": 25367,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kent Gold Optima Gravity Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 247,
+    "role": "IndependentUser_247",
+    "query": "Silent Boat Geyser",
+    "latencyMs": 24241,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Venus 25L Storage Water Geyser (025R-Lyra)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 248,
+    "role": "IndependentUser_248",
+    "query": "Portable Boat Vacuum Cleaner",
+    "latencyMs": 24806,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "STIHL SEA 20.0 SET Cordless Handheld Vacuum",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 249,
+    "role": "IndependentUser_249",
+    "query": "Best Boat Air Purifier",
+    "latencyMs": 24825,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Coway Airmega 150 (AP-1019C)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 250,
+    "role": "IndependentUser_250",
+    "query": "Cheapest Boat Fan",
+    "latencyMs": 25642,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Brass Boat Fan (75mm)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 251,
+    "role": "IndependentUser_251",
+    "query": "Top Rated Boat Heater",
+    "latencyMs": 26668,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xtreme Heaters Boat, Cabin & RV Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 252,
+    "role": "IndependentUser_252",
+    "query": "Smart Boat Cooler",
+    "latencyMs": 22638,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Boat Cooler",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 253,
+    "role": "IndependentUser_253",
+    "query": "Energy Efficient Boat Iron",
+    "latencyMs": 22608,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Decorative Boat Iron Handicraft",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 254,
+    "role": "IndependentUser_254",
+    "query": "Budget Boat Mixer Grinder",
+    "latencyMs": 21470,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Preethi Zodiac MG-218 750W Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 255,
+    "role": "IndependentUser_255",
+    "query": "Premium Boat Juicer",
+    "latencyMs": 25392,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings B1700 Professional Cold Press Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 256,
+    "role": "IndependentUser_256",
+    "query": "Heavy Duty Boat Toaster",
+    "latencyMs": 22575,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Dualit 4-Slice Classic Toaster",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 257,
+    "role": "IndependentUser_257",
+    "query": "Silent Boat Coffee Maker",
+    "latencyMs": 27554,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Boat Premium Silent Coffee Maker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 258,
+    "role": "IndependentUser_258",
+    "query": "Portable Boat Kettle",
+    "latencyMs": 18602,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Boat Kettle",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 259,
+    "role": "IndependentUser_259",
+    "query": "Best Boat Induction",
+    "latencyMs": 25363,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Prestige PIC 16.0 Plus Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 260,
+    "role": "IndependentUser_260",
+    "query": "Cheapest Boat Chimney",
+    "latencyMs": 22979,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Generic Kitchen Chimney (Marketplace Listing)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 261,
+    "role": "IndependentUser_261",
+    "query": "Smart Noise Washing Machine",
+    "latencyMs": 21893,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Generic Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 262,
+    "role": "IndependentUser_262",
+    "query": "Energy Efficient Noise Refrigerator",
+    "latencyMs": 29101,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Thermoelectric Mini Fridge (4L-8L)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 263,
+    "role": "IndependentUser_263",
+    "query": "Budget Noise AC",
+    "latencyMs": 22880,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bajaj PX97 Torque New 36L Personal Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 264,
+    "role": "IndependentUser_264",
+    "query": "Premium Noise Microwave",
+    "latencyMs": 21071,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Samsung 23L Solo Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 265,
+    "role": "IndependentUser_265",
+    "query": "Heavy Duty Noise Dishwasher",
+    "latencyMs": 31297,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 8 Place Setting Table Top Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 266,
+    "role": "IndependentUser_266",
+    "query": "Silent Noise Water Purifier",
+    "latencyMs": 27138,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Aquaguard Sure Delight 6 L Water Purifier (RO+UV+UF)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 267,
+    "role": "IndependentUser_267",
+    "query": "Portable Noise Geyser",
+    "latencyMs": 20509,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Crompton Arno Prime 15L Storage Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 268,
+    "role": "IndependentUser_268",
+    "query": "Best Noise Vacuum Cleaner",
+    "latencyMs": 25790,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Eureka Forbes Supervac",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 269,
+    "role": "IndependentUser_269",
+    "query": "Cheapest Noise Air Purifier",
+    "latencyMs": 23533,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Honeywell Air Touch U1 Air Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 270,
+    "role": "IndependentUser_270",
+    "query": "Top Rated Noise Fan",
+    "latencyMs": 24977,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Crompton Silent Pro Blossom Smart Ceiling Fan",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 271,
+    "role": "IndependentUser_271",
+    "query": "Smart Noise Heater",
+    "latencyMs": 24671,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Smart Tower Heater Lite",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 272,
+    "role": "IndependentUser_272",
+    "query": "Energy Efficient Noise Cooler",
+    "latencyMs": 24401,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Symphony Winter 80B Desert Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 273,
+    "role": "IndependentUser_273",
+    "query": "Budget Noise Iron",
+    "latencyMs": 23817,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Noise ColorFit Pro 5",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 274,
+    "role": "IndependentUser_274",
+    "query": "Premium Noise Mixer Grinder",
+    "latencyMs": 26079,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bosch TrueMixx Pro 1000W Mixer Grinder (MGM8856BIN)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 275,
+    "role": "IndependentUser_275",
+    "query": "Heavy Duty Noise Juicer",
+    "latencyMs": 23843,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings Cold Press Slow Juicer",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 276,
+    "role": "IndependentUser_276",
+    "query": "Silent Noise Toaster",
+    "latencyMs": 25114,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Noise Premium Smart Toaster",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 277,
+    "role": "IndependentUser_277",
+    "query": "Portable Noise Coffee Maker",
+    "latencyMs": 22030,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "KOFIHAUS Portable Coffee Maker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 278,
+    "role": "IndependentUser_278",
+    "query": "Best Noise Kettle",
+    "latencyMs": 24372,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells Marino Low Noise Glass Electric Kettle 1L",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 279,
+    "role": "IndependentUser_279",
+    "query": "Cheapest Noise Induction",
+    "latencyMs": 25078,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Prestige PIC 3.1 V3 Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 280,
+    "role": "IndependentUser_280",
+    "query": "Top Rated Noise Chimney",
+    "latencyMs": 24947,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Elica 60 cm 1200 m3/hr Filterless Auto Clean Chimney (EFL-S607 LTW VMS)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 281,
+    "role": "IndependentUser_281",
+    "query": "Energy Efficient Fire-Boltt Washing Machine",
+    "latencyMs": 25411,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Gladiator Smartwatch",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 282,
+    "role": "IndependentUser_282",
+    "query": "Budget Fire-Boltt Refrigerator",
+    "latencyMs": 15263,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Fire-Boltt Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 283,
+    "role": "IndependentUser_283",
+    "query": "Premium Fire-Boltt AC",
+    "latencyMs": 24803,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Dream WristPhone",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 284,
+    "role": "IndependentUser_284",
+    "query": "Heavy Duty Fire-Boltt Microwave",
+    "latencyMs": 19697,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Microwave",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 285,
+    "role": "IndependentUser_285",
+    "query": "Silent Fire-Boltt Dishwasher",
+    "latencyMs": 22179,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Fire-Boltt Dishwasher",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 286,
+    "role": "IndependentUser_286",
+    "query": "Portable Fire-Boltt Water Purifier",
+    "latencyMs": 25651,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Smartwatch (Water Resistant)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 287,
+    "role": "IndependentUser_287",
+    "query": "Best Fire-Boltt Geyser",
+    "latencyMs": 28676,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Smartwatch",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 288,
+    "role": "IndependentUser_288",
+    "query": "Cheapest Fire-Boltt Vacuum Cleaner",
+    "latencyMs": 23664,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Fire Dust Handheld Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 289,
+    "role": "IndependentUser_289",
+    "query": "Top Rated Fire-Boltt Air Purifier",
+    "latencyMs": 22843,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Coway Professional Air Purifier (AP-1512HH)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 290,
+    "role": "IndependentUser_290",
+    "query": "Smart Fire-Boltt Fan",
+    "latencyMs": 22707,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Smartwatch",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 291,
+    "role": "IndependentUser_291",
+    "query": "Energy Efficient Fire-Boltt Heater",
+    "latencyMs": 27416,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Fire-Boltt Gladiator Smartwatch",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 292,
+    "role": "IndependentUser_292",
+    "query": "Budget Fire-Boltt Cooler",
+    "latencyMs": 27156,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Gladiator Smartwatch",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 293,
+    "role": "IndependentUser_293",
+    "query": "Premium Fire-Boltt Iron",
+    "latencyMs": 22052,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Premium Fire-Boltt Iron",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 294,
+    "role": "IndependentUser_294",
+    "query": "Heavy Duty Fire-Boltt Mixer Grinder",
+    "latencyMs": 20639,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Fire-Boltt Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 295,
+    "role": "IndependentUser_295",
+    "query": "Silent Fire-Boltt Juicer",
+    "latencyMs": 32069,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Fire-Boltt Juicer",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 296,
+    "role": "IndependentUser_296",
+    "query": "Portable Fire-Boltt Toaster",
+    "latencyMs": 23257,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Fire-Boltt Toaster",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 297,
+    "role": "IndependentUser_297",
+    "query": "Best Fire-Boltt Coffee Maker",
+    "latencyMs": 38049,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "DeLonghi Dedica Style EC685.M Espresso Coffee Maker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 298,
+    "role": "IndependentUser_298",
+    "query": "Cheapest Fire-Boltt Kettle",
+    "latencyMs": 30311,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Kettle (Non-Existent / Fake Listing)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 299,
+    "role": "IndependentUser_299",
+    "query": "Top Rated Fire-Boltt Induction",
+    "latencyMs": 23123,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fire-Boltt Smartwatch",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 300,
+    "role": "IndependentUser_300",
+    "query": "Smart Fire-Boltt Chimney",
+    "latencyMs": 21605,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Faber 60cm 1200 m3/hr Filterless Auto-Clean Kitchen Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 301,
+    "role": "IndependentUser_301",
+    "query": "Budget Nothing Washing Machine",
+    "latencyMs": 27494,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 302,
+    "role": "IndependentUser_302",
+    "query": "Premium Nothing Refrigerator",
+    "latencyMs": 28575,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Nothing Refrigerator (Concept/Fictional)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 303,
+    "role": "IndependentUser_303",
+    "query": "Heavy Duty Nothing AC",
+    "latencyMs": 28543,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Voltas 0.8 Ton Window AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 304,
+    "role": "IndependentUser_304",
+    "query": "Silent Nothing Microwave",
+    "latencyMs": 38695,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bajaj 17L Solo Microwave Oven (1701 MT)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 305,
+    "role": "IndependentUser_305",
+    "query": "Portable Nothing Dishwasher",
+    "latencyMs": 31176,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Dishwasher (Generic/Unbranded)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 306,
+    "role": "IndependentUser_306",
+    "query": "Best Nothing Water Purifier",
+    "latencyMs": 28807,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "KENT Ace Alkaline 8L Water Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 307,
+    "role": "IndependentUser_307",
+    "query": "Cheapest Nothing Geyser",
+    "latencyMs": 30736,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Crompton Solarium Qube 15-L 5 Star Rated Storage Water Heater",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 308,
+    "role": "IndependentUser_308",
+    "query": "Top Rated Nothing Vacuum Cleaner",
+    "latencyMs": 34055,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "AGARO Ace 1600-Watt Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 309,
+    "role": "IndependentUser_309",
+    "query": "Smart Nothing Air Purifier",
+    "latencyMs": 28153,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Nothing Air Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 310,
+    "role": "IndependentUser_310",
+    "query": "Energy Efficient Nothing Fan",
+    "latencyMs": 32127,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Atomberg Renesa 400mm BLDC Pedestal Fan",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 311,
+    "role": "IndependentUser_311",
+    "query": "Budget Nothing Heater",
+    "latencyMs": 24158,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Nothing Phone (2a) Plus (12GB RAM, 256GB)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 312,
+    "role": "IndependentUser_312",
+    "query": "Premium Nothing Cooler",
+    "latencyMs": 36241,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Nothing Phone (2a) 8GB 128GB",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 313,
+    "role": "IndependentUser_313",
+    "query": "Heavy Duty Nothing Iron",
+    "latencyMs": 31405,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Nothing Phone (2a) 8GB 128GB",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 314,
+    "role": "IndependentUser_314",
+    "query": "Silent Nothing Mixer Grinder",
+    "latencyMs": 35393,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sujata Dynamix 900 Watts Mixer Grinder",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 315,
+    "role": "IndependentUser_315",
+    "query": "Portable Nothing Juicer",
+    "latencyMs": 31285,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Nothing Juicer (Transparent Edition)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 316,
+    "role": "IndependentUser_316",
+    "query": "Best Nothing Toaster",
+    "latencyMs": 30460,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Morphy Richards AT-201 2-Slice Pop-up Toaster",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 317,
+    "role": "IndependentUser_317",
+    "query": "Cheapest Nothing Coffee Maker",
+    "latencyMs": 24192,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Nothing Coffee Maker (Brew 1)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 318,
+    "role": "IndependentUser_318",
+    "query": "Top Rated Nothing Kettle",
+    "latencyMs": 32815,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells Aqua Plus 1.2 Litre Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 319,
+    "role": "IndependentUser_319",
+    "query": "Smart Nothing Induction",
+    "latencyMs": 31005,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Philips Viva Collection HD4928/01 Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 320,
+    "role": "IndependentUser_320",
+    "query": "Energy Efficient Nothing Chimney",
+    "latencyMs": 29232,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "KAFF CANARY 90 DC BLDC Motor Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 321,
+    "role": "IndependentUser_321",
+    "query": "Premium Motorola Washing Machine",
+    "latencyMs": 24979,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Motorola 8 kg 5 Star Smart Wi-Fi Fully Automatic Front Load Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 322,
+    "role": "IndependentUser_322",
+    "query": "Heavy Duty Motorola Refrigerator",
+    "latencyMs": 34023,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Motorola Heavy Duty Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 323,
+    "role": "IndependentUser_323",
+    "query": "Silent Motorola AC",
+    "latencyMs": 28026,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Motorola AC",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 324,
+    "role": "IndependentUser_324",
+    "query": "Portable Motorola Microwave",
+    "latencyMs": 30323,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Motorola Microwave",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 325,
+    "role": "IndependentUser_325",
+    "query": "Best Motorola Dishwasher",
+    "latencyMs": 35830,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko 8 Place Setting Dishwasher (DT8B)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 326,
+    "role": "IndependentUser_326",
+    "query": "Cheapest Motorola Water Purifier",
+    "latencyMs": 30769,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Motorola Smart Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 327,
+    "role": "IndependentUser_327",
+    "query": "Top Rated Motorola Geyser",
+    "latencyMs": 32229,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Crompton Arno Neo 15-L 5 Star Rated Storage Water Heater",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 328,
+    "role": "IndependentUser_328",
+    "query": "Smart Motorola Vacuum Cleaner",
+    "latencyMs": 27992,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Mi Robot Vacuum-Mop P",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 329,
+    "role": "IndependentUser_329",
+    "query": "Energy Efficient Motorola Air Purifier",
+    "latencyMs": 30863,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola AP 450 Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 330,
+    "role": "IndependentUser_330",
+    "query": "Budget Motorola Fan",
+    "latencyMs": 33989,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola Edge 50 Fusion (8GB RAM, 128GB Storage)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 331,
+    "role": "IndependentUser_331",
+    "query": "Premium Motorola Heater",
+    "latencyMs": 31901,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola 6.5 kg 5 Star Smart Wi-Fi Front Load Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 332,
+    "role": "IndependentUser_332",
+    "query": "Heavy Duty Motorola Cooler",
+    "latencyMs": 32783,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola 100L Smart Desert Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 333,
+    "role": "IndependentUser_333",
+    "query": "Silent Motorola Iron",
+    "latencyMs": 35865,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola Moto G85 5G (8GB RAM, 128GB Storage)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 334,
+    "role": "IndependentUser_334",
+    "query": "Portable Motorola Mixer Grinder",
+    "latencyMs": 31133,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Nutribullet PRO 900 Portable Personal Blender",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 335,
+    "role": "IndependentUser_335",
+    "query": "Best Motorola Juicer",
+    "latencyMs": 32253,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings B1700 Professional Cold Press Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 336,
+    "role": "IndependentUser_336",
+    "query": "Cheapest Motorola Toaster",
+    "latencyMs": 30093,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola Toaster (Non-Existent Product)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 337,
+    "role": "IndependentUser_337",
+    "query": "Top Rated Motorola Coffee Maker",
+    "latencyMs": 36649,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola Coffee Maker (Licensing OEM)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 338,
+    "role": "IndependentUser_338",
+    "query": "Smart Motorola Kettle",
+    "latencyMs": 34848,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola Smart Electric Kettle (1.5L)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 339,
+    "role": "IndependentUser_339",
+    "query": "Energy Efficient Motorola Induction",
+    "latencyMs": 25237,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Philips Viva Collection Induction Cooktop (2100W)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 340,
+    "role": "IndependentUser_340",
+    "query": "Budget Motorola Chimney",
+    "latencyMs": 27021,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Motorola 60 cm Autoclean Wall Mounted Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 341,
+    "role": "IndependentUser_341",
+    "query": "Heavy Duty Realme Washing Machine",
+    "latencyMs": 23131,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 342,
+    "role": "IndependentUser_342",
+    "query": "Silent Realme Refrigerator",
+    "latencyMs": 34149,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Realme TechLife Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 343,
+    "role": "IndependentUser_343",
+    "query": "Portable Realme AC",
+    "latencyMs": 34285,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Realme TechLife Portable Air Conditioner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 344,
+    "role": "IndependentUser_344",
+    "query": "Best Realme Microwave",
+    "latencyMs": 28122,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 345,
+    "role": "IndependentUser_345",
+    "query": "Cheapest Realme Dishwasher",
+    "latencyMs": 37338,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko DT8B 8 Place Setting Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 346,
+    "role": "IndependentUser_346",
+    "query": "Top Rated Realme Water Purifier",
+    "latencyMs": 38009,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "realme TechLife Realpure Smart Water Purifier 10 L RO + UV + UF + Alkaline",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 347,
+    "role": "IndependentUser_347",
+    "query": "Smart Realme Geyser",
+    "latencyMs": 35132,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Smart Geyser 15L",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 348,
+    "role": "IndependentUser_348",
+    "query": "Energy Efficient Realme Vacuum Cleaner",
+    "latencyMs": 32093,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Handheld Cordless Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 349,
+    "role": "IndependentUser_349",
+    "query": "Budget Realme Air Purifier",
+    "latencyMs": 24525,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 350,
+    "role": "IndependentUser_350",
+    "query": "Premium Realme Fan",
+    "latencyMs": 30596,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "realme Cooling Back Clip Neo",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 351,
+    "role": "IndependentUser_351",
+    "query": "Heavy Duty Realme Heater",
+    "latencyMs": 22386,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme P1 5G (8GB RAM, 256GB Storage)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 352,
+    "role": "IndependentUser_352",
+    "query": "Silent Realme Cooler",
+    "latencyMs": 20994,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "realme Cooling Back Clip",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 353,
+    "role": "IndependentUser_353",
+    "query": "Portable Realme Iron",
+    "latencyMs": 23657,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Portable Handheld Garment Steamer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 354,
+    "role": "IndependentUser_354",
+    "query": "Best Realme Mixer Grinder",
+    "latencyMs": 23582,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sujata Dynamix 900 Watt Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 355,
+    "role": "IndependentUser_355",
+    "query": "Cheapest Realme Juicer",
+    "latencyMs": 28266,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Juicer Mixer Grinder (500W)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 356,
+    "role": "IndependentUser_356",
+    "query": "Top Rated Realme Toaster",
+    "latencyMs": 23447,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips HD2583/90 2-Slice Pop-up Toaster",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 357,
+    "role": "IndependentUser_357",
+    "query": "Smart Realme Coffee Maker",
+    "latencyMs": 25502,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Realme Coffee Maker",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 358,
+    "role": "IndependentUser_358",
+    "query": "Energy Efficient Realme Kettle",
+    "latencyMs": 22612,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme Smart Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 359,
+    "role": "IndependentUser_359",
+    "query": "Budget Realme Induction",
+    "latencyMs": 26684,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 360,
+    "role": "IndependentUser_360",
+    "query": "Premium Realme Chimney",
+    "latencyMs": 22577,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Realme TechLife 60cm Auto Clean Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 361,
+    "role": "IndependentUser_361",
+    "query": "Silent Oppo Washing Machine",
+    "latencyMs": 23548,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 362,
+    "role": "IndependentUser_362",
+    "query": "Portable Oppo Refrigerator",
+    "latencyMs": 22799,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Oppo Refrigerator",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 363,
+    "role": "IndependentUser_363",
+    "query": "Best Oppo AC",
+    "latencyMs": 29875,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Symphony Diet 3D 30i Personal Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 364,
+    "role": "IndependentUser_364",
+    "query": "Cheapest Oppo Microwave",
+    "latencyMs": 23379,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Oppo Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 365,
+    "role": "IndependentUser_365",
+    "query": "Top Rated Oppo Dishwasher",
+    "latencyMs": 27830,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Midea 13 Place Settings Free Standing Dishwasher (MDWPF1301FSSWG)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 366,
+    "role": "IndependentUser_366",
+    "query": "Smart Oppo Water Purifier",
+    "latencyMs": 20899,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Oppo RO Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 367,
+    "role": "IndependentUser_367",
+    "query": "Energy Efficient Oppo Geyser",
+    "latencyMs": 22642,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Oppo Water Immersion Rod",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 368,
+    "role": "IndependentUser_368",
+    "query": "Budget Oppo Vacuum Cleaner",
+    "latencyMs": 27118,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Robot Vacuum Mop 2 Pro",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 369,
+    "role": "IndependentUser_369",
+    "query": "Premium Oppo Air Purifier",
+    "latencyMs": 20144,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Oppo Smart Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 370,
+    "role": "IndependentUser_370",
+    "query": "Heavy Duty Oppo Fan",
+    "latencyMs": 20076,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "OPPO K13 Turbo Pro",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 371,
+    "role": "IndependentUser_371",
+    "query": "Silent Oppo Heater",
+    "latencyMs": 21149,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells Pacifio Mica 1500W Room Heater",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 372,
+    "role": "IndependentUser_372",
+    "query": "Portable Oppo Cooler",
+    "latencyMs": 18586,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "OPPO Magnetic Cooling Card",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 373,
+    "role": "IndependentUser_373",
+    "query": "Best Oppo Iron",
+    "latencyMs": 21276,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips EasySpeed Plus Steam Iron GC2147/30",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 374,
+    "role": "IndependentUser_374",
+    "query": "Cheapest Oppo Mixer Grinder",
+    "latencyMs": 24556,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Oppo Mixer Grinder (Non-Existent)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 375,
+    "role": "IndependentUser_375",
+    "query": "Top Rated Oppo Juicer",
+    "latencyMs": 25860,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings B1700 Professional Cold Press Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 376,
+    "role": "IndependentUser_376",
+    "query": "Smart Oppo Toaster",
+    "latencyMs": 17512,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Oppo Toaster (IoT 2-Slice)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 377,
+    "role": "IndependentUser_377",
+    "query": "Energy Efficient Oppo Coffee Maker",
+    "latencyMs": 24090,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Oppo Smart Energy-Efficient Coffee Maker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 378,
+    "role": "IndependentUser_378",
+    "query": "Budget Oppo Kettle",
+    "latencyMs": 24519,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Prestige PKOSS 1.5 Litre Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 379,
+    "role": "IndependentUser_379",
+    "query": "Premium Oppo Induction",
+    "latencyMs": 23411,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Prestige PIC 6.1 V3 Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 380,
+    "role": "IndependentUser_380",
+    "query": "Heavy Duty Oppo Chimney",
+    "latencyMs": 23790,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Hindware Optimus i-Pro IoT Enabled Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 381,
+    "role": "IndependentUser_381",
+    "query": "Portable Vivo Washing Machine",
+    "latencyMs": 25810,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "DMR 3 kg Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 382,
+    "role": "IndependentUser_382",
+    "query": "Best Vivo Refrigerator",
+    "latencyMs": 29832,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Haier 42L 2 Star Single Door Mini Refrigerator (HR-65BKS)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 383,
+    "role": "IndependentUser_383",
+    "query": "Cheapest Vivo AC",
+    "latencyMs": 14423,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Symphony Diet 3D 30i Portable Tower Air Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 384,
+    "role": "IndependentUser_384",
+    "query": "Top Rated Vivo Microwave",
+    "latencyMs": 21683,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Vivo Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 385,
+    "role": "IndependentUser_385",
+    "query": "Smart Vivo Dishwasher",
+    "latencyMs": 30102,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Vivo Dishwasher (8 Place Setting)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 386,
+    "role": "IndependentUser_386",
+    "query": "Energy Efficient Vivo Water Purifier",
+    "latencyMs": 24944,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Vivo Plus Smart RO+UV+UF+TDS Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 387,
+    "role": "IndependentUser_387",
+    "query": "Budget Vivo Geyser",
+    "latencyMs": 22115,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "V-Guard 10 Litre Sieta Plus Metro Storage Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 388,
+    "role": "IndependentUser_388",
+    "query": "Premium Vivo Vacuum Cleaner",
+    "latencyMs": 22821,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Viomi Robot Vacuum-Mop P",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 389,
+    "role": "IndependentUser_389",
+    "query": "Heavy Duty Vivo Air Purifier",
+    "latencyMs": 23822,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Vivo Heavy Duty Smart Air Purifier",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 390,
+    "role": "IndependentUser_390",
+    "query": "Silent Vivo Fan",
+    "latencyMs": 31538,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "V-Guard Vivo Wall Fan",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 391,
+    "role": "IndependentUser_391",
+    "query": "Portable Vivo Heater",
+    "latencyMs": 22529,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Vivo Heater",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 392,
+    "role": "IndependentUser_392",
+    "query": "Best Vivo Cooler",
+    "latencyMs": 24118,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Black Shark MagCooler 4 Pro",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 393,
+    "role": "IndependentUser_393",
+    "query": "Cheapest Vivo Iron",
+    "latencyMs": 24654,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "JVD Vivo II Steam Iron",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 394,
+    "role": "IndependentUser_394",
+    "query": "Top Rated Vivo Mixer Grinder",
+    "latencyMs": 23507,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Preethi Blue Leaf Diamond Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 395,
+    "role": "IndependentUser_395",
+    "query": "Smart Vivo Juicer",
+    "latencyMs": 22936,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Vivo Juicer",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 396,
+    "role": "IndependentUser_396",
+    "query": "Energy Efficient Vivo Toaster",
+    "latencyMs": 19129,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Energy Efficient Vivo Toaster",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 397,
+    "role": "IndependentUser_397",
+    "query": "Budget Vivo Coffee Maker",
+    "latencyMs": 20922,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Croma 900 Watt 10 Cups Manual Espresso Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 398,
+    "role": "IndependentUser_398",
+    "query": "Premium Vivo Kettle",
+    "latencyMs": 24375,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Villeroy & Boch Vivo Premium Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 399,
+    "role": "IndependentUser_399",
+    "query": "Heavy Duty Vivo Induction",
+    "latencyMs": 23928,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Pringle Vivo 1400W Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 400,
+    "role": "IndependentUser_400",
+    "query": "Silent Vivo Chimney",
+    "latencyMs": 24687,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Faber Hood Silencio 3D 90cm Kitchen Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 401,
+    "role": "IndependentUser_401",
+    "query": "Best Poco Washing Machine",
+    "latencyMs": 21705,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 402,
+    "role": "IndependentUser_402",
+    "query": "Cheapest Poco Refrigerator",
+    "latencyMs": 28287,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Poco Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 403,
+    "role": "IndependentUser_403",
+    "query": "Top Rated Poco AC",
+    "latencyMs": 23761,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Poco AC (Non-Existent)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 404,
+    "role": "IndependentUser_404",
+    "query": "Smart Poco Microwave",
+    "latencyMs": 23868,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Samsung 23 Litres Solo Microwave Oven (MS23F301TAK/TL)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 405,
+    "role": "IndependentUser_405",
+    "query": "Energy Efficient Poco Dishwasher",
+    "latencyMs": 21957,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Galanz W3A1G2-0E0 4 Place Setting Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 406,
+    "role": "IndependentUser_406",
+    "query": "Budget Poco Water Purifier",
+    "latencyMs": 27889,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Aquaguard Sure Delight 6 L Water Purifier (RO+UV+UF)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 407,
+    "role": "IndependentUser_407",
+    "query": "Premium Poco Geyser",
+    "latencyMs": 26619,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Havells Adonia Spin 15 Litre Storage Water Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 408,
+    "role": "IndependentUser_408",
+    "query": "Heavy Duty Poco Vacuum Cleaner",
+    "latencyMs": 22634,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Ecovacs Deebot N30 Robot Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 409,
+    "role": "IndependentUser_409",
+    "query": "Silent Poco Air Purifier",
+    "latencyMs": 21743,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Smart Air Purifier 4",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 410,
+    "role": "IndependentUser_410",
+    "query": "Portable Poco Fan",
+    "latencyMs": 29394,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "POCO X6 5G (8GB RAM, 256GB Storage)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 411,
+    "role": "IndependentUser_411",
+    "query": "Best Poco Heater",
+    "latencyMs": 23220,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "POCO X6 Pro 5G (8GB RAM, 256GB Storage)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 412,
+    "role": "IndependentUser_412",
+    "query": "Cheapest Poco Cooler",
+    "latencyMs": 22399,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Poco F6 5G 12GB 256GB",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 413,
+    "role": "IndependentUser_413",
+    "query": "Top Rated Poco Iron",
+    "latencyMs": 27932,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "POCO X8 Pro Iron Man Edition 12GB 512GB",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 414,
+    "role": "IndependentUser_414",
+    "query": "Smart Poco Mixer Grinder",
+    "latencyMs": 22670,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Flipkart SmartBuy Power Chef Neo 600 W Juicer Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 415,
+    "role": "IndependentUser_415",
+    "query": "Energy Efficient Poco Juicer",
+    "latencyMs": 28012,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Energy Efficient Poco Juicer",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 416,
+    "role": "IndependentUser_416",
+    "query": "Budget Poco Toaster",
+    "latencyMs": 26203,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Toaster",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 417,
+    "role": "IndependentUser_417",
+    "query": "Premium Poco Coffee Maker",
+    "latencyMs": 26749,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Premium Poco Coffee Maker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 418,
+    "role": "IndependentUser_418",
+    "query": "Heavy Duty Poco Kettle",
+    "latencyMs": 24831,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Poco 1.8L Heavy Duty Electric Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 419,
+    "role": "IndependentUser_419",
+    "query": "Silent Poco Induction",
+    "latencyMs": 29519,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips Viva Collection HD4938/01 Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 420,
+    "role": "IndependentUser_420",
+    "query": "Portable Poco Chimney",
+    "latencyMs": 29300,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Poco Chimney",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 421,
+    "role": "IndependentUser_421",
+    "query": "Cheapest Infinix Washing Machine",
+    "latencyMs": 24773,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Infinix Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 422,
+    "role": "IndependentUser_422",
+    "query": "Top Rated Infinix Refrigerator",
+    "latencyMs": 20266,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix 45L Single Door Mini Refrigerator",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 423,
+    "role": "IndependentUser_423",
+    "query": "Smart Infinix AC",
+    "latencyMs": 22356,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Smart 8 HD",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 424,
+    "role": "IndependentUser_424",
+    "query": "Energy Efficient Infinix Microwave",
+    "latencyMs": 22770,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Energy Efficient Microwave",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 425,
+    "role": "IndependentUser_425",
+    "query": "Budget Infinix Dishwasher",
+    "latencyMs": 23184,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko DT8B 8 Place Setting Table Top Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 426,
+    "role": "IndependentUser_426",
+    "query": "Premium Infinix Water Purifier",
+    "latencyMs": 33269,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Smart RO+UV Water Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 427,
+    "role": "IndependentUser_427",
+    "query": "Heavy Duty Infinix Geyser",
+    "latencyMs": 24004,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bajaj New Shakti Neo 25L Storage Water Heater",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 428,
+    "role": "IndependentUser_428",
+    "query": "Silent Infinix Vacuum Cleaner",
+    "latencyMs": 27840,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Cordless Wet & Dry Vacuum Cleaner",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 429,
+    "role": "IndependentUser_429",
+    "query": "Portable Infinix Air Purifier",
+    "latencyMs": 20852,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Infinix Air Purifier",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 430,
+    "role": "IndependentUser_430",
+    "query": "Best Infinix Fan",
+    "latencyMs": 25421,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix GT 20 Pro (8GB RAM, 256GB Storage)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 431,
+    "role": "IndependentUser_431",
+    "query": "Cheapest Infinix Heater",
+    "latencyMs": 18838,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Smart 8 (4GB RAM, 64GB)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 432,
+    "role": "IndependentUser_432",
+    "query": "Top Rated Infinix Cooler",
+    "latencyMs": 23035,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix XG03+X6873 Gaming Accessory Kit",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 433,
+    "role": "IndependentUser_433",
+    "query": "Smart Infinix Iron",
+    "latencyMs": 23895,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Smart Infinix Iron",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 434,
+    "role": "IndependentUser_434",
+    "query": "Energy Efficient Infinix Mixer Grinder",
+    "latencyMs": 27733,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Maharaja Whiteline Infinimax Elite 750W Mixer Grinder",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 435,
+    "role": "IndependentUser_435",
+    "query": "Budget Infinix Juicer",
+    "latencyMs": 22897,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinizy 350 W Juicer Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 436,
+    "role": "IndependentUser_436",
+    "query": "Premium Infinix Toaster",
+    "latencyMs": 25508,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Premium Infinix Smart Toaster",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 437,
+    "role": "IndependentUser_437",
+    "query": "Heavy Duty Infinix Coffee Maker",
+    "latencyMs": 21125,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Coffee Maker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 438,
+    "role": "IndependentUser_438",
+    "query": "Silent Infinix Kettle",
+    "latencyMs": 21774,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix Silent Electric Kettle (1.5L)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 439,
+    "role": "IndependentUser_439",
+    "query": "Portable Infinix Induction",
+    "latencyMs": 29326,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Infinix 2000W Portable Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 440,
+    "role": "IndependentUser_440",
+    "query": "Best Infinix Chimney",
+    "latencyMs": 19848,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Faber Hood Mars TC BF BK 60 cm Kitchen Chimney",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 441,
+    "role": "IndependentUser_441",
+    "query": "Top Rated Tecno Washing Machine",
+    "latencyMs": 25378,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Tecno Portable Mini Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 442,
+    "role": "IndependentUser_442",
+    "query": "Smart Tecno Refrigerator",
+    "latencyMs": 26051,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Tecno Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 443,
+    "role": "IndependentUser_443",
+    "query": "Energy Efficient Tecno AC",
+    "latencyMs": 31743,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Lloyd 0.8 Ton 3 Star Inverter Split AC",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 444,
+    "role": "IndependentUser_444",
+    "query": "Budget Tecno Microwave",
+    "latencyMs": 29648,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Tecno Microwave Oven",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 445,
+    "role": "IndependentUser_445",
+    "query": "Premium Tecno Dishwasher",
+    "latencyMs": 25255,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Midea WQP8-3802D 8 Place Setting Counter Top Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 446,
+    "role": "IndependentUser_446",
+    "query": "Heavy Duty Tecno Water Purifier",
+    "latencyMs": 30194,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Heavy Duty Tecno Water Purifier",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 447,
+    "role": "IndependentUser_447",
+    "query": "Silent Tecno Geyser",
+    "latencyMs": 22076,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Silent Tecno Geyser",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 448,
+    "role": "IndependentUser_448",
+    "query": "Portable Tecno Vacuum Cleaner",
+    "latencyMs": 23714,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Tecno Portable Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 449,
+    "role": "IndependentUser_449",
+    "query": "Best Tecno Air Purifier",
+    "latencyMs": 20975,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Honeywell Air Touch U1 Air Purifier",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 450,
+    "role": "IndependentUser_450",
+    "query": "Cheapest Tecno Fan",
+    "latencyMs": 23071,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Ortem Tecno Breez DX Ceiling Fan",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 451,
+    "role": "IndependentUser_451",
+    "query": "Top Rated Tecno Heater",
+    "latencyMs": 21163,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Bajaj Blow Hot Fan Room Heater",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 452,
+    "role": "IndependentUser_452",
+    "query": "Smart Tecno Cooler",
+    "latencyMs": 22173,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Tecno Cooler",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 453,
+    "role": "IndependentUser_453",
+    "query": "Energy Efficient Tecno Iron",
+    "latencyMs": 28832,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Tecno Dry Iron",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 454,
+    "role": "IndependentUser_454",
+    "query": "Budget Tecno Mixer Grinder",
+    "latencyMs": 19819,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Tecnora Avatar 750Fp Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 455,
+    "role": "IndependentUser_455",
+    "query": "Premium Tecno Juicer",
+    "latencyMs": 21079,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Sujata Cold Press Slow Juicer SJ01",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 456,
+    "role": "IndependentUser_456",
+    "query": "Heavy Duty Tecno Toaster",
+    "latencyMs": 18950,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Heavy Duty Tecno Toaster",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 457,
+    "role": "IndependentUser_457",
+    "query": "Silent Tecno Coffee Maker",
+    "latencyMs": 20385,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Tecno Coffee Maker",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 458,
+    "role": "IndependentUser_458",
+    "query": "Portable Tecno Kettle",
+    "latencyMs": 21683,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Prestige PMC 3.0+ Multi Kettle",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 459,
+    "role": "IndependentUser_459",
+    "query": "Best Tecno Induction",
+    "latencyMs": 27906,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips Viva Collection HD4928/01 Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 460,
+    "role": "IndependentUser_460",
+    "query": "Cheapest Tecno Chimney",
+    "latencyMs": 24996,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Carysil Chimney Tekno 60cm Black",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 461,
+    "role": "IndependentUser_461",
+    "query": "Smart iQOO Washing Machine",
+    "latencyMs": 18843,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "iQOO Neo 10R",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 462,
+    "role": "IndependentUser_462",
+    "query": "Energy Efficient iQOO Refrigerator",
+    "latencyMs": 28106,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "iQOO Refrigerator (Non-Existent Product)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 463,
+    "role": "IndependentUser_463",
+    "query": "Budget iQOO AC",
+    "latencyMs": 25404,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Z10 Lite",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 464,
+    "role": "IndependentUser_464",
+    "query": "Premium iQOO Microwave",
+    "latencyMs": 26662,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Microwave",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 465,
+    "role": "IndependentUser_465",
+    "query": "Heavy Duty iQOO Dishwasher",
+    "latencyMs": 18330,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Heavy Duty Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 466,
+    "role": "IndependentUser_466",
+    "query": "Silent iQOO Water Purifier",
+    "latencyMs": 28147,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent iQOO Water Purifier (Fake/Unbranded Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 467,
+    "role": "IndependentUser_467",
+    "query": "Portable iQOO Geyser",
+    "latencyMs": 21123,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Z9x 5G (4GB RAM, 128GB Storage)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 468,
+    "role": "IndependentUser_468",
+    "query": "Best iQOO Vacuum Cleaner",
+    "latencyMs": 19559,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Robot Vacuum S10",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 469,
+    "role": "IndependentUser_469",
+    "query": "Cheapest iQOO Air Purifier",
+    "latencyMs": 18793,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Xiaomi Smart Air Purifier 4",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 470,
+    "role": "IndependentUser_470",
+    "query": "Top Rated iQOO Fan",
+    "latencyMs": 25035,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Z10 5G (8GB RAM, 128GB Storage)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 471,
+    "role": "IndependentUser_471",
+    "query": "Smart iQOO Heater",
+    "latencyMs": 24840,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Z9s 5G (8GB RAM, 128GB Storage)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 472,
+    "role": "IndependentUser_472",
+    "query": "Energy Efficient iQOO Cooler",
+    "latencyMs": 21829,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Magnetic Cooling Back Clip Pro",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 473,
+    "role": "IndependentUser_473",
+    "query": "Budget iQOO Iron",
+    "latencyMs": 25089,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Z10 (8GB RAM, 128GB Storage)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 474,
+    "role": "IndependentUser_474",
+    "query": "Premium iQOO Mixer Grinder",
+    "latencyMs": 22123,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Preethi Zodiac MG 218 Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 475,
+    "role": "IndependentUser_475",
+    "query": "Heavy Duty iQOO Juicer",
+    "latencyMs": 30442,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Kuvings EVO820 Professional Cold Press Juicer",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 476,
+    "role": "IndependentUser_476",
+    "query": "Silent iQOO Toaster",
+    "latencyMs": 22427,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "iQOO Neo 9 Pro (8GB RAM, 256GB Storage)",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 477,
+    "role": "IndependentUser_477",
+    "query": "Portable iQOO Coffee Maker",
+    "latencyMs": 23667,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable iQOO Coffee Maker (Suspicious Listing)",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 478,
+    "role": "IndependentUser_478",
+    "query": "Best iQOO Kettle",
+    "latencyMs": 26518,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Fellow Stagg EKG Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 479,
+    "role": "IndependentUser_479",
+    "query": "Cheapest iQOO Induction",
+    "latencyMs": 25889,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Pigeon Favourite IC 1800W Induction Cooktop",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 480,
+    "role": "IndependentUser_480",
+    "query": "Top Rated iQOO Chimney",
+    "latencyMs": 23023,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Faber 60cm 3 Way Silent Suction Chimney",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 481,
+    "role": "IndependentUser_481",
+    "query": "Energy Efficient Marshall Washing Machine",
+    "latencyMs": 28405,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall 3 kg Portable Single Tub Washing Machine",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 482,
+    "role": "IndependentUser_482",
+    "query": "Budget Marshall Refrigerator",
+    "latencyMs": 24791,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Retro Medium Refrigerator",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 483,
+    "role": "IndependentUser_483",
+    "query": "Premium Marshall AC",
+    "latencyMs": 23200,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Premium Audio / AC Concept",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 484,
+    "role": "IndependentUser_484",
+    "query": "Heavy Duty Marshall Microwave",
+    "latencyMs": 23344,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Samsung 20L Solo Microwave Oven (MS20A3010AL/TL)",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 485,
+    "role": "IndependentUser_485",
+    "query": "Silent Marshall Dishwasher",
+    "latencyMs": 26556,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Voltas Beko DT8B 8 Place Setting Dishwasher",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 486,
+    "role": "IndependentUser_486",
+    "query": "Portable Marshall Water Purifier",
+    "latencyMs": 27730,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Portable Gravity Water Purifier",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 487,
+    "role": "IndependentUser_487",
+    "query": "Best Marshall Geyser",
+    "latencyMs": 25839,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Willen Portable Bluetooth Speaker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 488,
+    "role": "IndependentUser_488",
+    "query": "Cheapest Marshall Vacuum Cleaner",
+    "latencyMs": 25943,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Eureka Forbes Quick Clean DX Canister Vacuum Cleaner",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 489,
+    "role": "IndependentUser_489",
+    "query": "Top Rated Marshall Air Purifier",
+    "latencyMs": 27934,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Coway Airmega 150 (AP-1019C) Air Purifier",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 490,
+    "role": "IndependentUser_490",
+    "query": "Smart Marshall Fan",
+    "latencyMs": 25121,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smart Marshall Fan",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 491,
+    "role": "IndependentUser_491",
+    "query": "Energy Efficient Marshall Heater",
+    "latencyMs": 24939,
+    "status": "FAIL",
+    "issues": [
+      "Trust Fail: Summary sounds like generic AI spam. Does not maintain ground reality Aam Aadmi persona."
+    ],
+    "resolvedProduct": "Havells Cista Room Heater 2000 Watts",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 492,
+    "role": "IndependentUser_492",
+    "query": "Budget Marshall Cooler",
+    "latencyMs": 23923,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Kilburn III Portable Bluetooth Speaker",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 493,
+    "role": "IndependentUser_493",
+    "query": "Premium Marshall Iron",
+    "latencyMs": 27681,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Stanmore III Wireless Bluetooth Speaker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 494,
+    "role": "IndependentUser_494",
+    "query": "Heavy Duty Marshall Mixer Grinder",
+    "latencyMs": 22373,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Marshall Heavy Duty Mixer Grinder",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 495,
+    "role": "IndependentUser_495",
+    "query": "Silent Marshall Juicer",
+    "latencyMs": 19934,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Silent Marshall Juicer",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 496,
+    "role": "IndependentUser_496",
+    "query": "Portable Marshall Toaster",
+    "latencyMs": 26364,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Portable Marshall Amp Retro Toaster",
+    "finalDecision": "RUN"
+  },
+  {
+    "userId": 497,
+    "role": "IndependentUser_497",
+    "query": "Best Marshall Coffee Maker",
+    "latencyMs": 22274,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips HD7431/20 Coffee Maker",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 498,
+    "role": "IndependentUser_498",
+    "query": "Cheapest Marshall Kettle",
+    "latencyMs": 16479,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Smeg Retro Style Electric Kettle",
+    "finalDecision": "BUY"
+  },
+  {
+    "userId": 499,
+    "role": "IndependentUser_499",
+    "query": "Top Rated Marshall Induction",
+    "latencyMs": 25348,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Philips Viva Collection HD4929 2100W Induction Cooktop",
+    "finalDecision": "WAIT"
+  },
+  {
+    "userId": 500,
+    "role": "IndependentUser_500",
+    "query": "Smart Marshall Chimney",
+    "latencyMs": 20215,
+    "status": "PASS",
+    "issues": [],
+    "resolvedProduct": "Elica 60 cm 1200 m³/hr Filterless Auto Clean Chimney",
+    "finalDecision": "WAIT"
+  }
+]
