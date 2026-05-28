@@ -1437,8 +1437,10 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       } else if (category === 'automotive') {
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE (cars, bikes) query. You MUST actively restrict the platforms and links to: CarWale, BikeWale, CarDekho, BikeDekho, ZigWheels, and the official brand store web page (e.g. Maruti Suzuki, Tata Motors, Hyundai India, Honda, Ather Energy, Ola Electric, Royal Enfield, Yamaha, etc.). Do NOT look up or return prices/links for Amazon, Flipkart, Myntra, Ajio, Croma, or Reliance Digital under any circumstances.`;
       } else {
-        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra,      const preFetchPrompt = `You are a precision internet search tool for fetching live real-world e-commerce prices.
-      
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra, or Tata CLiQ.`;
+      }
+
+      const preFetchPrompt = `You are a precision internet search tool for fetching live real-world e-commerce prices.
       You MUST identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for THIS EXACT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming strictly to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India.
       
       ${platformRestrictionRule}
