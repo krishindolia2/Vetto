@@ -1475,7 +1475,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       }
       
       If the product is not found or has no active listings, return an empty array for prices.
-      Only return valid JSON conforming to the example format. No markdown, no explanations. Make sure URLs are real direct search or product page URLs.\`;
+      Only return valid JSON conforming to the example format. No markdown, no explanations. Make sure URLs are real direct search or product page URLs.`;
 
       const response = await callGeminiWithRetry({
         model: modelToUse,
