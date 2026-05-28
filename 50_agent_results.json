@@ -1,0 +1,402 @@
+[
+  {
+    "agentId": 1,
+    "role": "Tech Bro",
+    "query": "MacBook Pro M3 Max",
+    "latencyMs": 6665,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 2,
+    "role": "College Student",
+    "query": "best laptop under 40000",
+    "latencyMs": 7617,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 3,
+    "role": "Hype Beast",
+    "query": "Air Jordan 1 Retro High",
+    "latencyMs": 7687,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 4,
+    "role": "Dad",
+    "query": "Maruti Suzuki Ertiga",
+    "latencyMs": 6656,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 5,
+    "role": "Gamer",
+    "query": "PS5 Disc Edition",
+    "latencyMs": 6665,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 6,
+    "role": "Influencer",
+    "query": "Dyson Airwrap",
+    "latencyMs": 6627,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 7,
+    "role": "Biker",
+    "query": "Royal Enfield Classic 350",
+    "latencyMs": 247,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 8,
+    "role": "Bargain Hunter",
+    "query": "cheapest 5g phone",
+    "latencyMs": 241,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 9,
+    "role": "Fitness Freak",
+    "query": "Nike Metcon 9",
+    "latencyMs": 246,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 10,
+    "role": "Photographer",
+    "query": "Sony A7IV camera",
+    "latencyMs": 243,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 11,
+    "role": "Audiophile",
+    "query": "Sony WH-1000XM5",
+    "latencyMs": 15,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 12,
+    "role": "Smart Home Enthusiast",
+    "query": "Amazon Echo Dot",
+    "latencyMs": 16,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 13,
+    "role": "Premium Buyer",
+    "query": "iPhone 15 Pro Max 1TB",
+    "latencyMs": 16,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 14,
+    "role": "Budget Buyer",
+    "query": "Samsung Galaxy M14",
+    "latencyMs": 16,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 15,
+    "role": "Office Worker",
+    "query": "Logitech MX Master 3S",
+    "latencyMs": 16,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 16,
+    "role": "Traveler",
+    "query": "American Tourister Trolley Bag",
+    "latencyMs": 17,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 17,
+    "role": "EV Enthusiast",
+    "query": "Tata Nexon EV",
+    "latencyMs": 26,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 18,
+    "role": "Commuter",
+    "query": "Ola S1 Pro",
+    "latencyMs": 38,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 19,
+    "role": "Winter Shopper",
+    "query": "North Face Jacket",
+    "latencyMs": 31,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 20,
+    "role": "Skeptical Buyer",
+    "query": "is Samsung S24 ultra worth it?",
+    "latencyMs": 38,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 21,
+    "role": "Reader",
+    "query": "Kindle Paperwhite",
+    "latencyMs": 15,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 22,
+    "role": "Chef",
+    "query": "Philips Air Fryer",
+    "latencyMs": 15,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 23,
+    "role": "Student",
+    "query": "iPad 9th Gen",
+    "latencyMs": 15,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 24,
+    "role": "Vlogger",
+    "query": "DJI Osmo Pocket 3",
+    "latencyMs": 15,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 25,
+    "role": "Programmer",
+    "query": "Keychron K2 keyboard",
+    "latencyMs": 16,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 26,
+    "role": "Luxury Shopper",
+    "query": "Rolex Submariner",
+    "latencyMs": 16,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 27,
+    "role": "Casual Gamer",
+    "query": "Nintendo Switch OLED",
+    "latencyMs": 17,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 28,
+    "role": "Home Owner",
+    "query": "Roborock S8 vacuum",
+    "latencyMs": 17,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 29,
+    "role": "Runner",
+    "query": "Asics Gel Kayano 30",
+    "latencyMs": 17,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 30,
+    "role": "Musician",
+    "query": "Yamaha F310 acoustic guitar",
+    "latencyMs": 17,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 31,
+    "role": "Cinephile",
+    "query": "LG C3 OLED TV 55 inch",
+    "latencyMs": 4,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 32,
+    "role": "Offroader",
+    "query": "Mahindra Thar 4x4",
+    "latencyMs": 4,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 33,
+    "role": "Eco Warrior",
+    "query": "Ather 450X",
+    "latencyMs": 8,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 34,
+    "role": "New Parent",
+    "query": "LuvLap baby stroller",
+    "latencyMs": 7,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 35,
+    "role": "Caffeine Addict",
+    "query": "Breville Barista Express",
+    "latencyMs": 8,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 36,
+    "role": "Streamer",
+    "query": "Elgato Stream Deck",
+    "latencyMs": 8,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 37,
+    "role": "DIYer",
+    "query": "Bosch Power Drill",
+    "latencyMs": 9,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 38,
+    "role": "Cyclist",
+    "query": "Firefox Geared Cycle",
+    "latencyMs": 10,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 39,
+    "role": "Sneakerhead",
+    "query": "Yeezy Boost 350",
+    "latencyMs": 12,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 40,
+    "role": "Gadget Freak",
+    "query": "Meta Quest 3",
+    "latencyMs": 14,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 41,
+    "role": "Apple Fanboy",
+    "query": "Apple Watch Ultra 2",
+    "latencyMs": 2,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 42,
+    "role": "Android Purist",
+    "query": "Google Pixel 8 Pro",
+    "latencyMs": 3,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 43,
+    "role": "Movie Buff",
+    "query": "Bose Soundbar 900",
+    "latencyMs": 4,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 44,
+    "role": "Minimalist",
+    "query": "Nothing Phone 2",
+    "latencyMs": 4,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 45,
+    "role": "Power User",
+    "query": "Samsung Odyssey G9 Monitor",
+    "latencyMs": 5,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 46,
+    "role": "Classic Man",
+    "query": "Casio G-Shock",
+    "latencyMs": 6,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 47,
+    "role": "Speed Demon",
+    "query": "KTM Duke 390",
+    "latencyMs": 9,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 48,
+    "role": "Practical Buyer",
+    "query": "Honda City",
+    "latencyMs": 10,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 49,
+    "role": "Tech Reviewer",
+    "query": "OnePlus 12",
+    "latencyMs": 10,
+    "status": "PASS",
+    "issues": []
+  },
+  {
+    "agentId": 50,
+    "role": "Casual User",
+    "query": "best power bank 20000mah",
+    "latencyMs": 10,
+    "status": "PASS",
+    "issues": []
+  }
+]
