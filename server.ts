@@ -1370,17 +1370,18 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
   return null;
 }
 
-// Two-stage semantic resolver: fast LLM call to map generic queries to exact specific product names
-async function resolveSpecificProduct(query: string, budget: string): Promise<{ resolvedName: string, queryType: string }> {
+// Two-stage semantic resolver: fast LLM call to map generic queries to exact specific product names based on user context
+async function resolveSpecificProduct(query: string, budget: string, useCase: string): Promise<{ resolvedName: string, queryType: string }> {
   if (!ai) return { resolvedName: query, queryType: "specific" };
   
   const prompt = `You are a product resolution engine for the Indian market.
 User Query: "${query}"
 Budget Constraint: ${budget ? `₹${budget}` : "None"}
+Specific User Context/Need: "${useCase || 'General use'}"
 
 Your job is to determine if this is a generic/category query (e.g., "best laptop under 50k", "good running shoes") or a specific product (e.g., "MacBook Air M2", "Nike Pegasus 40").
 If it is a specific product, return it exactly.
-If it is a generic category query, you MUST recommend exactly ONE specific, highly-rated product model that perfectly matches their query and strictly fits under their budget.
+If it is a generic category query, you MUST recommend exactly ONE specific, highly-rated product model that perfectly matches their query, strictly fits under their budget, and PERFECTLY aligns with their "Specific User Context/Need" (the ground reality of what they actually need it for).
 
 Return ONLY a valid JSON object in this format:
 {
@@ -1453,7 +1454,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       5. NEVER substitute or return the price of a different variant.
       6. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, bags, refurbished/used units, or parts.
       7. You MUST search the internet right now using search grounding.
-      8. For "url", you MUST return a working direct product page URL (like Amazon /dp/ or Flipkart /p/). Do NOT return links to listicle articles, news sites, or top-10 blogs! If you cannot find the EXACT product page URL for the SPECIFIC model, you must mark it Out of Stock.
+      8. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/). If the exact direct product page URL cannot be confidently found but the product is visibly in stock, you MUST explicitly construct and return a valid search result URL for that platform (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]", "https://www.flipkart.com/search?q=[URL_ENCODED_PRODUCT_NAME]"). NEVER return a dead link or a listicle. A valid platform search URL is a mandatory safe fallback.
       9. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
 
       Return the results in a strict JSON object format containing "resolvedProductName" (set this exactly to "${cleanQuery}"), "queryType" (must be "specific"), "referencePrice" (an estimated average retail price of the core main product itself in India, e.g., "₹45,000"), and "prices" array.
@@ -1541,7 +1542,8 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               .filter(x => !x.isOos && !isNaN(x.numValue) && x.numValue > 1000)
               .map(x => x.numValue);
             if (possibleMainPrices.length > 0) {
-              estRefPrice = Math.max(...possibleMainPrices);
+              possibleMainPrices.sort((a, b) => a - b);
+              estRefPrice = possibleMainPrices[Math.floor(possibleMainPrices.length / 2)];
             }
           }
           
@@ -1599,6 +1601,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               const platformLower = platform.toLowerCase();
 
               // Direct Alignment: ALWAYS prioritize actual crawled URL from grounding chunks to prevent LLM hallucinated dead-links
+              let hasGroundedOverride = false;
               const groundingUrl = extractGroundingUrlForPlatform(response, platform, cleanQuery);
               if (groundingUrl && groundingUrl.length > 25) {
                 const gLower = groundingUrl.toLowerCase();
@@ -1613,6 +1616,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
                 if (!isLowQualityLink) {
                   console.log(`[Grounding URL Override] Overriding LLM URL with verified crawl URL for ${platform}: ${groundingUrl}`);
                   url = groundingUrl;
+                  hasGroundedOverride = true;
                 }
               }
 
@@ -1630,6 +1634,10 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               let redirectUrl = url;
               if (isOos) {
                 redirectUrl = "";
+              } else if (!hasGroundedOverride && !url.includes("/s?") && !url.includes("/search") && !url.includes("?q=") && !url.includes("?text=")) {
+                console.log(`[Anti-Hallucination] LLM generated an unverified product link: ${url}. Forcing fallback.`);
+                // Pass the naked domain so cleanAndResolveUrl considers it generic and forces a search fallback
+                redirectUrl = `https://www.${platformLower.replace(/[^a-z0-9]/g, "")}.com`;
               }
 
               healed.push({
@@ -1917,8 +1925,8 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     let resolvedQuery = parsedQuery;
     let queryType = "specific";
     if (isGenericCategoryQuery) {
-      console.log(`[Semantic Resolver] Generic query detected. Resolving "${parsedQuery}" to specific product...`);
-      const resolved = await resolveSpecificProduct(parsedQuery, parsedBudget);
+      console.log(`[Semantic Resolver] Generic query detected. Resolving "${parsedQuery}" to specific product for context "${useCase}"...`);
+      const resolved = await resolveSpecificProduct(parsedQuery, parsedBudget, useCase);
       resolvedQuery = resolved.resolvedName;
       queryType = resolved.queryType;
       console.log(`[Semantic Resolver] Mapped to: "${resolvedQuery}"`);
