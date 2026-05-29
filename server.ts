@@ -154,7 +154,8 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay 
   
   // Standard production stable models to maximize availability and optimize cost billing
   const fallbackModels = [
-    "gemini-3.5-flash"
+    "gemini-3.5-flash",
+    "gemini-2.5-flash"
   ];
 
   const targetModel = params.model || "gemini-3.5-flash";
@@ -1399,7 +1400,8 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-3.5-flash"
+    "gemini-3.5-flash",
+    "gemini-2.5-flash"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1471,7 +1473,10 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         config: {
           tools: [{ googleSearch: {} }],
           temperature: 0.0,
-          maxOutputTokens: 1000
+          maxOutputTokens: 1000,
+          thinkingConfig: {
+            thinkingLevel: ThinkingLevel.MINIMAL
+          }
         }
       });
 
@@ -2121,6 +2126,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       ...(useSearchGrounding ? { tools: [{ googleSearch: {} }] } : {}),
       temperature: 0.0,
       maxOutputTokens: 2048,
+      thinkingConfig: {
+        thinkingLevel: ThinkingLevel.MINIMAL
+      }
     };
 
     // Fully eliminate the error combination: Tool use with responseMimeType "application/json" is unsupported
@@ -2154,7 +2162,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       try {
         let stream: any;
         let lastErr: any;
-        const streamFallbackModels = ["gemini-3.5-flash"];
+        const streamFallbackModels = ["gemini-3.5-flash", "gemini-2.5-flash"];
         let activeStreamModel = modelToUse;
 
         // Resilient retry with model fallback rotation
@@ -2168,10 +2176,14 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
               }
             }
             
+            const activeConfig = { ...genConfig };
+            if (!activeStreamModel.includes("gemini-3")) {
+              delete activeConfig.thinkingConfig;
+            }
             stream = await ai.models.generateContentStream({
               model: activeStreamModel,
               contents: [{ role: "user", parts }],
-              config: genConfig,
+              config: activeConfig,
             });
             break;
           } catch (e: any) {
