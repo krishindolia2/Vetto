@@ -12,9 +12,9 @@
       "Found 4 procurement links.",
       "Link: Amazon | Price: ₹29,249 | Stock: In Stock | URL: https://www.amazon.in/s?k=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
       "PASS: Platform link for Amazon is appropriate for electronics category.",
-      "Link: Flipkart | Price: ₹26,834 | Stock: In Stock | URL: https://www.flipkart.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+      "Link: Flipkart | Price: ₹26,834 | Stock: In Stock | URL: https://www.flipkart.com/search?q=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
       "PASS: Platform link for Flipkart is appropriate for electronics category.",
-      "Link: Croma | Price: ₹29,999 | Stock: In Stock | URL: https://www.croma.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+      "Link: Croma | Price: ₹29,999 | Stock: In Stock | URL: https://www.croma.com/search/?text=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
       "PASS: Platform link for Croma is appropriate for electronics category.",
       "Link: Reliance Digital | Price: Out of Stock | Stock: Out of Stock | URL: ",
       "PASS: OOS item on Reliance Digital correctly has an empty URL string.",
@@ -111,7 +111,7 @@
             "label": "Buy on Flipkart",
             "price": "₹26,834",
             "isBestDeal": true,
-            "url": "https://www.flipkart.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+            "url": "https://www.flipkart.com/search?q=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
             "stockStatus": "In Stock"
           },
           {
@@ -119,7 +119,7 @@
             "label": "Buy on Croma",
             "price": "₹29,999",
             "isBestDeal": false,
-            "url": "https://www.croma.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+            "url": "https://www.croma.com/search/?text=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
             "stockStatus": "In Stock"
           },
           {
@@ -213,22 +213,20 @@
     "category": "fashion",
     "query": "Adidas Samba vs Nike Dunk",
     "budget": "10000",
-    "resolvedName": "Nike Dunk Low Retro",
+    "resolvedName": "Adidas Samba OG",
     "finalDecision": "BUY",
     "checks": [
-      "Resolved Product Name: \"Nike Dunk Low Retro\"",
-      "Budget: ₹10,000, Deal Price: ₹8,295",
+      "Resolved Product Name: \"Adidas Samba OG\"",
+      "Budget: ₹10,000, Deal Price: ₹9,999",
       "PASS: Recommended product's deal price fits the budget constraint.",
       "Found 4 procurement links.",
-      "Link: Myntra | Price: ₹8,295 | Stock: In Stock | URL: https://www.myntra.com/search?q=Nike+Dunk+Low+Retro",
+      "Link: Adidas India | Price: ₹9,999 | Stock: In Stock | URL: https://www.google.com/search?q=Adidas+Samba+OG",
+      "Link: Myntra | Price: ₹9,999 | Stock: Only 3 left | URL: https://www.myntra.com/adidas-samba-og",
       "PASS: Platform link for Myntra is appropriate for fashion category.",
-      "Link: Ajio | Price: ₹8,295 | Stock: In Stock | URL: https://www.ajio.com/search/?text=Nike+Dunk+Low+Retro",
-      "PASS: Platform link for Ajio is appropriate for fashion category.",
-      "Link: Flipkart | Price: ₹8,295 | Stock: In Stock | URL: https://www.flipkart.com/search?q=Nike+Dunk+Low+Retro",
-      "PASS: Platform link for Flipkart is appropriate for fashion category.",
-      "Link: Amazon | Price: Out of Stock | Stock: Out of Stock | URL: ",
-      "PASS: OOS item on Amazon correctly has an empty URL string.",
-      "Lowest Deal Price: ₹8295, Latest Chart Node Price: ₹8295 (Jan)",
+      "Link: Superkicks | Price: ₹9,999 | Stock: In Stock | URL: https://www.google.com/search?q=Adidas+Samba+OG",
+      "Link: Ajio | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Ajio correctly has an empty URL string.",
+      "Lowest Deal Price: ₹9999, Latest Chart Node Price: ₹9999 (May 2026)",
       "PASS: Price history latest node matches the lowest deal price.",
       "PASS: Banned jargon \"equilibrium\" is not present in the response.",
       "PASS: Banned jargon \"volatility\" is not present in the response.",
@@ -236,95 +234,108 @@
       "PASS: Banned jargon \"market correction\" is not present in the response.",
       "PASS: Banned jargon \"depreciation\" is not present in the response.",
       "PASS: Banned jargon \"portfolio\" is not present in the response.",
-      "aamAadmiSummary: \"Bhai, ek minute bhai! Network thoda slow hai, please fresh scan trigger karo so we can give you a bulletproof review.\"",
-      "bhartiyaPersonaAudit: \"Analyzing how this fits into our typical middle-class home usage and budget...\""
+      "aamAadmiSummary: \"Bhai, Samba le lo, college ke liye best hai.\"",
+      "bhartiyaPersonaAudit: \"Survives dusty Indian college campuses and metro commutes.\""
     ],
-    "issues": [],
+    "issues": [
+      "WARNING: Unrecognized platform link for fashion: \"https://www.google.com/search?q=Adidas+Samba+OG\"",
+      "WARNING: Unrecognized platform link for fashion: \"https://www.google.com/search?q=Adidas+Samba+OG\""
+    ],
     "rawResponse": {
       "isAnalysis": true,
-      "productName": "Nike Dunk Low Retro",
+      "productName": "Adidas Samba OG",
       "isComparison": true,
       "finalDecision": "BUY",
-      "whyBest": "Arey yaar, the engine took a bit longer because it's doing deep calculations. Give it another try!",
+      "whyBest": "Samba beats Dunk in durability and timeless versatility.",
       "pros": [
-        "Super trendy, always in style",
-        "Durable build, lasts long",
-        "Fits true"
+        "Timeless retro aesthetic",
+        "Extremely durable leather upper",
+        "Excellent grip and low profile"
       ],
       "cons": [
-        "Verifying real-world durability under Indian conditions"
+        "Very flat arch support",
+        "Narrow fit for wide feet",
+        "Stiff tongue during break-in"
       ],
-      "aamAadmiSummary": "Bhai, ek minute bhai! Network thoda slow hai, please fresh scan trigger karo so we can give you a bulletproof review.",
-      "avoid": "Wait until we verify the specs",
-      "regretWarning": "Don't make a hasty purchase yet!",
-      "confidenceScore": 50,
+      "aamAadmiSummary": "Bhai, Samba le lo, college ke liye best hai.",
+      "avoid": "Avoid buying a size down; they run narrow.",
+      "regretWarning": "Your arches might ache on long walking days.",
+      "confidenceScore": 92,
       "regretRisk": "Medium",
-      "whyRegret": "Rushing a purchase before doing deep homework usually ends in buyer regret.",
-      "saferChoice": "Let the engine finish scanning first",
+      "whyRegret": "Flat soles offer zero cushioning for long walks.",
+      "saferChoice": "Nike Air Force 1 '07",
       "marketTiming": "BUY",
-      "marketReasoning": "We are fetching live retail prices to protect your wallet.",
-      "specLongevity": "Checking specs...",
-      "personalizedInsight": "Vetto is standing guard. Let's do a fresh query.",
-      "socialHook": "Vetto Audit is scanning...",
-      "postOutputHook": "Vetto has your back.",
-      "paisaVasoolIndex": 50,
-      "statusTax": 0,
-      "utilityScore": 50,
-      "hiddenCosts": "Scanning for sneaky extras like missing chargers or subscriptions...",
+      "marketReasoning": "Prices are stable and stock is currently healthy.",
+      "specLongevity": "3-4 Years",
+      "personalizedInsight": "Perfect for college outfits but buy gel insoles.",
+      "socialHook": "Samba vs Dunk: The ultimate campus sneaker showdown.",
+      "postOutputHook": "Beware of cheap synthetic fakes online.",
+      "paisaVasoolIndex": 88,
+      "statusTax": 1500,
+      "utilityScore": 85,
+      "hiddenCosts": "Comfortable aftermarket insoles (₹500).",
       "platformWarShield": {
-        "hasMarketingSilos": false,
-        "siloExposure": "Analyzing brand lock-ins...",
-        "truthResilienceScore": 50,
-        "bypassStrategyUsed": "Setting up safety shields..."
+        "hasMarketingSilos": true,
+        "siloExposure": "Influencer hype inflating demand on retail sites.",
+        "truthResilienceScore": 85,
+        "bypassStrategyUsed": "Direct brand store inventory tracking."
       },
       "vettoContrast": {
-        "alternativeName": "Safe Alternative",
-        "whyContrast": "Scanning for high-value alternatives to save you money...",
-        "pviBoost": 0,
-        "priceDelta": "Save ₹0",
-        "fairPriceTarget": "₹8,295",
-        "procurementGuidance": "Verify prices directly for now",
-        "strategicAdvantage": "Verifying value..."
+        "alternativeName": "Puma Club 5V5",
+        "whyContrast": "Similar retro look at half the price.",
+        "pviBoost": 15,
+        "priceDelta": "Save ₹1,500",
+        "fairPriceTarget": "₹8,499",
+        "procurementGuidance": "Buy during Puma end of season sale.",
+        "strategicAdvantage": "Much softer insole cushioning out of box."
       },
       "priceIntegrity": {
-        "currentPriceAudit": "₹8,295 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
-        "historicalContext": "Analyzing past sales and seasonal discounts...",
+        "currentPriceAudit": "₹9,999 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "Rarely discounted below ten percent on official stores.",
         "priceHistory": [
           {
-            "month": "Jan",
-            "price": 8295
+            "month": "March 2026",
+            "price": 9999
+          },
+          {
+            "month": "April 2026",
+            "price": 9999
+          },
+          {
+            "month": "May 2026",
+            "price": 9999
           }
         ],
-        "dealScore": 50,
-        "discountStrategy": "Checking for card cashbacks and coupon drops...",
+        "dealScore": 80,
+        "discountStrategy": "Use student discount codes on Adidas official site.",
         "procurementLinks": [
+          {
+            "platform": "Adidas India",
+            "label": "Buy Official",
+            "price": "₹9,999",
+            "isBestDeal": true,
+            "url": "https://www.google.com/search?q=Adidas+Samba+OG",
+            "stockStatus": "In Stock"
+          },
           {
             "platform": "Myntra",
             "label": "Buy on Myntra",
-            "price": "₹8,295",
-            "isBestDeal": true,
-            "url": "https://www.myntra.com/search?q=Nike+Dunk+Low+Retro",
+            "price": "₹9,999",
+            "isBestDeal": false,
+            "url": "https://www.myntra.com/adidas-samba-og",
+            "stockStatus": "Only 3 left"
+          },
+          {
+            "platform": "Superkicks",
+            "label": "Buy on Superkicks",
+            "price": "₹9,999",
+            "isBestDeal": false,
+            "url": "https://www.google.com/search?q=Adidas+Samba+OG",
             "stockStatus": "In Stock"
           },
           {
             "platform": "Ajio",
             "label": "Buy on Ajio",
-            "price": "₹8,295",
-            "isBestDeal": false,
-            "url": "https://www.ajio.com/search/?text=Nike+Dunk+Low+Retro",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Flipkart",
-            "label": "Buy on Flipkart",
-            "price": "₹8,295",
-            "isBestDeal": false,
-            "url": "https://www.flipkart.com/search?q=Nike+Dunk+Low+Retro",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Amazon",
-            "label": "Buy on Amazon India",
             "price": "Out of Stock",
             "isBestDeal": false,
             "url": "",
@@ -333,61 +344,76 @@
         ]
       },
       "strategicRoadmap": {
-        "immediateAction": "Please trigger a fresh scan in a couple of seconds.",
-        "peakUtilityAge": "N/A",
-        "exitStrategy": "N/A"
+        "immediateAction": "Order half size up if wide-footed.",
+        "peakUtilityAge": "6-12 Months",
+        "exitStrategy": "Keep as beaters once leather creases heavily."
       },
       "communityPulse": {
-        "redditConsensus": "Checking Reddit threads...",
-        "twitterPulse": "Checking Twitter chatter...",
-        "youtubeReality": "Analyzing tech reviewer videos...",
-        "linkedinProfessional": "Checking expert consensus...",
-        "topUSP": "Verifying feature...",
-        "topGripe": "Checking complaints..."
+        "redditConsensus": "Samba is more durable than plastic-feeling Dunks.",
+        "twitterPulse": "Samba is still the ultimate clean aesthetic shoe.",
+        "youtubeReality": "Stiff leather tongue squeaks loudly at first.",
+        "linkedinProfessional": "Classic silhouette with consistent high global demand.",
+        "topUSP": "Ultra-durable gum sole",
+        "topGripe": "Zero arch support"
       },
       "lifecyclePhase": {
-        "status": "Active",
+        "status": "Mature Classic",
         "isObsoleteSoon": false,
-        "nextMajorUpdate": "Next Generation"
+        "nextMajorUpdate": "Seasonal colorway refreshes only"
       },
-      "bhartiyaPersonaAudit": "Analyzing how this fits into our typical middle-class home usage and budget...",
+      "bhartiyaPersonaAudit": "Survives dusty Indian college campuses and metro commutes.",
       "technicalNode": "Verifying internals...",
       "buildIntegrity": "Checking build quality...",
       "resaleValueNode": "Estimating resale value...",
       "ecosystemLockIn": "Checking brand ecosystem...",
       "features": [
         {
-          "name": "General Integrity",
-          "score": 50,
-          "details": "We are currently checking the technical details."
+          "name": "Leather Quality",
+          "score": 88,
+          "details": "Thick genuine leather that outlasts Nike's synthetic."
+        },
+        {
+          "name": "Comfort",
+          "score": 60,
+          "details": "Very flat sole; hurts during long walks."
+        },
+        {
+          "name": "Sizing Accuracy",
+          "score": 80,
+          "details": "True to size but very narrow midfoot."
         }
       ],
       "socialAudit": {
-        "aggregatedRating": 4,
+        "aggregatedRating": 4.5,
         "sentimentSplit": {
-          "positive": 50,
-          "negative": 20,
-          "mixed": 30
+          "positive": 75,
+          "negative": 15,
+          "mixed": 10
         },
-        "criticsConsensus": "Analysis interrupted",
-        "userRealityCheck": "Analysis interrupted",
+        "criticsConsensus": "A timeless classic that prioritizes style over cushioning.",
+        "userRealityCheck": "Takes about two weeks to break in comfortably.",
         "integrityAudit": {
           "isFakeReviewRisk": false,
-          "fakeReviewScore": 0,
-          "botSignalDetection": "Clear / Trace cut off",
-          "verifiedPurchaseTruth": "Not verified",
-          "divergenceIndex": 0,
+          "fakeReviewScore": 95,
+          "botSignalDetection": "Highly organic reviews across sneakerhead forums.",
+          "verifiedPurchaseTruth": "Real buyers complain only about the flat arch.",
+          "divergenceIndex": 20,
           "crossPlatformPatterns": [
             {
-              "platform": "General",
-              "sentiment": 50,
+              "platform": "Reddit",
+              "sentiment": 85,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Myntra",
+              "sentiment": 80,
               "botRisk": "Low"
             }
           ],
           "buzzwordSlayer": [
             {
-              "term": "AIs",
-              "reality": "No verification"
+              "term": "All-day comfort",
+              "reality": "Only comfortable if you have flat feet."
             }
           ]
         }
@@ -404,7 +430,7 @@
       "Resolved Product Name: \"Royal Enfield Himalayan 450 Base (Kaza Brown)\"",
       "Budget: ₹3,00,000, Deal Price: ₹3,05,000",
       "Found 4 procurement links.",
-      "Link: ZigWheels | Price: ₹3,05,723 | Stock: In Stock | URL: https://www.zigwheels.com/search/?q=Royal%20Enfield%20Himalayan%20450%20Base%20(Kaza%20Brown)",
+      "Link: ZigWheels | Price: ₹3,05,723 | Stock: In Stock | URL: https://www.zigwheels.com/search/?q=Royal+Enfield+Himalayan+450+Base",
       "PASS: Platform link for ZigWheels is appropriate for automotive category.",
       "Link: Royal Enfield India | Price: ₹3,05,000 | Stock: In Stock | URL: https://www.royalenfield.com",
       "PASS: Direct brand site URL allowed for automotive: \"https://www.royalenfield.com\"",
@@ -499,7 +525,7 @@
             "label": "ZigWheels Comparison",
             "price": "₹3,05,723",
             "isBestDeal": false,
-            "url": "https://www.zigwheels.com/search/?q=Royal%20Enfield%20Himalayan%20450%20Base%20(Kaza%20Brown)",
+            "url": "https://www.zigwheels.com/search/?q=Royal+Enfield+Himalayan+450+Base",
             "stockStatus": "In Stock"
           },
           {

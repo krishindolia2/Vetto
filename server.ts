@@ -1601,23 +1601,59 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               
               const platformLower = platform.toLowerCase();
 
-              // Direct Alignment: ALWAYS prioritize actual crawled URL from grounding chunks to prevent LLM hallucinated dead-links
+              const isGenericModelUrl = !url || 
+                                        url === "https://www.amazon.in" || 
+                                        url === "https://www.amazon.in/" ||
+                                        url === "https://www.amazon.com" ||
+                                        url === "https://www.amazon.com/" ||
+                                        url === "https://www.flipkart.com" || 
+                                        url === "https://www.flipkart.com/" ||
+                                        url === "https://www.croma.com" || 
+                                        url === "https://www.croma.com/" ||
+                                        url === "https://www.reliancedigital.in" ||
+                                        url === "https://www.reliancedigital.in/" ||
+                                        url.includes("placeholder") ||
+                                        url.length < 30;
+
               let hasGroundedOverride = false;
-              const groundingUrl = extractGroundingUrlForPlatform(response, platform, cleanQuery);
-              if (groundingUrl && groundingUrl.length > 25) {
-                const gLower = groundingUrl.toLowerCase();
-                const isLowQualityLink = gLower.includes("/help/") || 
-                                         gLower.includes("/display.html") || 
-                                         gLower.includes("/login") || 
-                                         gLower.includes("/register") || 
-                                         gLower.includes("/cart") || 
-                                         gLower.includes("/seller") ||
-                                         gLower.includes("/about") ||
-                                         gLower.includes("/terms");
-                if (!isLowQualityLink) {
-                  console.log(`[Grounding URL Override] Overriding LLM URL with verified crawl URL for ${platform}: ${groundingUrl}`);
-                  url = groundingUrl;
-                  hasGroundedOverride = true;
+              let isVerifiedLLMUrl = false;
+
+              // Check if the LLM-generated URL is already in the grounding chunks (meaning it's 100% verified)
+              const chunks = response?.candidates?.[0]?.groundingMetadata?.groundingChunks;
+              if (Array.isArray(chunks) && url) {
+                const urlLower = url.toLowerCase();
+                isVerifiedLLMUrl = chunks.some((chunk: any) => {
+                  const uri = chunk?.web?.uri || chunk?.web?.url;
+                  return uri && typeof uri === 'string' && uri.toLowerCase() === urlLower;
+                });
+              }
+
+              // If it's not verified but is a specific product page, check if it's high quality
+              const isSpecificProductPage = url && (
+                url.includes("/dp/") || 
+                url.includes("/p/") || 
+                url.includes("-p-") || 
+                url.includes("/product/") || 
+                url.includes("/buy/")
+              ) && url.length >= 30;
+
+              if (isGenericModelUrl) {
+                const groundingUrl = extractGroundingUrlForPlatform(response, platform, cleanQuery);
+                if (groundingUrl && groundingUrl.length > 25) {
+                  const gLower = groundingUrl.toLowerCase();
+                  const isLowQualityLink = gLower.includes("/help/") || 
+                                           gLower.includes("/display.html") || 
+                                           gLower.includes("/login") || 
+                                           gLower.includes("/register") || 
+                                           gLower.includes("/cart") || 
+                                           gLower.includes("/seller") ||
+                                           gLower.includes("/about") ||
+                                           gLower.includes("/terms");
+                  if (!isLowQualityLink) {
+                    console.log(`[Grounding URL Override] Overriding generic LLM URL with verified crawl URL for ${platform}: ${groundingUrl}`);
+                    url = groundingUrl;
+                    hasGroundedOverride = true;
+                  }
                 }
               }
 
@@ -1635,10 +1671,14 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               let redirectUrl = url;
               if (isOos) {
                 redirectUrl = "";
-              } else if (!hasGroundedOverride && !url.includes("/s?") && !url.includes("/search") && !url.includes("?q=") && !url.includes("?text=")) {
-                console.log(`[Anti-Hallucination] LLM generated an unverified product link: ${url}. Forcing fallback.`);
-                // Pass the naked domain so cleanAndResolveUrl considers it generic and forces a search fallback
-                redirectUrl = `https://www.${platformLower.replace(/[^a-z0-9]/g, "")}.com`;
+              } else {
+                // If it is NOT verified via grounding chunks AND NOT a specific product page,
+                // and it's a generic link, then we force fallback to a search URL
+                const isAcceptableUrl = isVerifiedLLMUrl || hasGroundedOverride || isSpecificProductPage;
+                if (!isAcceptableUrl) {
+                  console.log(`[Anti-Hallucination] LLM generated an unverified generic product link: ${url}. Forcing fallback.`);
+                  redirectUrl = `https://www.${platformLower.replace(/[^a-z0-9]/g, "")}.com`;
+                }
               }
 
               healed.push({
@@ -1681,6 +1721,438 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
     }
   }
   return null;
+}
+
+
+// Encapsulates the entire programmatic healing, outlier filtering, and pricing/link synchronization logic
+function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parsedBudget: string, preFetchedPrices: any[] | null, isBudgetCategoryQuery: boolean): any {
+  if (!auditData) return auditData;
+
+  // Clone object to prevent unexpected mutations to cache or memory
+  const data = JSON.parse(JSON.stringify(auditData));
+
+  // Programmatic Truth Shield Override Heuristics to guarantee mathematical consistency
+  if (data?.socialAudit?.integrityAudit) {
+    const audit = data.socialAudit.integrityAudit;
+    const prodNameLower = (data.productName || "").toLowerCase();
+    
+    // HEURISTIC 1: Brand Premium & Status Tax programmatically impacts Paisa Vasool Index (Value Index)
+    if (data.statusTax > 12000 && data.paisaVasoolIndex > 65) {
+      console.log(`[Heuristic Guard] Programmatically adjusting Paisa Vasool Index down due to excessive Status Tax (₹${data.statusTax})`);
+      data.paisaVasoolIndex = Math.max(30, data.paisaVasoolIndex - 25);
+    }
+    
+    // HEURISTIC 2: If Truth Divergence is high, Review Authenticity cannot be perfect
+    if (audit.divergenceIndex > 70 && audit.fakeReviewScore > 80) {
+      console.log(`[Heuristic Guard] Adjusting review authenticity score down due to high truth divergence (Hype vs Reality mismatch)`);
+      audit.fakeReviewScore = Math.min(60, audit.fakeReviewScore - 20);
+    }
+    
+    // HEURISTIC 3: Category-specific default safety warnings on electronics
+    const isElectronics = detectProductCategory(data.productName || "", parsedQuery) === 'electronics';
+    if (isElectronics && !data.hiddenCosts.toLowerCase().includes("charger") && 
+        (prodNameLower.includes("iphone") || prodNameLower.includes("samsung galaxy s") || prodNameLower.includes("pixel"))) {
+      console.log(`[Heuristic Guard] Injecting charger and repair accessibility warnings for premium smartphone.`);
+      data.hiddenCosts = "Mandatory ₹1,999 charger missing from the box. Out-of-warranty screen replacement costs up to 40% of the phone's value.";
+    }
+  }
+
+  // Post-process to guarantee direct, working, user-friendly live links on Indian platforms
+  if (data?.priceIntegrity) {
+    const prodName = data.productName || parsedQuery || "product";
+    const encodedProdName = encodeURIComponent(prodName);
+    
+    const category = detectProductCategory(prodName, parsedQuery);
+    console.log(`[Category Engine] Detected product category: "${category}" for product "${prodName}" / queries "${parsedQuery}"`);
+
+    let links = data.priceIntegrity.procurementLinks;
+    if (!Array.isArray(links)) {
+      links = [];
+    }
+    
+    let refPrice = getReferencePrice(data, parsedQuery, parsedBudget);
+    if (preFetchedPrices && preFetchedPrices.length > 0) {
+      const validPrices = preFetchedPrices
+        .map(p => parseInt(String(p.price || "").replace(/[^\d]/g, '')))
+        .filter(num => !isNaN(num) && num > 100);
+      if (validPrices.length > 0) {
+        refPrice = Math.min(...validPrices);
+        console.log(`[Price Engine] Aligned refPrice with lowest verified pre-fetched deal price: ₹${refPrice.toLocaleString('en-IN')}`);
+      }
+    }
+
+    // Pre-parse brand details for automotive remapping and back-filling
+    const prodLower = prodName.toLowerCase();
+    let brandName = "Official Brand Store";
+    let brandUrl = `https://www.google.com/search?q=${encodedProdName}+official+website`;
+    
+    if (prodLower.includes("tata")) {
+      brandName = "Tata Motors";
+      brandUrl = "https://www.tatamotors.com";
+    } else if (prodLower.includes("mahindra")) {
+      brandName = "Mahindra Auto";
+      brandUrl = "https://auto.mahindra.com";
+    } else if (prodLower.includes("hyundai")) {
+      brandName = "Hyundai India";
+      brandUrl = "https://www.hyundai.com/in";
+    } else if (prodLower.includes("maruti") || prodLower.includes("suzuki")) {
+      brandName = "Maruti Suzuki";
+      brandUrl = "https://www.marutisuzuki.com";
+    } else if (prodLower.includes("honda")) {
+      brandName = "Honda India";
+      brandUrl = "https://www.hondacarindia.com";
+    } else if (prodLower.includes("ather")) {
+      brandName = "Ather Energy";
+      brandUrl = "https://www.atherenergy.com";
+    } else if (prodLower.includes("ola")) {
+      brandName = "Ola Electric";
+      brandUrl = "https://www.olaelectric.com";
+    } else if (prodLower.includes("royal enfield")) {
+      brandName = "Royal Enfield";
+      brandUrl = "https://www.royalenfield.com";
+    } else if (prodLower.includes("yamaha")) {
+      brandName = "Yamaha India";
+      brandUrl = "https://www.yamaha-motor-india.com";
+    }
+
+    const existingPlatforms = new Set<string>();
+    let healedLinks: any[] = [];
+    
+    // Unify pre-fetched live prices feed and model-suggested links into a single high-integrity processing loop
+    let sourceLinks: any[] = [];
+    const hasValidPreFetchedPrice = preFetchedPrices && preFetchedPrices.some(p => p.price && p.price !== "Out of Stock" && parseInt(p.price.replace(/[^\d]/g, '')) > 0);
+    
+    if (hasValidPreFetchedPrice) {
+      console.log(`[Price Engine] Processing pre-fetched live prices...`);
+      sourceLinks = preFetchedPrices;
+    } else {
+      console.log(`[Price Engine] Processing fallback model links...`);
+      sourceLinks = links;
+    }
+
+    sourceLinks.forEach((link: any) => {
+      if (!link || !link.platform) return;
+      
+      let platform = String(link.platform).trim();
+      let label = String(link.label || `Buy on ${platform}`).trim();
+      let priceStr = String(link.price || "").trim();
+      let rawUrl = String(link.url || "").trim();
+      
+      let platformLower = platform.toLowerCase();
+      
+      // Category-Specific Remapping of Platform Names to prevent trust-violating mismatches
+      if (category === 'fashion') {
+        if (platformLower.includes("croma")) {
+          platform = "Myntra";
+          label = "Buy on Myntra";
+          rawUrl = `https://www.myntra.com/search?q=${encodedProdName}`;
+        } else if (platformLower.includes("reliance")) {
+          platform = "Ajio";
+          label = "Buy on Ajio";
+          rawUrl = `https://www.ajio.com/search/?text=${encodedProdName}`;
+        }
+      } else if (category === 'electronics') {
+        if (platformLower.includes("myntra")) {
+          platform = "Croma";
+          label = "Buy on Croma Store";
+          rawUrl = `https://www.croma.com/search/?text=${encodedProdName}`;
+        } else if (platformLower.includes("ajio")) {
+          platform = "Reliance Digital";
+          label = "Buy on Reliance Digital";
+          rawUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
+        }
+      } else if (category === 'automotive') {
+        const isTwoWh = isTwoWheeler(prodName, parsedQuery);
+        if (isTwoWh) {
+          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
+            platform = "BikeWale";
+            label = "Check BikeWale Price";
+            rawUrl = `https://www.bikewale.com/search/?q=${encodedProdName}`;
+          } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
+            platform = "BikeDekho";
+            label = "Check BikeDekho Price";
+            rawUrl = `https://www.bikedekho.com/search/${encodedProdName}`;
+          } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
+            platform = "ZigWheels";
+            label = "ZigWheels Comparison";
+            rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
+          }
+        } else {
+          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
+            platform = "CarWale";
+            label = "Check CarWale Price";
+            rawUrl = `https://www.carwale.com/search/?q=${encodedProdName}`;
+          } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
+            platform = "CarDekho";
+            label = "Check CarDekho Price";
+            rawUrl = `https://www.cardekho.com/search/${encodedProdName}`;
+          } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
+            platform = "ZigWheels";
+            label = "ZigWheels Comparison";
+            rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
+          }
+        }
+      }
+      
+      const finalPlatformLower = platform.toLowerCase();
+      if (existingPlatforms.has(finalPlatformLower)) return; // Avoid duplicate listings
+      existingPlatforms.add(finalPlatformLower);
+      
+      // Decode URL placeholders if they are present
+      if (rawUrl) {
+        rawUrl = rawUrl
+          .replace(/\[urlencoded_product_name\]/gi, encodedProdName)
+          .replace(/%5Burlencoded_product_name%5D/gi, encodedProdName)
+          .replace(/%5Burlencoded_product_name%5D/gi, encodedProdName)
+          .replace(/urlencoded_product_name/gi, encodedProdName);
+      }
+      
+      // Failsafe alignment check: reject if link price is a massive low outlier compared to standard core retail refPrice (indicating cheap accessory leak)
+      const linkNumValue = parseInt(priceStr.replace(/[^\d]/g, ''));
+      let isAccessoryOutlier = false;
+      if (!isNaN(linkNumValue) && refPrice > 3000 && linkNumValue < refPrice * 0.18) {
+        console.log(`[Safety Guard] Replaced accessory/low-outlier placeholder price "${priceStr}" for platform "${platform}" based on reference price ₹${refPrice.toLocaleString('en-IN')}`);
+        priceStr = "Out of Stock"; // This forces self-healing and sets stockStatus correctly!
+        isAccessoryOutlier = true;
+      }
+
+      // Strip Google redirects, tracking parameters, and heal any generic/mismatched links
+      const urlToClean = isAccessoryOutlier ? "" : rawUrl;
+      const cleanedUrl = cleanAndResolveUrl(urlToClean, platform, prodName);
+
+      // Self-heal prices if they are placeholders or non-numeric
+      const isPlaceholderPrice = !priceStr || 
+                                 /live|check|tbd|n\/a/i.test(priceStr) || 
+                                 priceStr === "0" || 
+                                 (!/\d/.test(priceStr) && !/out of stock/i.test(priceStr));
+                                 
+      let forcedOos = false;
+      if (isPlaceholderPrice) {
+        priceStr = "Out of Stock";
+        forcedOos = true;
+      }
+
+      if (forcedOos || /out of stock/i.test(priceStr) || /out of stock/i.test(link.stockStatus)) {
+         link.stockStatus = "Out of Stock";
+         priceStr = "Out of Stock";
+      }
+      
+      healedLinks.push({
+        platform,
+        label: label.includes("Check") || label.includes("Search") ? `Buy on ${platform}` : label,
+        price: priceStr,
+        isBestDeal: link.isBestDeal || false,
+        url: (priceStr === "Out of Stock" || link.stockStatus === "Out of Stock") ? "" : cleanedUrl,
+        stockStatus: link.stockStatus || "In Stock"
+      });
+    });
+    
+    // Define standard platforms to back-fill based on Category to ensure comparison is rich (min 4 listings)
+    const cleanProductQuery = simplifyProductNameForSearch(prodName);
+    const encodedQueryForSearch = encodeURIComponent(cleanProductQuery || prodName);
+    const encodedPlusQueryForSearch = encodedQueryForSearch.replace(/%20/g, "+");
+    
+    let standardPlatforms: any[] = [];
+    if (category === 'fashion') {
+      standardPlatforms = [
+        { name: "Myntra", label: "Buy on Myntra Store", path: `https://www.myntra.com/search?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+        { name: "Ajio", label: "Buy on Ajio", path: `https://www.ajio.com/search/?text=${encodedPlusQueryForSearch}`, pct: 0.978 },
+        { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 0.992 },
+        { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.985 }
+      ];
+    } else if (category === 'electronics') {
+      standardPlatforms = [
+        { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
+        { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.994 },
+        { name: "Croma", label: "Buy on Croma Store", path: `https://www.croma.com/search/?text=${encodedPlusQueryForSearch}`, pct: 1.006 },
+        { name: "Reliance Digital", label: "Buy on Reliance Digital", path: `https://www.reliancedigital.in/search?q=${encodedPlusQueryForSearch}`, pct: 1.002 }
+      ];
+    } else if (category === 'automotive') {
+      const isTwoWh = isTwoWheeler(prodName, parsedQuery);
+      if (isTwoWh) {
+        standardPlatforms = [
+          { name: "BikeWale", label: "Check BikeWale Price", path: `https://www.bikewale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+          { name: "BikeDekho", label: "Check BikeDekho Price", path: `https://www.bikedekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.998 },
+          { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.002 },
+          { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+        ];
+      } else {
+        standardPlatforms = [
+          { name: "CarWale", label: "Check CarWale Price", path: `https://www.carwale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+          { name: "CarDekho", label: "Check CarDekho Price", path: `https://www.cardekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.995 },
+          { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.005 },
+          { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+        ];
+      }
+    } else {
+      standardPlatforms = [
+        { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
+        { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.984 },
+        { name: "Google Shopping", label: "Google Product Listings", path: `https://www.google.com/search?q=${encodedQueryForSearch}&tbm=shop`, pct: 1.010 }
+      ];
+    }
+    
+    // Enrich up to at least 4 platform listings for rich comparison (especially for electronics Amazon/Flipkart/Croma/Reliance Digital)
+    // ALWAYS back-fill missing platforms from standard platforms list with mathematically aligned prices based on refPrice
+    for (const p of standardPlatforms) {
+      if (healedLinks.length >= 4) break;
+      const platNameLower = p.name.toLowerCase();
+      
+      // Match standard platforms securely whether full string or substring matches
+      const alreadyExists = Array.from(existingPlatforms).some(ex => 
+        ex === platNameLower || platNameLower.includes(ex) || ex.includes(platNameLower)
+      );
+      
+      if (!alreadyExists) {
+        healedLinks.push({
+          platform: p.name,
+          label: p.label,
+          price: "Out of Stock",
+          isBestDeal: false,
+          url: "",
+          stockStatus: "Out of Stock"
+        });
+        existingPlatforms.add(platNameLower);
+      }
+    }
+    
+    // Determine absolute lowest pricing and ensure exactly one best deal flag matches the lowest numeric price
+    let lowestPrice = Infinity;
+    let lowestPriceIdx = -1;
+    
+    healedLinks.forEach((link: any, idx: number) => {
+      const numPrice = parseInt(link.price.replace(/[^\d]/g, ''));
+      if (!isNaN(numPrice) && numPrice < lowestPrice) {
+        lowestPrice = numPrice;
+        lowestPriceIdx = idx;
+      }
+    });
+    
+    if (lowestPrice === Infinity || isNaN(lowestPrice) || lowestPrice <= 0) {
+      lowestPrice = refPrice; // Just fallback for budget guard below
+    }
+
+    healedLinks = healedLinks.map((link: any, idx: number) => ({
+      ...link,
+      isBestDeal: lowestPriceIdx !== -1 && idx === lowestPriceIdx
+    }));
+    
+    data.priceIntegrity.procurementLinks = healedLinks;
+    
+    // 1. Synchronize priceHistory with lowestPrice node to prevent chart drift
+    if (Array.isArray(data.priceIntegrity.priceHistory) && data.priceIntegrity.priceHistory.length > 0) {
+      const historyArray = data.priceIntegrity.priceHistory;
+      const lastIdx = historyArray.length - 1;
+      const lastModelPriceObj = historyArray[lastIdx];
+      const lastModelPrice = typeof lastModelPriceObj.price === 'number' 
+        ? lastModelPriceObj.price 
+        : parseInt(String(lastModelPriceObj.price || "").replace(/[^\d]/g, ''));
+        
+      const baseModelPrice = (!isNaN(lastModelPrice) && lastModelPrice > 0) ? lastModelPrice : lowestPrice;
+      
+      for (let k = 0; k < historyArray.length; k++) {
+        const n = historyArray[k];
+        const originalPrice = typeof n.price === 'number' ? n.price : parseInt(String(n.price || "").replace(/[^\d]/g, ''));
+        if (isNaN(originalPrice) || originalPrice <= 0) {
+          const offsetMonths = lastIdx - k;
+          n.price = Math.round(lowestPrice * (1.0 + (offsetMonths * 0.02)));
+        } else {
+          // Scale relative to baseModelPrice and lowestPrice to keep exact visual trend without price level drift!
+          const ratio = originalPrice / baseModelPrice;
+          const boundedRatio = Math.max(0.5, Math.min(2.0, ratio));
+          n.price = Math.round(lowestPrice * boundedRatio);
+        }
+      }
+      // Absolute certainty that the last item matches lowestPrice
+      historyArray[lastIdx].price = lowestPrice;
+    } else {
+      // Fallback history array
+      const months = ["Dec", "Jan", "Feb", "Mar", "Apr", "May"];
+      data.priceIntegrity.priceHistory = months.map((m, idx) => ({
+        month: m,
+        price: Math.round(lowestPrice * (1.10 - (idx * 0.02)))
+      }));
+      const lastIdx = data.priceIntegrity.priceHistory.length - 1;
+      data.priceIntegrity.priceHistory[lastIdx].price = lowestPrice;
+    }
+
+    // 2. Synchronize Brand Surcharge / Status Tax with lowestPrice alternative differentiation
+    let currentSurchargeTax = typeof data.statusTax === 'number' 
+      ? data.statusTax 
+      : parseInt(String(data.statusTax || "").replace(/[^\d]/g, ''));
+      
+    if (isNaN(currentSurchargeTax) || currentSurchargeTax < 0 || currentSurchargeTax >= lowestPrice) {
+      currentSurchargeTax = Math.round(lowestPrice * 0.22); // Real premium ratio
+    }
+    data.statusTax = currentSurchargeTax;
+
+    // 3. Coordinate vettoContrast pricing targets & save differentials
+    const altPrice = Math.max(99, lowestPrice - currentSurchargeTax);
+    if (!data.vettoContrast) {
+      data.vettoContrast = {
+        alternativeName: "Similar Specced Alternate Choice",
+        whyContrast: "Value alternative that delivers equal core functions without Status Tax.",
+        pviBoost: 20,
+        priceDelta: `Save ₹${currentSurchargeTax.toLocaleString('en-IN')}`,
+        fairPriceTarget: `₹${altPrice.toLocaleString('en-IN')}`,
+        procurementGuidance: "Standard option recommended for absolute price-to-performance efficiency."
+      };
+    } else {
+      data.vettoContrast.priceDelta = `Save ₹${currentSurchargeTax.toLocaleString('en-IN')}`;
+      data.vettoContrast.fairPriceTarget = `₹${altPrice.toLocaleString('en-IN')}`;
+    }
+
+    // 4. Force synchronization on high-level textual summaries to eradicate mismatching numbers
+    data.priceIntegrity.currentPriceAudit = `₹${lowestPrice.toLocaleString('en-IN')} • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!`;
+
+    // 5. Enforce strict, stable, mathematical alignment for "marketTiming" and "finalDecision" to eliminate random flipping
+    const pvi = Number(data.paisaVasoolIndex || 0);
+    const deal = Number(data.priceIntegrity?.dealScore || 0);
+    const risk = String(data.regretRisk || "Medium").toLowerCase();
+    
+    let stableVerdict: "BUY" | "WAIT" | "RUN" = "WAIT";
+    if (isBudgetCategoryQuery) {
+      if (deal >= 50) {
+        stableVerdict = "BUY";
+      } else {
+        stableVerdict = "WAIT";
+      }
+    } else {
+      if (pvi >= 70 && deal >= 60 && risk !== "high") {
+        stableVerdict = "BUY";
+      } else if (pvi <= 45 || deal <= 40 || risk === "high") {
+        stableVerdict = "RUN";
+      } else {
+        stableVerdict = "WAIT";
+      }
+    }
+
+    // Programmatic Target Capital & Budget Compliance Guard
+    let parsedBudgetNum = 0;
+    if (parsedBudget) {
+      parsedBudgetNum = parseInt(parsedBudget.replace(/[^\d]/g, ''), 10);
+    }
+    if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum) {
+      console.log(`[Budget Guard] Programmatically forcing verdict to WAIT because lowest deal price (₹${lowestPrice}) exceeds budget constraint (₹${parsedBudgetNum})`);
+      stableVerdict = "WAIT";
+    }
+    
+    console.log(`[Stability Alignment] Calibrating marketTiming: "${data.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk}, isCategoryQuery: ${isBudgetCategoryQuery})`);
+    data.marketTiming = stableVerdict;
+    data.finalDecision = stableVerdict;
+
+    // Programmatic Hinglish Persona Compliance Guard (Persona Shield)
+    let summary = String(data.aamAadmiSummary || "").trim();
+    const hasBhaiOrArey = /^(bhai|arey\s+yaar)/i.test(summary);
+    const hasLeLoOrMatLena = /le\s+lo|mat\s+lena/i.test(summary);
+    if (!hasBhaiOrArey && !hasLeLoOrMatLena) {
+      console.log(`[Persona Shield] Healing summary to ensure strict Hinglish persona compliance.`);
+      data.aamAadmiSummary = "Bhai, " + summary.charAt(0).toLowerCase() + summary.slice(1);
+    }
+  }
+    
+  // Apply recursive jargon shield sanitization (Jargon Shield)
+  return sanitizeObjectJargon(data);
 }
 
 app.post("/api/audit", securityGuard, async (req, res) => {
@@ -1877,18 +2349,20 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           const cached = cacheSnap.data();
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
+            const isCategoryQueryForHeal = isGenericCategoryQuery || parsedQuery.toLowerCase().includes("best") || parsedQuery.toLowerCase().includes("under");
+            const healedCachedData = healsAndSynchronizeAuditData(cached.data, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
             if (req.headers.accept === "text/event-stream") {
               res.setHeader("Content-Type", "text/event-stream");
               res.setHeader("Cache-Control", "no-cache");
               res.setHeader("Connection", "keep-alive");
               res.setHeader("X-Accel-Buffering", "no");
               res.flushHeaders();
-              res.write(`data: ${JSON.stringify({ type: "final", auditData: cached.data })}\n\n`);
+              res.write(`data: ${JSON.stringify({ type: "final", auditData: healedCachedData })}\n\n`);
               res.write("data: [DONE]\n\n");
               if (typeof res.flush === "function") res.flush();
               return res.end();
             } else {
-              return res.json(cached.data);
+              return res.json(healedCachedData);
             }
           } else {
             console.log(`[Cache Engine] Firestore cache exists but is invalid, broken or contains placeholders. Bypassing...`);
@@ -1904,18 +2378,20 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       const cached = auditCache.get(cacheKey)!;
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
+        const isCategoryQueryForHeal = isGenericCategoryQuery || parsedQuery.toLowerCase().includes("best") || parsedQuery.toLowerCase().includes("under");
+        const healedCachedData = healsAndSynchronizeAuditData(cached.data, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
         if (req.headers.accept === "text/event-stream") {
           res.setHeader("Content-Type", "text/event-stream");
           res.setHeader("Cache-Control", "no-cache");
           res.setHeader("Connection", "keep-alive");
           res.setHeader("X-Accel-Buffering", "no");
           res.flushHeaders();
-          res.write(`data: ${JSON.stringify({ type: "final", auditData: cached.data })}\n\n`);
+          res.write(`data: ${JSON.stringify({ type: "final", auditData: healedCachedData })}\n\n`);
           res.write("data: [DONE]\n\n");
           if (typeof res.flush === "function") res.flush();
           return res.end();
         } else {
-          return res.json(cached.data);
+          return res.json(healedCachedData);
         }
       }
       auditCache.delete(cacheKey);
@@ -2270,431 +2746,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       const parsed = JSON.parse(repairedJsonString);
       auditData = deepMerge(defaultAuditData, parsed);
 
-      // Programmatic Truth Shield Override Heuristics to guarantee mathematical consistency
-      if (auditData?.socialAudit?.integrityAudit) {
-        const audit = auditData.socialAudit.integrityAudit;
-        const prodNameLower = (auditData.productName || "").toLowerCase();
-        
-        // HEURISTIC 1: Brand Premium & Status Tax programmatically impacts Paisa Vasool Index (Value Index)
-        if (auditData.statusTax > 12000 && auditData.paisaVasoolIndex > 65) {
-          console.log(`[Heuristic Guard] Programmatically adjusting Paisa Vasool Index down due to excessive Status Tax (₹${auditData.statusTax})`);
-          auditData.paisaVasoolIndex = Math.max(30, auditData.paisaVasoolIndex - 25);
-        }
-        
-        // HEURISTIC 2: If Truth Divergence is high, Review Authenticity cannot be perfect
-        if (audit.divergenceIndex > 70 && audit.fakeReviewScore > 80) {
-          console.log(`[Heuristic Guard] Adjusting review authenticity score down due to high truth divergence (Hype vs Reality mismatch)`);
-          audit.fakeReviewScore = Math.min(60, audit.fakeReviewScore - 20);
-        }
-        
-        // HEURISTIC 3: Category-specific default safety warnings on electronics
-        const isElectronics = detectProductCategory(auditData.productName || "", parsedQuery) === 'electronics';
-        if (isElectronics && !auditData.hiddenCosts.toLowerCase().includes("charger") && 
-            (prodNameLower.includes("iphone") || prodNameLower.includes("samsung galaxy s") || prodNameLower.includes("pixel"))) {
-          console.log(`[Heuristic Guard] Injecting charger and repair accessibility warnings for premium smartphone.`);
-          auditData.hiddenCosts = "Mandatory ₹1,999 charger missing from the box. Out-of-warranty screen replacement costs up to 40% of the phone's value.";
-        }
-      }
-
-      // Post-process to guarantee direct, working, user-friendly live links on Indian platforms
-      if (auditData?.priceIntegrity) {
-        const prodName = auditData.productName || parsedQuery || "product";
-        const encodedProdName = encodeURIComponent(prodName);
-        
-        const category = detectProductCategory(prodName, parsedQuery);
-        console.log(`[Category Engine] Detected product category: "${category}" for product "${prodName}" / queries "${parsedQuery}"`);
-
-        let links = auditData.priceIntegrity.procurementLinks;
-        if (!Array.isArray(links)) {
-          links = [];
-        }
-        
-        let refPrice = getReferencePrice(auditData, parsedQuery, parsedBudget);
-        if (preFetchedPrices && preFetchedPrices.length > 0) {
-          const validPrices = preFetchedPrices
-            .map(p => parseInt(String(p.price || "").replace(/[^\d]/g, '')))
-            .filter(num => !isNaN(num) && num > 100);
-          if (validPrices.length > 0) {
-            refPrice = Math.min(...validPrices);
-            console.log(`[Price Engine] Aligned refPrice with lowest verified pre-fetched deal price: ₹${refPrice.toLocaleString('en-IN')}`);
-          }
-        }
-
-        // Pre-parse brand details for automotive remapping and back-filling
-        const prodLower = prodName.toLowerCase();
-        let brandName = "Official Brand Store";
-        let brandUrl = `https://www.google.com/search?q=${encodedProdName}+official+website`;
-        
-        if (prodLower.includes("tata")) {
-          brandName = "Tata Motors";
-          brandUrl = "https://www.tatamotors.com";
-        } else if (prodLower.includes("mahindra")) {
-          brandName = "Mahindra Auto";
-          brandUrl = "https://auto.mahindra.com";
-        } else if (prodLower.includes("hyundai")) {
-          brandName = "Hyundai India";
-          brandUrl = "https://www.hyundai.com/in";
-        } else if (prodLower.includes("maruti") || prodLower.includes("suzuki")) {
-          brandName = "Maruti Suzuki";
-          brandUrl = "https://www.marutisuzuki.com";
-        } else if (prodLower.includes("honda")) {
-          brandName = "Honda India";
-          brandUrl = "https://www.hondacarindia.com";
-        } else if (prodLower.includes("ather")) {
-          brandName = "Ather Energy";
-          brandUrl = "https://www.atherenergy.com";
-        } else if (prodLower.includes("ola")) {
-          brandName = "Ola Electric";
-          brandUrl = "https://www.olaelectric.com";
-        } else if (prodLower.includes("royal enfield")) {
-          brandName = "Royal Enfield";
-          brandUrl = "https://www.royalenfield.com";
-        } else if (prodLower.includes("yamaha")) {
-          brandName = "Yamaha India";
-          brandUrl = "https://www.yamaha-motor-india.com";
-        }
-
-        const existingPlatforms = new Set<string>();
-        let healedLinks: any[] = [];
-        
-        // Unify pre-fetched live prices feed and model-suggested links into a single high-integrity processing loop
-        let sourceLinks: any[] = [];
-        const hasValidPreFetchedPrice = preFetchedPrices && preFetchedPrices.some(p => p.price && p.price !== "Out of Stock" && parseInt(p.price.replace(/[^\d]/g, '')) > 0);
-        
-        if (hasValidPreFetchedPrice) {
-          console.log(`[Price Engine] Processing pre-fetched live prices...`);
-          sourceLinks = preFetchedPrices;
-        } else {
-          console.log(`[Price Engine] Processing fallback model links...`);
-          sourceLinks = links;
-        }
-
-        sourceLinks.forEach((link: any) => {
-          if (!link || !link.platform) return;
-          
-          let platform = String(link.platform).trim();
-          let label = String(link.label || `Buy on ${platform}`).trim();
-          let priceStr = String(link.price || "").trim();
-          let rawUrl = String(link.url || "").trim();
-          
-          let platformLower = platform.toLowerCase();
-          
-          // Category-Specific Remapping of Platform Names to prevent trust-violating mismatches
-          if (category === 'fashion') {
-            if (platformLower.includes("croma")) {
-              platform = "Myntra";
-              label = "Buy on Myntra";
-              rawUrl = `https://www.myntra.com/search?q=${encodedProdName}`;
-            } else if (platformLower.includes("reliance")) {
-              platform = "Ajio";
-              label = "Buy on Ajio";
-              rawUrl = `https://www.ajio.com/search/?text=${encodedProdName}`;
-            }
-          } else if (category === 'electronics') {
-            if (platformLower.includes("myntra")) {
-              platform = "Croma";
-              label = "Buy on Croma Store";
-              rawUrl = `https://www.croma.com/search/?text=${encodedProdName}`;
-            } else if (platformLower.includes("ajio")) {
-              platform = "Reliance Digital";
-              label = "Buy on Reliance Digital";
-              rawUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
-            }
-          } else if (category === 'automotive') {
-            const isTwoWh = isTwoWheeler(prodName, parsedQuery);
-            if (isTwoWh) {
-              if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
-                platform = "BikeWale";
-                label = "Check BikeWale Price";
-                rawUrl = `https://www.bikewale.com/search/?q=${encodedProdName}`;
-              } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
-                platform = "BikeDekho";
-                label = "Check BikeDekho Price";
-                rawUrl = `https://www.bikedekho.com/search/${encodedProdName}`;
-              } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
-                platform = "ZigWheels";
-                label = "ZigWheels Comparison";
-                rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
-              }
-            } else {
-              if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
-                platform = "CarWale";
-                label = "Check CarWale Price";
-                rawUrl = `https://www.carwale.com/search/?q=${encodedProdName}`;
-              } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
-                platform = "CarDekho";
-                label = "Check CarDekho Price";
-                rawUrl = `https://www.cardekho.com/search/${encodedProdName}`;
-              } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
-                platform = "ZigWheels";
-                label = "ZigWheels Comparison";
-                rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
-              }
-            }
-          }
-          
-          const finalPlatformLower = platform.toLowerCase();
-          if (existingPlatforms.has(finalPlatformLower)) return; // Avoid duplicate listings
-          existingPlatforms.add(finalPlatformLower);
-          
-          // Decode URL placeholders if they are present
-          if (rawUrl) {
-            rawUrl = rawUrl
-              .replace(/\[urlencoded_product_name\]/gi, encodedProdName)
-              .replace(/%5Burlencoded_product_name%5D/gi, encodedProdName)
-              .replace(/%5Burlencoded_product_name%5D/gi, encodedProdName)
-              .replace(/urlencoded_product_name/gi, encodedProdName);
-          }
-          
-          // Failsafe alignment check: reject if link price is a massive low outlier compared to standard core retail refPrice (indicating cheap accessory leak)
-          const linkNumValue = parseInt(priceStr.replace(/[^\d]/g, ''));
-          let isAccessoryOutlier = false;
-          if (!isNaN(linkNumValue) && refPrice > 3000 && linkNumValue < refPrice * 0.18) {
-            console.log(`[Safety Guard] Replaced accessory/low-outlier placeholder price "${priceStr}" for platform "${platform}" based on reference price ₹${refPrice.toLocaleString('en-IN')}`);
-            priceStr = "Out of Stock"; // This forces self-healing and sets stockStatus correctly!
-            isAccessoryOutlier = true;
-          }
-
-          // Strip Google redirects, tracking parameters, and heal any generic/mismatched links
-          const urlToClean = isAccessoryOutlier ? "" : rawUrl;
-          const cleanedUrl = cleanAndResolveUrl(urlToClean, platform, prodName);
-
-          // Self-heal prices if they are placeholders or non-numeric
-          const isPlaceholderPrice = !priceStr || 
-                                     /live|check|tbd|n\/a/i.test(priceStr) || 
-                                     priceStr === "0" || 
-                                     (!/\d/.test(priceStr) && !/out of stock/i.test(priceStr));
-                                     
-          let forcedOos = false;
-          if (isPlaceholderPrice) {
-            priceStr = "Out of Stock";
-            forcedOos = true;
-          }
-
-          if (forcedOos || /out of stock/i.test(priceStr) || /out of stock/i.test(link.stockStatus)) {
-             link.stockStatus = "Out of Stock";
-             priceStr = "Out of Stock";
-          }
-          
-          healedLinks.push({
-            platform,
-            label: label.includes("Check") || label.includes("Search") ? `Buy on ${platform}` : label,
-            price: priceStr,
-            isBestDeal: link.isBestDeal || false,
-            url: (priceStr === "Out of Stock" || link.stockStatus === "Out of Stock") ? "" : cleanedUrl,
-            stockStatus: link.stockStatus || "In Stock"
-          });
-        });
-        
-        // Define standard platforms to back-fill based on Category to ensure comparison is rich (min 4 listings)
-        const cleanProductQuery = simplifyProductNameForSearch(prodName);
-        const encodedQueryForSearch = encodeURIComponent(cleanProductQuery || prodName);
-        const encodedPlusQueryForSearch = encodedQueryForSearch.replace(/%20/g, "+");
-        
-        let standardPlatforms: any[] = [];
-        if (category === 'fashion') {
-          standardPlatforms = [
-            { name: "Myntra", label: "Buy on Myntra Store", path: `https://www.myntra.com/search?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
-            { name: "Ajio", label: "Buy on Ajio", path: `https://www.ajio.com/search/?text=${encodedPlusQueryForSearch}`, pct: 0.978 },
-            { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 0.992 },
-            { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.985 }
-          ];
-        } else if (category === 'electronics') {
-          standardPlatforms = [
-            { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
-            { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.994 },
-            { name: "Croma", label: "Buy on Croma Store", path: `https://www.croma.com/search/?text=${encodedPlusQueryForSearch}`, pct: 1.006 },
-            { name: "Reliance Digital", label: "Buy on Reliance Digital", path: `https://www.reliancedigital.in/search?q=${encodedPlusQueryForSearch}`, pct: 1.002 }
-          ];
-        } else if (category === 'automotive') {
-          const isTwoWh = isTwoWheeler(prodName, parsedQuery);
-          if (isTwoWh) {
-            standardPlatforms = [
-              { name: "BikeWale", label: "Check BikeWale Price", path: `https://www.bikewale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
-              { name: "BikeDekho", label: "Check BikeDekho Price", path: `https://www.bikedekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.998 },
-              { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.002 },
-              { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
-            ];
-          } else {
-            standardPlatforms = [
-              { name: "CarWale", label: "Check CarWale Price", path: `https://www.carwale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
-              { name: "CarDekho", label: "Check CarDekho Price", path: `https://www.cardekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.995 },
-              { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.005 },
-              { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
-            ];
-          }
-        } else {
-          standardPlatforms = [
-            { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
-            { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.984 },
-            { name: "Google Shopping", label: "Google Product Listings", path: `https://www.google.com/search?q=${encodedQueryForSearch}&tbm=shop`, pct: 1.010 }
-          ];
-        }
-        
-        // Enrich up to at least 4 platform listings for rich comparison (especially for electronics Amazon/Flipkart/Croma/Reliance Digital)
-        // ALWAYS back-fill missing platforms from standard platforms list with mathematically aligned prices based on refPrice
-        for (const p of standardPlatforms) {
-          if (healedLinks.length >= 4) break;
-          const platNameLower = p.name.toLowerCase();
-          
-          // Match standard platforms securely whether full string or substring matches
-          const alreadyExists = Array.from(existingPlatforms).some(ex => 
-            ex === platNameLower || platNameLower.includes(ex) || ex.includes(platNameLower)
-          );
-          
-          if (!alreadyExists) {
-            healedLinks.push({
-              platform: p.name,
-              label: p.label,
-              price: "Out of Stock",
-              isBestDeal: false,
-              url: "",
-              stockStatus: "Out of Stock"
-            });
-            existingPlatforms.add(platNameLower);
-          }
-        }
-        
-        // Determine absolute lowest pricing and ensure exactly one best deal flag matches the lowest numeric price
-        let lowestPrice = Infinity;
-        let lowestPriceIdx = -1;
-        
-        healedLinks.forEach((link: any, idx: number) => {
-          const numPrice = parseInt(link.price.replace(/[^\d]/g, ''));
-          if (!isNaN(numPrice) && numPrice < lowestPrice) {
-            lowestPrice = numPrice;
-            lowestPriceIdx = idx;
-          }
-        });
-        
-        if (lowestPrice === Infinity || isNaN(lowestPrice) || lowestPrice <= 0) {
-          lowestPrice = refPrice; // Just fallback for budget guard below
-        }
-
-        healedLinks = healedLinks.map((link: any, idx: number) => ({
-          ...link,
-          isBestDeal: lowestPriceIdx !== -1 && idx === lowestPriceIdx
-        }));
-
-        // Removed fake budget scaling logic to preserve true platform prices
-
-        
-        auditData.priceIntegrity.procurementLinks = healedLinks;
-        
-        // 1. Synchronize priceHistory with lowestPrice node to prevent chart drift
-        if (Array.isArray(auditData.priceIntegrity.priceHistory) && auditData.priceIntegrity.priceHistory.length > 0) {
-          const historyArray = auditData.priceIntegrity.priceHistory;
-          const lastIdx = historyArray.length - 1;
-          const lastModelPriceObj = historyArray[lastIdx];
-          const lastModelPrice = typeof lastModelPriceObj.price === 'number' 
-            ? lastModelPriceObj.price 
-            : parseInt(String(lastModelPriceObj.price || "").replace(/[^\d]/g, ''));
-            
-          const baseModelPrice = (!isNaN(lastModelPrice) && lastModelPrice > 0) ? lastModelPrice : lowestPrice;
-          
-          for (let k = 0; k < historyArray.length; k++) {
-            const n = historyArray[k];
-            const originalPrice = typeof n.price === 'number' ? n.price : parseInt(String(n.price || "").replace(/[^\d]/g, ''));
-            if (isNaN(originalPrice) || originalPrice <= 0) {
-              const offsetMonths = lastIdx - k;
-              n.price = Math.round(lowestPrice * (1.0 + (offsetMonths * 0.02)));
-            } else {
-              // Scale relative to baseModelPrice and lowestPrice to keep exact visual trend without price level drift!
-              const ratio = originalPrice / baseModelPrice;
-              // Limit ratio to reasonable bounds (e.g. 0.5 to 2.0) to prevent chaotic spikes
-              const boundedRatio = Math.max(0.5, Math.min(2.0, ratio));
-              n.price = Math.round(lowestPrice * boundedRatio);
-            }
-          }
-          // Absolute certainty that the last item matches lowestPrice
-          historyArray[lastIdx].price = lowestPrice;
-        } else {
-          // Fallback history array
-          const months = ["Dec", "Jan", "Feb", "Mar", "Apr", "May"];
-          auditData.priceIntegrity.priceHistory = months.map((m, idx) => ({
-            month: m,
-            price: Math.round(lowestPrice * (1.10 - (idx * 0.02)))
-          }));
-          const lastIdx = auditData.priceIntegrity.priceHistory.length - 1;
-          auditData.priceIntegrity.priceHistory[lastIdx].price = lowestPrice;
-        }
-
-        // 2. Synchronize Brand Surcharge / Status Tax with lowestPrice alternative differentiation
-        let currentSurchargeTax = typeof auditData.statusTax === 'number' 
-          ? auditData.statusTax 
-          : parseInt(String(auditData.statusTax || "").replace(/[^\d]/g, ''));
-          
-        if (isNaN(currentSurchargeTax) || currentSurchargeTax < 0 || currentSurchargeTax >= lowestPrice) {
-          currentSurchargeTax = Math.round(lowestPrice * 0.22); // Real premium ratio
-        }
-        auditData.statusTax = currentSurchargeTax;
-
-        // 3. Coordinate vettoContrast pricing targets & save differentials
-        const altPrice = Math.max(99, lowestPrice - currentSurchargeTax);
-        if (!auditData.vettoContrast) {
-          auditData.vettoContrast = {
-            alternativeName: "Similar Specced Alternate Choice",
-            whyContrast: "Value alternative that delivers equal core functions without Status Tax.",
-            pviBoost: 20,
-            priceDelta: `Save ₹${currentSurchargeTax.toLocaleString('en-IN')}`,
-            fairPriceTarget: `₹${altPrice.toLocaleString('en-IN')}`,
-            procurementGuidance: "Standard option recommended for absolute price-to-performance efficiency."
-          };
-        } else {
-          auditData.vettoContrast.priceDelta = `Save ₹${currentSurchargeTax.toLocaleString('en-IN')}`;
-          auditData.vettoContrast.fairPriceTarget = `₹${altPrice.toLocaleString('en-IN')}`;
-        }
-
-        // 4. Force synchronization on high-level textual summaries to eradicate mismatching numbers
-        auditData.priceIntegrity.currentPriceAudit = `₹${lowestPrice.toLocaleString('en-IN')} • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!`;
-
-        // 5. Enforce strict, stable, mathematical alignment for "marketTiming" and "finalDecision" to eliminate random flipping
-        const pvi = Number(auditData.paisaVasoolIndex || 0);
-        const deal = Number(auditData.priceIntegrity?.dealScore || 0);
-        const risk = String(auditData.regretRisk || "Medium").toLowerCase();
-        
-        let stableVerdict: "BUY" | "WAIT" | "RUN" = "WAIT";
-        if (isBudgetCategoryQuery) {
-          // For best-value category recommendations resolved by Vetto, recommend BUY as it is chosen by Vetto as the absolute best choice in this budget!
-          if (deal >= 50) {
-            stableVerdict = "BUY";
-          } else {
-            stableVerdict = "WAIT"; // Only wait if the deal score is very bad (e.g. MSRP trap)
-          }
-        } else {
-          if (pvi >= 70 && deal >= 60 && risk !== "high") {
-            stableVerdict = "BUY";
-          } else if (pvi <= 45 || deal <= 40 || risk === "high") {
-            stableVerdict = "RUN";
-          } else {
-            stableVerdict = "WAIT";
-          }
-        }
-
-        // Programmatic Target Capital & Budget Compliance Guard
-        let parsedBudgetNum = 0;
-        if (parsedBudget) {
-          parsedBudgetNum = parseInt(parsedBudget.replace(/[^\d]/g, ''), 10);
-        }
-        if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum) {
-          console.log(`[Budget Guard] Programmatically forcing verdict to WAIT because lowest deal price (₹${lowestPrice}) exceeds budget constraint (₹${parsedBudgetNum})`);
-          stableVerdict = "WAIT";
-        }
-        
-        console.log(`[Stability Alignment] Calibrating marketTiming: "${auditData.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk}, isCategoryQuery: ${isBudgetCategoryQuery})`);
-        auditData.marketTiming = stableVerdict;
-        auditData.finalDecision = stableVerdict;
-
-        // Programmatic Hinglish Persona Compliance Guard (Persona Shield)
-        let summary = String(auditData.aamAadmiSummary || "").trim();
-        const hasBhaiOrArey = /^(bhai|arey\s+yaar)/i.test(summary);
-        const hasLeLoOrMatLena = /le\s+lo|mat\s+lena/i.test(summary);
-        if (!hasBhaiOrArey && !hasLeLoOrMatLena) {
-          console.log(`[Persona Shield] Healing summary to ensure strict Hinglish persona compliance.`);
-          auditData.aamAadmiSummary = "Bhai, " + summary.charAt(0).toLowerCase() + summary.slice(1);
-        }
-      }
-        
+      // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
+      auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
       // Apply recursive jargon shield sanitization (Jargon Shield)
       auditData = sanitizeObjectJargon(auditData);
 
