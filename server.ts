@@ -134,8 +134,6 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 8, baseDelay 
   
   // Standard production stable models to maximize availability and optimize cost billing
   const fallbackModels = [
-    "gemini-3.5-flash",
-    "gemini-3.1-flash-lite",
     "gemini-3.5-flash"
   ];
 
@@ -1421,7 +1419,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   if (!cleanQuery || cleanQuery.length < 2) return null;
 
   const fallbackModels = [
-    "gemini-3.1-flash-lite"
+    "gemini-3.5-flash"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1959,6 +1957,12 @@ Strategic Context: ${useCase || 'General Deployment'}${historyText}`;
     const systemPrompt = `You are Vetto (The Founder's Truth Engine). Your mission: Protect the hard-earned money of the Indian consumer.
 You provide the absolute FINAL verdict. No generic summaries. No hallucinations.
 
+CRITICAL LOGICAL BOUNDARIES (ANTI-CROSS CONTAMINATION)
+1. CATEGORY ISOLATION: You must strictly map product domains to their valid platforms. 
+   - If the product is AUTOMOTIVE: Never look for or output e-commerce retail links (e.g., Amazon/Flipkart). Only use certified automobile marketplaces or brand direct URLs.
+   - If the product is FASHION or ELECTRONICS: Never map to automotive or industrial sites.
+2. ZERO MEMORY / NO LINK GENERATION: You possess absolutely zero real-time market prices, stock statuses, or domain links within your internal weights. NEVER guess, predict, alter, or synthesize a URL or price. If the provided data does not contain an explicit verified link, do NOT generate a URL.
+
 STRICT PRICING & SCORING PROTOCOLS:
 0. STRICT VARIANT & OPTION DIFFERENTIATION:
     - If the product query refers to a specific storage capacity (e.g. "128GB", "256GB", "512GB"), a RAM capacity (e.g. "8GB", "12GB", "16GB"), or a chip/processor (e.g. "M2", "M3"), you MUST return pricing, comparison links, and alternative choices specifically matching that CHOSEN option. Do NOT return the base model's pricing or a generic category pricing.
@@ -2120,7 +2124,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       try {
         let stream: any;
         let lastErr: any;
-        const streamFallbackModels = ["gemini-3.5-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite"];
+        const streamFallbackModels = ["gemini-3.5-flash"];
         let activeStreamModel = modelToUse;
 
         // Resilient retry with model fallback rotation
