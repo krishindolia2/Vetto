@@ -1368,51 +1368,11 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
   return null;
 }
 
-// Two-stage semantic resolver: fast LLM call to map generic queries to exact specific product names based on user context
-async function resolveSpecificProduct(query: string, budget: string, useCase: string): Promise<{ resolvedName: string, queryType: string }> {
-  if (!ai) return { resolvedName: query, queryType: "specific" };
-  
-  const prompt = `You are a product resolution engine for the Indian market.
-User Query: "${query}"
-Budget Constraint: ${budget ? `₹${budget}` : "None"}
-Specific User Context/Need: "${useCase || 'General use'}"
-
-Your job is to determine if this is a generic/category query (e.g., "best laptop under 50k", "good running shoes") or a specific product (e.g., "MacBook Air M2", "Nike Pegasus 40").
-If it is a specific product, return it exactly.
-If it is a generic category query, you MUST recommend exactly ONE specific, highly-rated product model that perfectly matches their query, strictly fits under their budget, and PERFECTLY aligns with their "Specific User Context/Need" (the ground reality of what they actually need it for).
-
-Return ONLY a valid JSON object in this format:
-{
-  "resolvedName": "Exact Full Product Name (e.g. Lenovo IdeaPad Slim 3 12th Gen Core i5 16GB)",
-  "queryType": "category" // or "specific" or "comparison"
-}`;
-
-  try {
-    const response = await callGeminiWithRetry({
-      model: "gemini-3.5-flash",
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      config: { temperature: 0.0, maxOutputTokens: 200 }
-    });
-    let text = "";
-    if (typeof response.text === 'string') {
-      text = response.text;
-    } else if (response.candidates?.[0]?.content?.parts) {
-      text = response.candidates[0].content.parts.map((p: any) => p.text || "").join("");
-    }
-    const repaired = repairJson(text);
-    const parsed = JSON.parse(repaired);
-    return {
-      resolvedName: parsed.resolvedName || query,
-      queryType: parsed.queryType || "specific"
-    };
-  } catch (err) {
-    console.error("[Fast Resolver] Failed:", err);
-    return { resolvedName: query, queryType: "specific" };
-  }
-}
+// Removed redundant resolveSpecificProduct to eliminate 3-4s sequential latency constraint.
+// Semantic resolution is now natively combined with Google Search Grounding in preFetchLivePricesAndLinks.
 
 // Perform internet search grounding to retrieve actual live pricing and platform links for a given search query
-async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
+async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", useCase = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
   if (!ai) return null;
   
   const cleanQuery = productQuery.trim();
@@ -1439,8 +1399,17 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra, or Tata CLiQ.`;
       }
 
-      const preFetchPrompt = `You are a precision internet search tool for fetching live real-world e-commerce prices.
-      You MUST identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for THIS EXACT SPECIFIC PRODUCT: "${cleanQuery}"${budgetLimit ? ` (conforming strictly to the target budget of ₹${budgetLimit} in India)` : ""} on at least 3 major e-commerce platforms in India.
+      const preFetchPrompt = `You are a precision internet search tool and semantic resolver for fetching live real-world e-commerce prices.
+      User Query: "${cleanQuery}"
+      Budget Constraint: ${budgetLimit ? `₹${budgetLimit}` : "None"}
+      Specific User Context/Need: "${useCase || 'General use'}"
+
+      STEP 1: SEMANTIC RESOLUTION
+      If the User Query is a generic category (e.g., "best laptop under 50k"), you MUST resolve it to exactly ONE specific, highly-rated product model that perfectly matches the query, strictly fits under the budget, and perfectly aligns with their "Specific User Context/Need".
+      If it is already a specific product, just use that.
+
+      STEP 2: PRICE FETCHING
+      You MUST identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for THAT EXACT RESOLVED SPECIFIC PRODUCT on at least 3 major e-commerce platforms in India.
       
       ${platformRestrictionRule}
       
@@ -1455,7 +1424,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       8. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/). If the exact direct product page URL cannot be confidently found but the product is visibly in stock, you MUST explicitly construct and return a valid search result URL for that platform (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]", "https://www.flipkart.com/search?q=[URL_ENCODED_PRODUCT_NAME]"). NEVER return a dead link or a listicle. A valid platform search URL is a mandatory safe fallback.
       9. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
 
-      Return the results in a strict JSON object format containing "resolvedProductName" (set this exactly to "${cleanQuery}"), "queryType" (must be "specific"), "referencePrice" (an estimated average retail price of the core main product itself in India, e.g., "₹45,000"), and "prices" array.
+      Return the results in a strict JSON object format containing "resolvedProductName" (set this exactly to the specific product model you resolved in Step 1), "queryType" (must be "category" if you had to resolve it, or "specific" otherwise), "referencePrice" (an estimated average retail price of the core main product itself in India, e.g., "₹45,000"), and "prices" array.
       
       Example output format:
       {
@@ -1919,21 +1888,11 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       ? `\nPrevious Decisions History (Brief):\n${history.slice(0, 3).map((h: any, i: number) => `Decision ${i+1}: ${h.productName} -> ${h.marketTiming} (${h.finalDecision.substring(0, 50)}...)`).join('\n')}`
       : '';
 
-    // Step 1: Stage 1 Fast Semantic Resolver
-    let resolvedQuery = parsedQuery;
-    let queryType = "specific";
-    if (isGenericCategoryQuery) {
-      console.log(`[Semantic Resolver] Generic query detected. Resolving "${parsedQuery}" to specific product for context "${useCase}"...`);
-      const resolved = await resolveSpecificProduct(parsedQuery, parsedBudget, useCase);
-      resolvedQuery = resolved.resolvedName;
-      queryType = resolved.queryType;
-      console.log(`[Semantic Resolver] Mapped to: "${resolvedQuery}"`);
-    }
-
-    // Step 2: Stage 2 Pre-fetch verified real-time prices & links
-    const preFetchResult = await preFetchLivePricesAndLinks(resolvedQuery, parsedBudget);
+    // Step 1: Pre-fetch verified real-time prices & links (Now natively handles Semantic Resolution in parallel)
+    const preFetchResult = await preFetchLivePricesAndLinks(parsedQuery, parsedBudget, useCase);
     const preFetchedPrices = preFetchResult?.prices || null;
-    const resolvedProduct = preFetchResult?.resolvedProductName || resolvedQuery;
+    const resolvedProduct = preFetchResult?.resolvedProductName || parsedQuery;
+    let queryType = preFetchResult?.queryType || "specific";
     
     isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
 
