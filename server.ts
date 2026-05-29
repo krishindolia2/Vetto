@@ -128,8 +128,28 @@ interface GeminiParams {
 
 import { jsonrepair } from "jsonrepair";
 
+/**
+ * Safe Promise Timeout Helper to eliminate timer leaks and catch delayed orphaned promise rejections.
+ */
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, errorName = "TIMEOUT_EXCEEDED"): Promise<T> {
+  let timerId: NodeJS.Timeout | null = null;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timerId = setTimeout(() => reject(new Error(errorName)), timeoutMs);
+  });
+  promise.catch((err) => {
+    if (!timerId) {
+      console.warn(`[Orphan Absorber] Late rejection from timed-out promise caught safely:`, err.message);
+    }
+  });
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timerId) clearTimeout(timerId);
+  }
+}
+
 // Retry helper for transient failures and access blocks with automatic stable model fallback
-async function callGeminiWithRetry(params: GeminiParams, retries = 8, baseDelay = 1000) {
+async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay = 1000) {
   if (!ai) throw new Error("AI not initialized");
   
   // Standard production stable models to maximize availability and optimize cost billing
@@ -1835,7 +1855,11 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     if (backendDb) {
       try {
         const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
-        const cacheSnap = await getDoc(cacheDocRef);
+        const cacheSnap = await withTimeout(
+          getDoc(cacheDocRef),
+          1200,
+          "FIRESTORE_TIMEOUT"
+        );
         if (cacheSnap.exists()) {
           const cached = cacheSnap.data();
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
@@ -1848,6 +1872,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
               res.flushHeaders();
               res.write(`data: ${JSON.stringify({ type: "final", auditData: cached.data })}\n\n`);
               res.write("data: [DONE]\n\n");
+              if (typeof res.flush === "function") res.flush();
               return res.end();
             } else {
               return res.json(cached.data);
@@ -1874,6 +1899,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           res.flushHeaders();
           res.write(`data: ${JSON.stringify({ type: "final", auditData: cached.data })}\n\n`);
           res.write("data: [DONE]\n\n");
+          if (typeof res.flush === "function") res.flush();
           return res.end();
         } else {
           return res.json(cached.data);
@@ -1882,6 +1908,38 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       auditCache.delete(cacheKey);
       saveCacheToDisk();
     }
+  }
+
+  const isSSE = req.headers.accept === "text/event-stream";
+  let heartbeatTimer: NodeJS.Timeout | null = null;
+
+  if (isSSE) {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
+    req.socket.setTimeout(300000); // 5 minutes socket timeout
+    res.flushHeaders();
+
+    // Send initial warm-up SSE message so proxies know the connection is active
+    res.write(`data: ${JSON.stringify({ type: "progress", message: "Launching Vetto Strategic Price Scanners..." })}\n\n`);
+    if (typeof res.flush === "function") res.flush();
+
+    // Set up active background keep-alive ping loop to keep Render warm
+    heartbeatTimer = setInterval(() => {
+      if (!res.writableEnded) {
+        res.write(`data: ${JSON.stringify({ type: "ping" })}\n\n`);
+        if (typeof res.flush === "function") res.flush();
+      }
+    }, 15000);
+
+    // Stop timer and cleanup if the client terminates the connection
+    req.on("close", () => {
+      if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+      }
+    });
   }
 
   const currentDate = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -2072,18 +2130,27 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     }
 
     const isSSE = req.headers.accept === "text/event-stream";
+    let isAborted = false;
+    req.on("close", () => {
+      console.log(`[Stream Guard] Client disconnected. Signalling cancellation...`);
+      isAborted = true;
+    });
 
     let text = "";
     
     if (isSSE) {
-      res.setHeader("Content-Type", "text/event-stream");
-      res.setHeader("Cache-Control", "no-cache");
-      res.setHeader("Connection", "keep-alive");
-      res.setHeader("X-Accel-Buffering", "no");
-      res.flushHeaders();
+      if (!res.headersSent) {
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+        res.setHeader("X-Accel-Buffering", "no");
+        req.socket.setTimeout(300000);
+        res.flushHeaders();
+      }
       
       // Send initial metadata with preFetchedPrices
       res.write(`data: ${JSON.stringify({ type: "metadata", preFetchedPrices })}\n\n`);
+      if (typeof res.flush === "function") res.flush();
 
       try {
         let stream: any;
@@ -2119,15 +2186,26 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         if (!stream) throw lastErr;
 
         for await (const chunk of stream) {
+          if (isAborted) break;
           const chunkText = chunk.text;
           if (chunkText) {
             text += chunkText;
             res.write(`data: ${JSON.stringify({ type: "chunk", text: chunkText })}\n\n`);
+            if (typeof res.flush === "function") res.flush();
           }
+        }
+
+        if (isAborted) {
+          console.log(`[Stream Guard] Terminating active request handlers for aborted client.`);
+          if (heartbeatTimer) clearInterval(heartbeatTimer);
+          res.end();
+          return;
         }
       } catch (err: any) {
         console.error("Stream generation failed:", err);
+        if (heartbeatTimer) clearInterval(heartbeatTimer);
         res.write(`data: ${JSON.stringify({ type: "error", message: err.message })}\n\n`);
+        if (typeof res.flush === "function") res.flush();
         res.end();
         return;
       }
@@ -2573,10 +2651,29 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             stableVerdict = "WAIT";
           }
         }
+
+        // Programmatic Target Capital & Budget Compliance Guard
+        let parsedBudgetNum = 0;
+        if (parsedBudget) {
+          parsedBudgetNum = parseInt(parsedBudget.replace(/[^\d]/g, ''), 10);
+        }
+        if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum) {
+          console.log(`[Budget Guard] Programmatically forcing verdict to WAIT because lowest deal price (₹${lowestPrice}) exceeds budget constraint (₹${parsedBudgetNum})`);
+          stableVerdict = "WAIT";
+        }
         
         console.log(`[Stability Alignment] Calibrating marketTiming: "${auditData.marketTiming}" -> "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal}, Risk: ${risk}, isCategoryQuery: ${isBudgetCategoryQuery})`);
         auditData.marketTiming = stableVerdict;
         auditData.finalDecision = stableVerdict;
+
+        // Programmatic Hinglish Persona Compliance Guard (Persona Shield)
+        let summary = String(auditData.aamAadmiSummary || "").trim();
+        const hasBhaiOrArey = /^(bhai|arey\s+yaar)/i.test(summary);
+        const hasLeLoOrMatLena = /le\s+lo|mat\s+lena/i.test(summary);
+        if (!hasBhaiOrArey && !hasLeLoOrMatLena) {
+          console.log(`[Persona Shield] Healing summary to ensure strict Hinglish persona compliance.`);
+          auditData.aamAadmiSummary = "Bhai, " + summary.charAt(0).toLowerCase() + summary.slice(1);
+        }
       }
         
       // Apply recursive jargon shield sanitization (Jargon Shield)
@@ -2585,8 +2682,10 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
       
         if (isSSE) {
+          if (heartbeatTimer) clearInterval(heartbeatTimer);
           res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
           res.write("data: [DONE]\n\n");
+          if (typeof res.flush === "function") res.flush();
           res.end();
         } else {
           res.status(200).json(auditData);
@@ -2594,7 +2693,9 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       } catch (parseError) {
         console.error("JSON Parse Error:", parseError, "Raw Text:", text);
         if (isSSE) {
+          if (heartbeatTimer) clearInterval(heartbeatTimer);
           res.write(`data: ${JSON.stringify({ type: "error", message: "Engine failed to format results cleanly." })}\n\n`);
+          if (typeof res.flush === "function") res.flush();
           res.end();
         } else {
           res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
@@ -2659,14 +2760,17 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     }
     
     if (isSSE) {
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
       if (!res.headersSent) {
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
         res.setHeader("X-Accel-Buffering", "no");
+        req.socket.setTimeout(300000);
         res.flushHeaders();
       }
       res.write(`data: ${JSON.stringify({ type: "error", message, errorType })}\n\n`);
+      if (typeof res.flush === "function") res.flush();
       res.end();
     } else {
       res.status(status).json({ 
@@ -2704,41 +2808,45 @@ app.post("/api/waitlist", async (req, res) => {
 
     let finalRank = 0;
 
-    await runTransaction(backendDb, async (transaction) => {
-      const entryRef = doc(backendDb, "waitlist", entryId);
-      const entryDoc = await transaction.get(entryRef);
+    await withTimeout(
+      runTransaction(backendDb, async (transaction) => {
+        const entryRef = doc(backendDb, "waitlist", entryId);
+        const entryDoc = await transaction.get(entryRef);
 
-      if (entryDoc.exists()) {
-        throw new Error("ALREADY_EXISTS");
-      }
+        if (entryDoc.exists()) {
+          throw new Error("ALREADY_EXISTS");
+        }
 
-      const statsRef = doc(backendDb, "stats", "global");
-      const statsDoc = await transaction.get(statsRef);
+        const statsRef = doc(backendDb, "stats", "global");
+        const statsDoc = await transaction.get(statsRef);
 
-      const currentCount = statsDoc.exists()
-        ? statsDoc.data().waitlistCount || 0
-        : 0;
-      finalRank = currentCount + 1;
+        const currentCount = statsDoc.exists()
+          ? statsDoc.data().waitlistCount || 0
+          : 0;
+        finalRank = currentCount + 1;
 
-      // Update waitlist counter atomically without contaminating activeUsers
-      transaction.set(
-        statsRef,
-        {
-          waitlistCount: finalRank,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
+        // Update waitlist counter atomically without contaminating activeUsers
+        transaction.set(
+          statsRef,
+          {
+            waitlistCount: finalRank,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
 
-      // Create waitlist entry
-      transaction.set(entryRef, {
-        email: sanitizedEmail,
-        rank: finalRank,
-        referralSource: referralSource || null,
-        timestamp: serverTimestamp(),
-        verified: false,
-      });
-    });
+        // Create waitlist entry
+        transaction.set(entryRef, {
+          email: sanitizedEmail,
+          rank: finalRank,
+          referralSource: referralSource || null,
+          timestamp: serverTimestamp(),
+          verified: false,
+        });
+      }),
+      3000,
+      "WAITLIST_DB_TIMEOUT"
+    );
 
     res.json({ success: true, rank: finalRank });
   } catch (error: any) {
@@ -2785,14 +2893,22 @@ app.post("/api/analytics", async (req, res) => {
       visitorData.location = location;
     }
 
-    await setDoc(logRef, visitorData);
+    await withTimeout(
+      setDoc(logRef, visitorData),
+      2000,
+      "ANALYTICS_WRITE_TIMEOUT"
+    );
 
     // Safely increment global visits counter (activeUsers)
     const statsRef = doc(backendDb, 'stats', 'global');
-    await setDoc(statsRef, {
-      activeUsers: increment(1),
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
+    await withTimeout(
+      setDoc(statsRef, {
+        activeUsers: increment(1),
+        updatedAt: serverTimestamp(),
+      }, { merge: true }),
+      2000,
+      "ANALYTICS_COUNTER_TIMEOUT"
+    );
 
     res.json({ success: true });
   } catch (err) {
