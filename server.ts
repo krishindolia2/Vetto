@@ -2129,7 +2129,6 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       genConfig.responseSchema = auditResponseSchema;
     }
 
-    const isSSE = req.headers.accept === "text/event-stream";
     let isAborted = false;
     req.on("close", () => {
       console.log(`[Stream Guard] Client disconnected. Signalling cancellation...`);
