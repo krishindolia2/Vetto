@@ -434,70 +434,70 @@ function saveCacheToDisk() {
 const auditResponseSchema = {
   type: Type.OBJECT,
   properties: {
-    isAnalysis: { type: Type.BOOLEAN, description: "Whether this is a product analysis" },
-    productName: { type: Type.STRING, description: "Formal name of the product" },
-    isComparison: { type: Type.BOOLEAN, description: "Whether this is a competitive comparison" },
-    finalDecision: { type: Type.STRING, description: "Brutally honest final verdict (e.g. BUY, WAIT, or RUN)" },
-    pros: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Core advantages (max 3, very brief)" },
-    cons: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Dealbreakers or issues (max 3, very brief)" },
-    whyBest: { type: Type.STRING, description: "Single-sentence logic behind decision" },
-    aamAadmiSummary: { type: Type.STRING, description: "Aam Aadmi direct bottomline summary in friendly Hindi/Hinglish/English" },
-    avoid: { type: Type.STRING, description: "What exactly to avoid or skip (e.g. particular variant, storage trap)" },
-    regretWarning: { type: Type.STRING, description: "Warning on buyer's regret (short, warning-style)" },
-    confidenceScore: { type: Type.INTEGER, description: "Vetto confidence level, 0 to 100" },
-    regretRisk: { type: Type.STRING, description: "Regret risk assessment ('Low', 'Medium', or 'High')" },
-    whyRegret: { type: Type.STRING, description: "Key trigger for buyer regret" },
-    saferChoice: { type: Type.STRING, description: "Safer path or standard alternative" },
-    personalizedInsight: { type: Type.STRING, description: "Bespoke actionable insight for this deployment context" },
-    socialHook: { type: Type.STRING, description: "Catchy headline hook for social feed (max 10 words)" },
-    postOutputHook: { type: Type.STRING, description: "Punchy post-conclusion warning or prompt" },
-    marketTiming: { type: Type.STRING, description: "Timing verdict strictly 'BUY', 'WAIT', or 'RUN'" },
-    marketReasoning: { type: Type.STRING, description: "Why that market timing is suggested" },
-    specLongevity: { type: Type.STRING, description: "How many years this product will remain relevant (e.g. 2 years)" },
-    paisaVasoolIndex: { type: Type.INTEGER, description: "Value for money score 0 to 100" },
-    statusTax: { type: Type.INTEGER, description: "Status tax in exact Rupees (₹) compared to similar specced options" },
-    utilityScore: { type: Type.INTEGER, description: "Feature utility score 0 to 100" },
-    hiddenCosts: { type: Type.STRING, description: "E.g. subscription, charger, accessories, paid installation" },
+    isAnalysis: { type: Type.BOOLEAN, description: "Is analysis" },
+    productName: { type: Type.STRING, description: "Product formal name" },
+    isComparison: { type: Type.BOOLEAN, description: "Is comparison" },
+    finalDecision: { type: Type.STRING, description: "Verdict: BUY, WAIT, or RUN" },
+    pros: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Advantages (max 3, brief)" },
+    cons: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Dealbreakers (max 3, brief)" },
+    whyBest: { type: Type.STRING, description: "Logic behind decision (1 sentence)" },
+    aamAadmiSummary: { type: Type.STRING, description: "Direct Hinglish summary" },
+    avoid: { type: Type.STRING, description: "What to avoid" },
+    regretWarning: { type: Type.STRING, description: "Regret warning" },
+    confidenceScore: { type: Type.INTEGER, description: "Confidence 0-100" },
+    regretRisk: { type: Type.STRING, description: "Risk: Low, Medium, High" },
+    whyRegret: { type: Type.STRING, description: "Trigger for regret" },
+    saferChoice: { type: Type.STRING, description: "Standard alternative" },
+    personalizedInsight: { type: Type.STRING, description: "Actionable insight" },
+    socialHook: { type: Type.STRING, description: "Social headline" },
+    postOutputHook: { type: Type.STRING, description: "Post-conclusion warning" },
+    marketTiming: { type: Type.STRING, description: "Timing: BUY, WAIT, or RUN" },
+    marketReasoning: { type: Type.STRING, description: "Timing reasoning" },
+    specLongevity: { type: Type.STRING, description: "Years relevant" },
+    paisaVasoolIndex: { type: Type.INTEGER, description: "Value score 0-100" },
+    statusTax: { type: Type.INTEGER, description: "Status tax in Rupees" },
+    utilityScore: { type: Type.INTEGER, description: "Utility score 0-100" },
+    hiddenCosts: { type: Type.STRING, description: "Sneaky extra costs" },
     platformWarShield: {
       type: Type.OBJECT,
       properties: {
-        hasMarketingSilos: { type: Type.BOOLEAN, description: "False marketing tactics or lock-ins present" },
-        siloExposure: { type: Type.STRING, description: "Exposure of brand's marketing manipulation" },
-        truthResilienceScore: { type: Type.INTEGER, description: "Marketing filter resistance (0-100)" },
-        bypassStrategyUsed: { type: Type.STRING, description: "How we bypass marketing hooks" }
+        hasMarketingSilos: { type: Type.BOOLEAN, description: "Marketing traps present" },
+        siloExposure: { type: Type.STRING, description: "Marketing exposure" },
+        truthResilienceScore: { type: Type.INTEGER, description: "Filter resistance 0-100" },
+        bypassStrategyUsed: { type: Type.STRING, description: "Bypass strategy" }
       },
       required: ["hasMarketingSilos", "siloExposure", "truthResilienceScore", "bypassStrategyUsed"]
     },
     vettoContrast: {
       type: Type.OBJECT,
       properties: {
-        alternativeName: { type: Type.STRING, description: "Smart alternative model/brand name" },
-        whyContrast: { type: Type.STRING, description: "Why contrast alternative is superior value" },
-        pviBoost: { type: Type.INTEGER, description: "Value boost if you buy alternative (0-100)" },
-        priceDelta: { type: Type.STRING, description: "Price gap (e.g. Save ₹5,000)" },
-        fairPriceTarget: { type: Type.STRING, description: "Fair value price target (e.g. ₹12,000)" },
-        procurementGuidance: { type: Type.STRING, description: "Best way or time to buy" },
-        strategicAdvantage: { type: Type.STRING, description: "Underlying advantage of the contrast alternative" }
+        alternativeName: { type: Type.STRING, description: "Alternative name" },
+        whyContrast: { type: Type.STRING, description: "Why superior value" },
+        pviBoost: { type: Type.INTEGER, description: "Value boost 0-100" },
+        priceDelta: { type: Type.STRING, description: "Price gap" },
+        fairPriceTarget: { type: Type.STRING, description: "Fair value target" },
+        procurementGuidance: { type: Type.STRING, description: "Best way to buy" },
+        strategicAdvantage: { type: Type.STRING, description: "Advantage" }
       },
       required: ["alternativeName", "whyContrast", "pviBoost", "priceDelta", "fairPriceTarget", "procurementGuidance", "strategicAdvantage"]
     },
     strategicRoadmap: {
       type: Type.OBJECT,
       properties: {
-        immediateAction: { type: Type.STRING, description: "Next step user should take right now" },
-        peakUtilityAge: { type: Type.STRING, description: "When performance peaks (e.g. 18 months)" },
-        exitStrategy: { type: Type.STRING, description: "Suggested resale/upgrade timeline and path" }
+        immediateAction: { type: Type.STRING, description: "Next step" },
+        peakUtilityAge: { type: Type.STRING, description: "When performance peaks" },
+        exitStrategy: { type: Type.STRING, description: "Resale or upgrade path" }
       },
       required: ["immediateAction", "peakUtilityAge", "exitStrategy"]
     },
     communityPulse: {
       type: Type.OBJECT,
       properties: {
-        redditConsensus: { type: Type.STRING, description: "Consensus on Reddit" },
-        twitterPulse: { type: Type.STRING, description: "Sentiment on X/Twitter" },
-        youtubeReality: { type: Type.STRING, description: "Real YouTuber review bottomline" },
-        linkedinProfessional: { type: Type.STRING, description: "Professional perspective or industry view" },
-        topUSP: { type: Type.STRING, description: "Top real USP" },
+        redditConsensus: { type: Type.STRING, description: "Reddit consensus" },
+        twitterPulse: { type: Type.STRING, description: "X sentiment" },
+        youtubeReality: { type: Type.STRING, description: "YouTube reality" },
+        linkedinProfessional: { type: Type.STRING, description: "Expert view" },
+        topUSP: { type: Type.STRING, description: "Top USP" },
         topGripe: { type: Type.STRING, description: "Top user complaint" }
       },
       required: ["redditConsensus", "twitterPulse", "youtubeReality", "linkedinProfessional", "topUSP", "topGripe"]
@@ -505,106 +505,106 @@ const auditResponseSchema = {
     lifecyclePhase: {
       type: Type.OBJECT,
       properties: {
-        status: { type: Type.STRING, description: "Lifecycle stage, e.g. Peak, Mature, End-of-life" },
-        isObsoleteSoon: { type: Type.BOOLEAN, description: "Whether a newer replacement is launching within 3 months" },
-        nextMajorUpdate: { type: Type.STRING, description: "Estimated next launch window or major release details" }
+        status: { type: Type.STRING, description: "Lifecycle stage" },
+        isObsoleteSoon: { type: Type.BOOLEAN, description: "Obsolete within 3 months" },
+        nextMajorUpdate: { type: Type.STRING, description: "Next launch details" }
       },
       required: ["status", "isObsoleteSoon", "nextMajorUpdate"]
     },
     priceIntegrity: {
       type: Type.OBJECT,
       properties: {
-        currentPriceAudit: { type: Type.STRING, description: "Honest feedback about today's price in simple, friendly, jargon-free Indian consumer context (e.g., 'This price is brilliant because it is close to the lowest-ever sale price.')" },
-        historicalContext: { type: Type.STRING, description: "How current price relates to past sales, explained in simple everyday words without any math or finance jargon (e.g., 'Prices drop by ₹1,500 every Diwali, but if you need it today, this current deal is quite fair.')" },
+        currentPriceAudit: { type: Type.STRING, description: "Current price feedback" },
+        historicalContext: { type: Type.STRING, description: "Past sales context" },
         priceHistory: {
           type: Type.ARRAY,
           items: {
             type: Type.OBJECT,
             properties: {
-              month: { type: Type.STRING },
-              price: { type: Type.INTEGER }
+              month: { type: Type.STRING, description: "Month" },
+              price: { type: Type.INTEGER, description: "Price" }
             },
             required: ["month", "price"]
           },
-          description: "Approximate historical prices over 4-6 months to build chart"
+          description: "Approximate price history"
         },
-        dealScore: { type: Type.INTEGER, description: "Deal quality index 0 to 100" },
-        discountStrategy: { type: Type.STRING, description: "Extremely simple, practical tips for everyday people to save additional cash, e.g., using SBI/HDFC card cashbacks or waiting for weekend coupon drops (e.g., 'Buy with an HDFC card for a ₹1,000 instant discount, or check your local multi-brand stores to match this online price.')" },
+        dealScore: { type: Type.INTEGER, description: "Deal score 0-100" },
+        discountStrategy: { type: Type.STRING, description: "Card cashback and coupon tips" },
         procurementLinks: {
           type: Type.ARRAY,
           items: {
             type: Type.OBJECT,
             properties: {
-              platform: { type: Type.STRING, description: "Platform name (e.g., Amazon, Flipkart)" },
-              label: { type: Type.STRING, description: "Button text (e.g., Amazon India)" },
-              price: { type: Type.STRING, description: "Current price on platform (e.g. ₹18,499)" },
-              isBestDeal: { type: Type.BOOLEAN, description: "Whether this is the lowest price option" },
-              url: { type: Type.STRING, description: "Direct product or keyword search query URL to verify on platform (e.g., https://www.amazon.in/s?k=product+name)" },
-              stockStatus: { type: Type.STRING, description: "Stock status: 'In Stock', 'Only 3 left' (for low stock), or 'Out of Stock'" }
+              platform: { type: Type.STRING, description: "Platform name" },
+              label: { type: Type.STRING, description: "Button label" },
+              price: { type: Type.STRING, description: "Current price" },
+              isBestDeal: { type: Type.BOOLEAN, description: "Is best deal" },
+              url: { type: Type.STRING, description: "Direct search page URL" },
+              stockStatus: { type: Type.STRING, description: "Stock status" }
             },
             required: ["platform", "label", "price", "isBestDeal", "url", "stockStatus"]
           },
-          description: "Major Indian procurement destinations"
+          description: "Indian retail sites"
         }
       },
       required: ["currentPriceAudit", "historicalContext", "priceHistory", "dealScore", "discountStrategy", "procurementLinks"]
     },
-    bhartiyaPersonaAudit: { type: Type.STRING, description: "Indian consumer persona specific check" },
+    bhartiyaPersonaAudit: { type: Type.STRING, description: "Household reality check" },
     features: {
       type: Type.ARRAY,
       items: {
         type: Type.OBJECT,
         properties: {
-          name: { type: Type.STRING, description: "Feature name (e.g., Battery Life)" },
-          score: { type: Type.INTEGER, description: "Score from 0 to 100" },
-          details: { type: Type.STRING, description: "Brief feature reality check" }
+          name: { type: Type.STRING, description: "Feature name" },
+          score: { type: Type.INTEGER, description: "Score 0-100" },
+          details: { type: Type.STRING, description: "Reality details" }
         },
         required: ["name", "score", "details"]
       },
-      description: "Critical feature metrics evaluated"
+      description: "Critical feature metrics"
     },
     socialAudit: {
       type: Type.OBJECT,
       properties: {
-        aggregatedRating: { type: Type.NUMBER, description: "Combined expert + user rating (e.g. 4.2)" },
+        aggregatedRating: { type: Type.NUMBER, description: "Rating 0-5" },
         sentimentSplit: {
           type: Type.OBJECT,
           properties: {
-            positive: { type: Type.INTEGER },
-            negative: { type: Type.INTEGER },
-            mixed: { type: Type.INTEGER }
+            positive: { type: Type.INTEGER, description: "Positive %" },
+            negative: { type: Type.INTEGER, description: "Negative %" },
+            mixed: { type: Type.INTEGER, description: "Mixed %" }
           },
           required: ["positive", "negative", "mixed"]
         },
-        criticsConsensus: { type: Type.STRING, description: "Tech critics summary consensus" },
-        userRealityCheck: { type: Type.STRING, description: "Real-world user sentiment bottomline" },
+        criticsConsensus: { type: Type.STRING, description: "Critics bottomline" },
+        userRealityCheck: { type: Type.STRING, description: "User consensus" },
         integrityAudit: {
           type: Type.OBJECT,
           properties: {
-            isFakeReviewRisk: { type: Type.BOOLEAN, description: "High risk of paid reviews on platforms" },
-            fakeReviewScore: { type: Type.INTEGER, description: "0-100 rating of review manipulation (higher is cleaner)" },
-            botSignalDetection: { type: Type.STRING, description: "Bot pattern analysis statement" },
-            verifiedPurchaseTruth: { type: Type.STRING, description: "Reliability of reviews after tracking verified purchasers" },
+            isFakeReviewRisk: { type: Type.BOOLEAN, description: "Paid reviews risk" },
+            fakeReviewScore: { type: Type.INTEGER, description: "Score 0-100" },
+            botSignalDetection: { type: Type.STRING, description: "Bot statement" },
+            verifiedPurchaseTruth: { type: Type.STRING, description: "Verified buyers check" },
             crossPlatformPatterns: {
               type: Type.ARRAY,
               items: {
                 type: Type.OBJECT,
                 properties: {
-                  platform: { type: Type.STRING },
-                  sentiment: { type: Type.INTEGER },
-                  botRisk: { type: Type.STRING } // Low, Medium, High
+                  platform: { type: Type.STRING, description: "Platform" },
+                  sentiment: { type: Type.INTEGER, description: "Sentiment" },
+                  botRisk: { type: Type.STRING, description: "Risk" }
                 },
                 required: ["platform", "sentiment", "botRisk"]
               }
             },
-            divergenceIndex: { type: Type.INTEGER, description: "Gap index 0-100 between hype vs reality" },
+            divergenceIndex: { type: Type.INTEGER, description: "Hype gap 0-100" },
             buzzwordSlayer: {
               type: Type.ARRAY,
               items: {
                 type: Type.OBJECT,
                 properties: {
-                  term: { type: Type.STRING, description: "Vague marketing buzzword used" },
-                  reality: { type: Type.STRING, description: "Brutal real-world translation" }
+                  term: { type: Type.STRING, description: "Buzzword" },
+                  reality: { type: Type.STRING, description: "Reality" }
                 },
                 required: ["term", "reality"]
               }
@@ -1450,7 +1450,8 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         contents: [{ role: "user", parts: [{ text: preFetchPrompt }] }],
         config: {
           tools: [{ googleSearch: {} }],
-          temperature: 0.0
+          temperature: 0.0,
+          maxOutputTokens: 1000
         }
       });
 
@@ -2043,9 +2044,13 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     console.log(`[Cache Engine] Active Mode: Live Google Search Grounding for maximum platform price integrity`);
 
     let finalSystemPrompt = systemPrompt + 
-      "\n\nCRITICAL REQUIREMENT FOR ZERO LATENCY & SPEED:\n" +
-      "Your response must comply 100% with the strict JSON structure. Because the structure is extensive, YOU MUST keep every text value extremely short, terse, and punchy. " +
-      "Each text field (definitions, details, summaries, reasons) must be at most 1 short sentence or quick phrase. Do not generate multi-sentence text. This is absolutely essential to achieve ultra-fast generation and low latency." +
+      "\n\nCRITICAL INTENSITY RULES FOR PRICING FIELDS (DO NOT HALLUCINATE):\n" +
+      "1. 'priceIntegrity.currentPriceAudit' MUST contain honest feedback about today's price in simple everyday terms (e.g. 'This price is brilliant...').\n" +
+      "2. 'priceIntegrity.historicalContext' MUST explain how the price relates to past sales without any math/finance jargon (e.g. 'Prices drop by ₹1,500 every Diwali...').\n" +
+      "3. 'priceIntegrity.discountStrategy' MUST give practical card cashback or coupon advice (e.g. 'Buy with an HDFC card for a ₹1,000 instant discount...').\n" +
+      "\nCRITICAL REQUIREMENT FOR ZERO LATENCY & SPEED:\n" +
+      "Your response must comply 100% with the strict JSON structure. Because the structure is extensive, YOU MUST keep every single text value extremely short, terse, and punchy. " +
+      "Each text field (definitions, details, summaries, reasons) MUST BE at most 8-10 words (1 short sentence or quick phrase max). Do NOT generate multi-sentence text. This is absolutely essential to achieve ultra-fast generation and low latency." +
       "\n\nCRITICAL HINGLISH PERSONA REQUIREMENT:\n" +
       "To ensure we preserve Vetto's authentic Bhartiya tone, the 'aamAadmiSummary' field MUST ALWAYS start with the exact word 'Bhai,' or 'Arey yaar,' or include the exact phrase 'le lo' or 'mat lena'. Do NOT ignore this rule. Never return a purely formal English sentence under any circumstances.";
 
@@ -2057,7 +2062,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       systemInstruction: finalSystemPrompt,
       ...(useSearchGrounding ? { tools: [{ googleSearch: {} }] } : {}),
       temperature: 0.0,
-      maxOutputTokens: 8192,
+      maxOutputTokens: 2048,
     };
 
     // Fully eliminate the error combination: Tool use with responseMimeType "application/json" is unsupported
