@@ -1,0 +1,608 @@
+[
+  {
+    "category": "electronics",
+    "query": "best phone under 40k",
+    "budget": "40000",
+    "resolvedName": "OnePlus Nord 4 5G (8GB RAM, 256GB Storage)",
+    "finalDecision": "BUY",
+    "checks": [
+      "Resolved Product Name: \"OnePlus Nord 4 5G (8GB RAM, 256GB Storage)\"",
+      "Budget: ₹40,000, Deal Price: ₹26,834",
+      "PASS: Recommended product's deal price fits the budget constraint.",
+      "Found 4 procurement links.",
+      "Link: Amazon | Price: ₹29,249 | Stock: In Stock | URL: https://www.amazon.in/s?k=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
+      "PASS: Platform link for Amazon is appropriate for electronics category.",
+      "Link: Flipkart | Price: ₹26,834 | Stock: In Stock | URL: https://www.flipkart.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+      "PASS: Platform link for Flipkart is appropriate for electronics category.",
+      "Link: Croma | Price: ₹29,999 | Stock: In Stock | URL: https://www.croma.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+      "PASS: Platform link for Croma is appropriate for electronics category.",
+      "Link: Reliance Digital | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Reliance Digital correctly has an empty URL string.",
+      "Lowest Deal Price: ₹26834, Latest Chart Node Price: ₹26834 (May 2026)",
+      "PASS: Price history latest node matches the lowest deal price.",
+      "PASS: Banned jargon \"equilibrium\" is not present in the response.",
+      "PASS: Banned jargon \"volatility\" is not present in the response.",
+      "PASS: Banned jargon \"msrp\" is not present in the response.",
+      "PASS: Banned jargon \"market correction\" is not present in the response.",
+      "PASS: Banned jargon \"depreciation\" is not present in the response.",
+      "PASS: Banned jargon \"portfolio\" is not present in the response.",
+      "aamAadmiSummary: \"Bhai, under 30k this metal body phone is a solid deal, le lo!\"",
+      "bhartiyaPersonaAudit: \"Perfect for students who need a phone that lasts all day.\""
+    ],
+    "issues": [],
+    "rawResponse": {
+      "isAnalysis": true,
+      "productName": "OnePlus Nord 4 5G (8GB RAM, 256GB Storage)",
+      "isComparison": false,
+      "finalDecision": "BUY",
+      "whyBest": "It offers the best balance of performance, metal build, and battery under 30k.",
+      "pros": [
+        "Premium metal unibody design",
+        "Excellent 5500mAh battery life",
+        "Fast 100W charging support"
+      ],
+      "cons": [
+        "Average low-light camera performance",
+        "No headphone jack",
+        "Pre-installed bloatware apps"
+      ],
+      "aamAadmiSummary": "Bhai, under 30k this metal body phone is a solid deal, le lo!",
+      "avoid": "Avoid buying expensive official cases; third-party ones are cheaper.",
+      "regretWarning": "Do not expect flagship-grade zoom photos from this camera.",
+      "confidenceScore": 92,
+      "regretRisk": "Low",
+      "whyRegret": "Camera performance in low light might disappoint social media enthusiasts.",
+      "saferChoice": "Realme GT 6T",
+      "marketTiming": "BUY",
+      "marketReasoning": "Prices have stabilized and it offers great value right now.",
+      "specLongevity": "4 Years",
+      "personalizedInsight": "Perfect for students needing long battery life and fast charging.",
+      "socialHook": "The metal back is gorgeous, but how does it perform?",
+      "postOutputHook": "Check for bank discounts before checking out.",
+      "paisaVasoolIndex": 88,
+      "statusTax": 2000,
+      "utilityScore": 90,
+      "hiddenCosts": "Charger is in the box, but screen guard is basic.",
+      "platformWarShield": {
+        "hasMarketingSilos": true,
+        "siloExposure": "Exaggerated AI camera features in brand advertisements.",
+        "truthResilienceScore": 85,
+        "bypassStrategyUsed": "Verified real-world camera samples from independent community forums."
+      },
+      "vettoContrast": {
+        "alternativeName": "Poco F6 5G",
+        "whyContrast": "Offers raw performance and better gaming frame rates.",
+        "pviBoost": 5,
+        "priceDelta": "Save ₹2,000",
+        "fairPriceTarget": "₹24,834",
+        "procurementGuidance": "Buy during major online sales with bank cards.",
+        "strategicAdvantage": "Superior processor for heavy gaming needs."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹26,834 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "Usually, this gets cheaper during major festive sales.",
+        "priceHistory": [
+          {
+            "month": "March 2026",
+            "price": 29999
+          },
+          {
+            "month": "April 2026",
+            "price": 28500
+          },
+          {
+            "month": "May 2026",
+            "price": 26834
+          }
+        ],
+        "dealScore": 85,
+        "discountStrategy": "Use Flipkart Axis bank card for extra 5% cashback.",
+        "procurementLinks": [
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon",
+            "price": "₹29,249",
+            "isBestDeal": false,
+            "url": "https://www.amazon.in/s?k=OnePlus+Nord+4+5G+8GB+RAM%2C+256GB+Storage",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "₹26,834",
+            "isBestDeal": true,
+            "url": "https://www.flipkart.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "₹29,999",
+            "isBestDeal": false,
+            "url": "https://www.croma.com/search?q=OnePlus+Nord+4+5G+8GB+256GB",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Buy from Flipkart using credit card discounts.",
+        "peakUtilityAge": "3 Years",
+        "exitStrategy": "Trade in by 2029 before software updates stop."
+      },
+      "communityPulse": {
+        "redditConsensus": "Great battery life, but camera is just average.",
+        "twitterPulse": "Users love the metal back design and premium feel.",
+        "youtubeReality": "Independent creators confirm excellent thermal management during gaming.",
+        "linkedinProfessional": "Appreciated for clean UI options and enterprise security updates.",
+        "topUSP": "Premium metal unibody design",
+        "topGripe": "Average secondary camera sensors"
+      },
+      "lifecyclePhase": {
+        "status": "Mid-cycle",
+        "isObsoleteSoon": false,
+        "nextMajorUpdate": "OnePlus Nord 5 in mid-2027"
+      },
+      "bhartiyaPersonaAudit": "Perfect for students who need a phone that lasts all day.",
+      "technicalNode": "Verifying internals...",
+      "buildIntegrity": "Checking build quality...",
+      "resaleValueNode": "Estimating resale value...",
+      "ecosystemLockIn": "Checking brand ecosystem...",
+      "features": [
+        {
+          "name": "Performance",
+          "score": 88,
+          "details": "Snapdragon 7+ Gen 3 handles daily tasks easily."
+        },
+        {
+          "name": "Battery Life",
+          "score": 95,
+          "details": "5500mAh battery easily lasts over a day."
+        },
+        {
+          "name": "Camera",
+          "score": 75,
+          "details": "Good main sensor, but ultra-wide is average."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4.3,
+        "sentimentSplit": {
+          "positive": 75,
+          "negative": 15,
+          "mixed": 10
+        },
+        "criticsConsensus": "A solid mid-ranger with a unique premium metal design.",
+        "userRealityCheck": "Users love the battery life but complain about low-light photos.",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 88,
+          "botSignalDetection": "No major bot patterns detected in reviews.",
+          "verifiedPurchaseTruth": "Real buyers praise the fast charging and premium build.",
+          "divergenceIndex": 20,
+          "crossPlatformPatterns": [
+            {
+              "platform": "Flipkart",
+              "sentiment": 80,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Amazon",
+              "sentiment": 78,
+              "botRisk": "Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "AI Eraser",
+              "reality": "Works okay, but sometimes leaves blurry patches."
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "category": "fashion",
+    "query": "Adidas Samba vs Nike Dunk",
+    "budget": "10000",
+    "resolvedName": "Nike Dunk Low Retro",
+    "finalDecision": "BUY",
+    "checks": [
+      "Resolved Product Name: \"Nike Dunk Low Retro\"",
+      "Budget: ₹10,000, Deal Price: ₹8,295",
+      "PASS: Recommended product's deal price fits the budget constraint.",
+      "Found 4 procurement links.",
+      "Link: Myntra | Price: ₹8,295 | Stock: In Stock | URL: https://www.myntra.com/search?q=Nike+Dunk+Low+Retro",
+      "PASS: Platform link for Myntra is appropriate for fashion category.",
+      "Link: Ajio | Price: ₹8,295 | Stock: In Stock | URL: https://www.ajio.com/search/?text=Nike+Dunk+Low+Retro",
+      "PASS: Platform link for Ajio is appropriate for fashion category.",
+      "Link: Flipkart | Price: ₹8,295 | Stock: In Stock | URL: https://www.flipkart.com/search?q=Nike+Dunk+Low+Retro",
+      "PASS: Platform link for Flipkart is appropriate for fashion category.",
+      "Link: Amazon | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Amazon correctly has an empty URL string.",
+      "Lowest Deal Price: ₹8295, Latest Chart Node Price: ₹8295 (Jan)",
+      "PASS: Price history latest node matches the lowest deal price.",
+      "PASS: Banned jargon \"equilibrium\" is not present in the response.",
+      "PASS: Banned jargon \"volatility\" is not present in the response.",
+      "PASS: Banned jargon \"msrp\" is not present in the response.",
+      "PASS: Banned jargon \"market correction\" is not present in the response.",
+      "PASS: Banned jargon \"depreciation\" is not present in the response.",
+      "PASS: Banned jargon \"portfolio\" is not present in the response.",
+      "aamAadmiSummary: \"Bhai, ek minute bhai! Network thoda slow hai, please fresh scan trigger karo so we can give you a bulletproof review.\"",
+      "bhartiyaPersonaAudit: \"Analyzing how this fits into our typical middle-class home usage and budget...\""
+    ],
+    "issues": [],
+    "rawResponse": {
+      "isAnalysis": true,
+      "productName": "Nike Dunk Low Retro",
+      "isComparison": true,
+      "finalDecision": "BUY",
+      "whyBest": "Arey yaar, the engine took a bit longer because it's doing deep calculations. Give it another try!",
+      "pros": [
+        "Super trendy, always in style",
+        "Durable build, lasts long",
+        "Fits true"
+      ],
+      "cons": [
+        "Verifying real-world durability under Indian conditions"
+      ],
+      "aamAadmiSummary": "Bhai, ek minute bhai! Network thoda slow hai, please fresh scan trigger karo so we can give you a bulletproof review.",
+      "avoid": "Wait until we verify the specs",
+      "regretWarning": "Don't make a hasty purchase yet!",
+      "confidenceScore": 50,
+      "regretRisk": "Medium",
+      "whyRegret": "Rushing a purchase before doing deep homework usually ends in buyer regret.",
+      "saferChoice": "Let the engine finish scanning first",
+      "marketTiming": "BUY",
+      "marketReasoning": "We are fetching live retail prices to protect your wallet.",
+      "specLongevity": "Checking specs...",
+      "personalizedInsight": "Vetto is standing guard. Let's do a fresh query.",
+      "socialHook": "Vetto Audit is scanning...",
+      "postOutputHook": "Vetto has your back.",
+      "paisaVasoolIndex": 50,
+      "statusTax": 0,
+      "utilityScore": 50,
+      "hiddenCosts": "Scanning for sneaky extras like missing chargers or subscriptions...",
+      "platformWarShield": {
+        "hasMarketingSilos": false,
+        "siloExposure": "Analyzing brand lock-ins...",
+        "truthResilienceScore": 50,
+        "bypassStrategyUsed": "Setting up safety shields..."
+      },
+      "vettoContrast": {
+        "alternativeName": "Safe Alternative",
+        "whyContrast": "Scanning for high-value alternatives to save you money...",
+        "pviBoost": 0,
+        "priceDelta": "Save ₹0",
+        "fairPriceTarget": "₹8,295",
+        "procurementGuidance": "Verify prices directly for now",
+        "strategicAdvantage": "Verifying value..."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹8,295 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "Analyzing past sales and seasonal discounts...",
+        "priceHistory": [
+          {
+            "month": "Jan",
+            "price": 8295
+          }
+        ],
+        "dealScore": 50,
+        "discountStrategy": "Checking for card cashbacks and coupon drops...",
+        "procurementLinks": [
+          {
+            "platform": "Myntra",
+            "label": "Buy on Myntra",
+            "price": "₹8,295",
+            "isBestDeal": true,
+            "url": "https://www.myntra.com/search?q=Nike+Dunk+Low+Retro",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Ajio",
+            "label": "Buy on Ajio",
+            "price": "₹8,295",
+            "isBestDeal": false,
+            "url": "https://www.ajio.com/search/?text=Nike+Dunk+Low+Retro",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "₹8,295",
+            "isBestDeal": false,
+            "url": "https://www.flipkart.com/search?q=Nike+Dunk+Low+Retro",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon India",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Please trigger a fresh scan in a couple of seconds.",
+        "peakUtilityAge": "N/A",
+        "exitStrategy": "N/A"
+      },
+      "communityPulse": {
+        "redditConsensus": "Checking Reddit threads...",
+        "twitterPulse": "Checking Twitter chatter...",
+        "youtubeReality": "Analyzing tech reviewer videos...",
+        "linkedinProfessional": "Checking expert consensus...",
+        "topUSP": "Verifying feature...",
+        "topGripe": "Checking complaints..."
+      },
+      "lifecyclePhase": {
+        "status": "Active",
+        "isObsoleteSoon": false,
+        "nextMajorUpdate": "Next Generation"
+      },
+      "bhartiyaPersonaAudit": "Analyzing how this fits into our typical middle-class home usage and budget...",
+      "technicalNode": "Verifying internals...",
+      "buildIntegrity": "Checking build quality...",
+      "resaleValueNode": "Estimating resale value...",
+      "ecosystemLockIn": "Checking brand ecosystem...",
+      "features": [
+        {
+          "name": "General Integrity",
+          "score": 50,
+          "details": "We are currently checking the technical details."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4,
+        "sentimentSplit": {
+          "positive": 50,
+          "negative": 20,
+          "mixed": 30
+        },
+        "criticsConsensus": "Analysis interrupted",
+        "userRealityCheck": "Analysis interrupted",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 0,
+          "botSignalDetection": "Clear / Trace cut off",
+          "verifiedPurchaseTruth": "Not verified",
+          "divergenceIndex": 0,
+          "crossPlatformPatterns": [
+            {
+              "platform": "General",
+              "sentiment": 50,
+              "botRisk": "Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "AIs",
+              "reality": "No verification"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "category": "automotive",
+    "query": "Royal Enfield Himalayan",
+    "budget": "300000",
+    "resolvedName": "Royal Enfield Himalayan 450 Base (Kaza Brown)",
+    "finalDecision": "WAIT",
+    "checks": [
+      "Resolved Product Name: \"Royal Enfield Himalayan 450 Base (Kaza Brown)\"",
+      "Budget: ₹3,00,000, Deal Price: ₹3,05,000",
+      "Found 4 procurement links.",
+      "Link: ZigWheels | Price: ₹3,05,723 | Stock: In Stock | URL: https://www.zigwheels.com/search/?q=Royal%20Enfield%20Himalayan%20450%20Base%20(Kaza%20Brown)",
+      "PASS: Platform link for ZigWheels is appropriate for automotive category.",
+      "Link: Royal Enfield India | Price: ₹3,05,000 | Stock: In Stock | URL: https://www.royalenfield.com",
+      "PASS: Direct brand site URL allowed for automotive: \"https://www.royalenfield.com\"",
+      "Link: BikeWale | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on BikeWale correctly has an empty URL string.",
+      "Link: BikeDekho | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on BikeDekho correctly has an empty URL string.",
+      "Lowest Deal Price: ₹305000, Latest Chart Node Price: ₹305000 (May 2026)",
+      "PASS: Price history latest node matches the lowest deal price.",
+      "PASS: Banned jargon \"equilibrium\" is not present in the response.",
+      "PASS: Banned jargon \"volatility\" is not present in the response.",
+      "PASS: Banned jargon \"msrp\" is not present in the response.",
+      "PASS: Banned jargon \"market correction\" is not present in the response.",
+      "PASS: Banned jargon \"depreciation\" is not present in the response.",
+      "PASS: Banned jargon \"portfolio\" is not present in the response.",
+      "aamAadmiSummary: \"Bhai, wait for festive discounts because it slightly crosses your budget.\"",
+      "bhartiyaPersonaAudit: \"Perfect for weekend touring but heavy for daily traffic.\""
+    ],
+    "issues": [
+      "FAIL: Recommended product's deal price (₹305000) exceeds budget constraint (₹300000)!"
+    ],
+    "rawResponse": {
+      "isAnalysis": true,
+      "productName": "Royal Enfield Himalayan 450 Base (Kaza Brown)",
+      "isComparison": false,
+      "finalDecision": "WAIT",
+      "whyBest": "It is a brilliant highway tourer but slightly exceeds your budget.",
+      "pros": [
+        "Superb Sherpa 450 engine performance",
+        "Excellent high-speed highway stability",
+        "Show-stopping long-travel suspension"
+      ],
+      "cons": [
+        "Noticeable engine vibrations above 100kmph",
+        "Frequent tubed-tyre puncture anxiety",
+        "Annoying plastic panel rattling issues"
+      ],
+      "aamAadmiSummary": "Bhai, wait for festive discounts because it slightly crosses your budget.",
+      "avoid": "Avoid high-speed cruising without checking panel tightness.",
+      "regretWarning": "Vibrations and panel rattles might annoy you on long rides.",
+      "confidenceScore": 92,
+      "regretRisk": "Medium",
+      "whyRegret": "Vibrations at high speeds and panel rattling.",
+      "saferChoice": "KTM Adventure 390 X",
+      "marketTiming": "WAIT",
+      "marketReasoning": "Wait for seasonal dealer discounts to fit your budget.",
+      "specLongevity": "5 Years",
+      "personalizedInsight": "Check panel fittings at the showroom before taking delivery.",
+      "socialHook": "The ultimate Indian tourer with minor rough edges.",
+      "postOutputHook": "Always test ride on rough patches before booking.",
+      "paisaVasoolIndex": 60,
+      "statusTax": 15000,
+      "utilityScore": 88,
+      "hiddenCosts": "Tubeless rim conversion kit and crash guards.",
+      "platformWarShield": {
+        "hasMarketingSilos": true,
+        "siloExposure": "Heavy influencer hype masking minor panel vibrations.",
+        "truthResilienceScore": 80,
+        "bypassStrategyUsed": "Verified owner forums and real-world highway tests."
+      },
+      "vettoContrast": {
+        "alternativeName": "Suzuki V-Strom 250 SX",
+        "whyContrast": "Much cheaper, highly reliable, and zero panel rattles.",
+        "pviBoost": 90,
+        "priceDelta": "Save ₹15,000",
+        "fairPriceTarget": "₹2,90,000",
+        "procurementGuidance": "Buy directly from Suzuki authorized dealers.",
+        "strategicAdvantage": "Vibration-free engine and superior city-to-highway versatility."
+      },
+      "priceIntegrity": {
+        "currentPriceAudit": "₹3,05,000 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "Prices have remained stable since the launch.",
+        "priceHistory": [
+          {
+            "month": "January 2026",
+            "price": 305000
+          },
+          {
+            "month": "March 2026",
+            "price": 305000
+          },
+          {
+            "month": "May 2026",
+            "price": 305000
+          }
+        ],
+        "dealScore": 75,
+        "discountStrategy": "Ask dealers for free accessories or insurance discounts.",
+        "procurementLinks": [
+          {
+            "platform": "ZigWheels",
+            "label": "ZigWheels Comparison",
+            "price": "₹3,05,723",
+            "isBestDeal": false,
+            "url": "https://www.zigwheels.com/search/?q=Royal%20Enfield%20Himalayan%20450%20Base%20(Kaza%20Brown)",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "Royal Enfield India",
+            "label": "Buy on Royal Enfield India",
+            "price": "₹3,05,000",
+            "isBestDeal": true,
+            "url": "https://www.royalenfield.com",
+            "stockStatus": "In Stock"
+          },
+          {
+            "platform": "BikeWale",
+            "label": "Check BikeWale Price",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "BikeDekho",
+            "label": "Check BikeDekho Price",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ]
+      },
+      "strategicRoadmap": {
+        "immediateAction": "Book a long test ride on highway stretches.",
+        "peakUtilityAge": "2 to 3 Years",
+        "exitStrategy": "Resell before warranty expires to maintain high value."
+      },
+      "communityPulse": {
+        "redditConsensus": "Great chassis but engine feels buzzy at high RPMs.",
+        "twitterPulse": "Complaints about tubed tyres and minor panel rattling.",
+        "youtubeReality": "Excellent suspension but real-world mileage is around 28kmpl.",
+        "linkedinProfessional": "Strong market demand but service centers are overwhelmed.",
+        "topUSP": "Sherpa 450 liquid-cooled engine",
+        "topGripe": "Tubed tyres on spoke wheels"
+      },
+      "lifecyclePhase": {
+        "status": "Mid-cycle",
+        "isObsoleteSoon": false,
+        "nextMajorUpdate": "Minor color updates expected next year"
+      },
+      "bhartiyaPersonaAudit": "Perfect for weekend touring but heavy for daily traffic.",
+      "technicalNode": "Verifying internals...",
+      "buildIntegrity": "Checking build quality...",
+      "resaleValueNode": "Estimating resale value...",
+      "ecosystemLockIn": "Checking brand ecosystem...",
+      "features": [
+        {
+          "name": "Engine Performance",
+          "score": 90,
+          "details": "Sherpa 450 engine offers great mid-range punch."
+        },
+        {
+          "name": "Ride Comfort",
+          "score": 92,
+          "details": "Show-stopping suspension absorbs all Indian potholes easily."
+        },
+        {
+          "name": "Build Quality",
+          "score": 78,
+          "details": "Minor panel rattles and loose bolts reported."
+        }
+      ],
+      "socialAudit": {
+        "aggregatedRating": 4.4,
+        "sentimentSplit": {
+          "positive": 75,
+          "negative": 15,
+          "mixed": 10
+        },
+        "criticsConsensus": "A massive leap forward but lacks final refinement.",
+        "userRealityCheck": "Real-world mileage is 26-30kmpl with some vibrations.",
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "fakeReviewScore": 85,
+          "botSignalDetection": "No major bot patterns detected in owner forums.",
+          "verifiedPurchaseTruth": "Owners love the power but complain about tubed tyres.",
+          "divergenceIndex": 30,
+          "crossPlatformPatterns": [
+            {
+              "platform": "YouTube",
+              "sentiment": 85,
+              "botRisk": "Low"
+            },
+            {
+              "platform": "Reddit",
+              "sentiment": 78,
+              "botRisk": "Low"
+            }
+          ],
+          "buzzwordSlayer": [
+            {
+              "term": "Vibration-free",
+              "reality": "Buzzy handlebar and pegs above 100kmph."
+            }
+          ]
+        }
+      }
+    }
+  }
+]

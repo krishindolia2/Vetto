@@ -9,7 +9,7 @@ async function runAudit(query, budget, useCase) {
   console.log(`[TESTING] Query: "${query}", Budget: "${budget || 'None'}"`);
   console.log(`============================================================`);
 
-  const response = await fetch('http://localhost:3010/api/audit', {
+  const response = await fetch('http://localhost:3000/api/audit', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

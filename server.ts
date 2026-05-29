@@ -1225,8 +1225,16 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
   const encodedProdName = encodeURIComponent(cleanProdName || decodedProdName);
   const encodedPlusProdName = encodedProdName.replace(/%20/g, "+");
 
-  // 4. Force high-fidelity deep-search query fallbacks for generic/mismatched/broken links
-  if (isGenericOrMismatched) {
+  // Detect if the incoming URL is a search URL to dynamically heal and force correct resolved query terms
+  const isSearchUrl = urlLower.includes("/search") || 
+                      urlLower.includes("/s?") || 
+                      urlLower.includes("?q=") || 
+                      urlLower.includes("?text=") || 
+                      urlLower.includes("search?") || 
+                      urlLower.includes("search/");
+
+  // 4. Force high-fidelity deep-search query fallbacks for generic/mismatched/broken/search links
+  if (isGenericOrMismatched || isSearchUrl) {
     if (platformLower.includes("amazon")) {
       targetUrl = `https://www.amazon.in/s?k=${encodedPlusProdName}`;
     } else if (platformLower.includes("flipkart")) {
@@ -1637,7 +1645,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
                 platform,
                 label: `Buy on ${platform}`,
                 price: isOos ? "Out of Stock" : priceStr || "Live Price",
-                url: isOos ? "" : cleanAndResolveUrl(redirectUrl, platform, cleanQuery),
+                url: isOos ? "" : cleanAndResolveUrl(redirectUrl, platform, resolvedName),
                 isBestDeal: false,
                 stockStatus
               });
