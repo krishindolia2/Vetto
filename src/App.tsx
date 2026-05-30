@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   LineChart,
   Line,
-  XAxis,
+  XAxis
   YAxis,
   CartesianGrid,
   Tooltip,
