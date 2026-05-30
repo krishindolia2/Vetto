@@ -104,7 +104,7 @@ import {
   increment,
 } from "firebase/firestore";
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAl_4rsy3DgxFgpFN6O4CZLuZFSjQrRaeY",
@@ -824,6 +824,9 @@ export default function App() {
   const handleSignIn = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
+      if (analytics) {
+        logEvent(analytics, 'login', { method: 'Google' });
+      }
       showToast("Successfully signed in!", "success");
     } catch (err: any) {
       console.error("Auth failed:", err);
@@ -1046,6 +1049,14 @@ export default function App() {
     e.preventDefault();
     if (!query.trim()) return;
 
+    if (analytics) {
+      logEvent(analytics, 'search_query', {
+        query_text: query,
+        budget: budget || 'none',
+        useCase: useCase || 'none'
+      });
+    }
+
     setResult(null);
     setLoading(true);
     setError(null);
@@ -1103,6 +1114,14 @@ export default function App() {
         timestamp: Date.now(),
       };
       setResult(recommendationWithMeta);
+
+      if (analytics) {
+        logEvent(analytics, 'audit_generated', {
+          product_name: recommendationWithMeta.productName || 'unknown',
+          value_index: recommendationWithMeta.paisaVasoolIndex || 0,
+          category: recommendationWithMeta.category || 'unknown'
+        });
+      }
 
       // Automatic Social Feed Push if logically sound
       if (user && recommendationWithMeta.paisaVasoolIndex > 0) {
