@@ -103,6 +103,22 @@ import {
   getCountFromServer,
   increment,
 } from "firebase/firestore";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAl_4rsy3DgxFgpFN6O4CZLuZFSjQrRaeY",
+  authDomain: "gen-lang-client-0464302464.firebaseapp.com",
+  projectId: "gen-lang-client-0464302464",
+  storageBucket: "gen-lang-client-0464302464.firebasestorage.app",
+  messagingSenderId: "29440464004",
+  appId: "1:29440464004:web:731a62032d986d5d7eded1",
+  measurementId: "G-XL2WCXDQ6L"
+};
+
+// Initialize Firebase Core & Analytics safely
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
 enum OperationType {
   CREATE = "create",
