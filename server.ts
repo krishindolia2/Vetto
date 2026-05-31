@@ -1742,6 +1742,53 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   return null;
 }
 
+/**
+ * Mathematically verifies if a URL is a direct e-commerce product landing page
+ * rather than a search query page, generic homepage, or irrelevant tracking redirect.
+ */
+function isProductPageUrl(url: string): boolean {
+  if (!url) return false;
+  const urlLower = url.toLowerCase();
+  
+  // Exclude search result pages
+  if (urlLower.includes("/search") || 
+      urlLower.includes("/s?") || 
+      urlLower.includes("?q=") || 
+      urlLower.includes("?text=") || 
+      urlLower.includes("search?") || 
+      urlLower.includes("search/")) {
+    return false;
+  }
+  
+  // Exclude generic platform homes
+  const cleanUrlStr = url.replace(/^(https?:\/\/)?(www\.)?/, "").toLowerCase();
+  const nakedDomains = [
+    "amazon.in", "amazon.in/", "amazon.com", "amazon.com/",
+    "flipkart.com", "flipkart.com/", 
+    "croma.com", "croma.com/", "reliancedigital.in", "reliancedigital.in/", 
+    "myntra.com", "myntra.com/", "ajio.com", "ajio.com/",
+    "carwale.com", "carwale.com/", "bikewale.com", "bikewale.com/",
+    "cardekho.com", "cardekho.com/", "bikedekho.com", "bikedekho.com/",
+    "zigwheels.com", "zigwheels.com/",
+    "google.com", "google.co.in"
+  ];
+  if (nakedDomains.some(domain => cleanUrlStr === domain || cleanUrlStr === domain + "/")) {
+    return false;
+  }
+  
+  // Must be a specific product page, e.g. Amazon DP/Flipkart P/Croma P/Ajio P, or contain common product patterns
+  return url.length >= 25 && (
+    urlLower.includes("/dp/") || 
+    urlLower.includes("/p/") || 
+    urlLower.includes("-p-") || 
+    urlLower.includes("/product/") || 
+    urlLower.includes("/buy/") ||
+    urlLower.includes("/item/") ||
+    urlLower.includes("/details/") ||
+    urlLower.includes("/cars/") ||
+    urlLower.includes("/bikes/")
+  );
+}
 
 // Encapsulates the entire programmatic healing, outlier filtering, and pricing/link synchronization logic
 function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parsedBudget: string, preFetchedPrices: any[] | null, isBudgetCategoryQuery: boolean): any {
@@ -1929,10 +1976,14 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       // Failsafe alignment check: reject if link price is a massive low outlier compared to standard core retail refPrice (indicating cheap accessory leak)
       const linkNumValue = parseInt(priceStr.replace(/[^\d]/g, ''));
       let isAccessoryOutlier = false;
-      if (!isNaN(linkNumValue) && refPrice > 3000 && linkNumValue < refPrice * 0.18) {
-        console.log(`[Safety Guard] Replaced accessory/low-outlier placeholder price "${priceStr}" for platform "${platform}" based on reference price ₹${refPrice.toLocaleString('en-IN')}`);
-        priceStr = "Out of Stock"; // This forces self-healing and sets stockStatus correctly!
-        isAccessoryOutlier = true;
+      if (!isNaN(linkNumValue)) {
+        const isLowOutlier = refPrice > 3000 && linkNumValue < refPrice * 0.25;
+        const isFlatOutlier = refPrice > 10000 && linkNumValue < 2500;
+        if (isLowOutlier || isFlatOutlier) {
+          console.log(`[Safety Guard] Replaced accessory/low-outlier placeholder price "${priceStr}" for platform "${platform}" based on reference price ₹${refPrice.toLocaleString('en-IN')}`);
+          priceStr = "Out of Stock"; // This forces self-healing and sets stockStatus correctly!
+          isAccessoryOutlier = true;
+        }
       }
 
       // Strip Google redirects, tracking parameters, and heal any generic/mismatched links
@@ -1954,6 +2005,14 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       if (forcedOos || /out of stock/i.test(priceStr) || /out of stock/i.test(link.stockStatus)) {
          link.stockStatus = "Out of Stock";
          priceStr = "Out of Stock";
+      }
+
+      // STRICT SYNCHRONIZATION GUARANTEE:
+      // If the link is not a specific product landing page, the price must not be a hardcoded number.
+      // We set price to "Check Live".
+      if (priceStr !== "Out of Stock" && !isProductPageUrl(cleanedUrl)) {
+        console.log(`[Sync Guard] URL for ${platform} is a search/generic fallback: ${cleanedUrl}. Overriding numeric price "${priceStr}" with "Check Live" to prevent mismatch.`);
+        priceStr = "Check Live";
       }
       
       healedLinks.push({
