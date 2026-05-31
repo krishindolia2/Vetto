@@ -1455,26 +1455,13 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       9. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
       10. STRICT EXCLUSION OF BANK / EXCHANGE DISCOUNTS: You MUST completely ignore and filter out all temporary, credit-card specific, exchange program, bank EMI, or membership-only discounts. The price MUST be the regular, standard, out-of-the-box retail price displayed on the platform for any walk-in/online buyer.
 
-      Return the results in a strict JSON object format containing "resolvedProductName" (set this exactly to the specific product model you resolved in Step 1), "queryType" (must be "category" if you had to resolve it, or "specific" otherwise), "referencePrice" (an estimated average retail price of the core main product itself in India, e.g., "₹45,000"), and "prices" array.
-      
-      Example output format:
-      {
-        "resolvedProductName": "iQOO Neo 10 Pro 12GB 256GB",
-        "queryType": "specific",
-        "referencePrice": "₹37,999",
-        "prices": [
-          {
-            "platform": "Amazon",
-            "price": "₹37,999",
-            "url": "https://www.amazon.in/dp/B0CXXYZ",
-            "stockStatus": "In Stock",
-            "exactVariantMatch": true
-          }
-        ]
-      }
-      
-      If the product is not found or has no active listings, return an empty array for prices.
-      Only return valid JSON conforming to the example format. No markdown, no explanations. Make sure URLs are real direct search or product page URLs.`;
+      Return the results in a strict JSON object conforming to the response schema:
+      - "product_name": set this exactly to the specific product model you resolved in Step 1.
+      - "where_to_buy": an array of objects, each containing:
+        * "platform": e.g., Amazon, Flipkart, Croma.
+        * "current_price": the exact numeric base price without bank discounts (as a number, e.g. 37999). If out of stock or unavailable, set to 0.
+        * "exact_url": the raw canonical link extracted directly from grounding chunks.
+      Only return valid JSON conforming to the schema. No markdown, no explanations.`;
 
       const response = await callGeminiWithRetry({
         model: modelToUse,
@@ -1483,6 +1470,26 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
           tools: [{ googleSearch: {} }],
           temperature: 0.0,
           maxOutputTokens: 1000,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              product_name: { type: Type.STRING },
+              where_to_buy: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    platform: { type: Type.STRING, description: "e.g., Amazon, Flipkart, Croma" },
+                    current_price: { type: Type.NUMBER, description: "The exact numeric base price without bank discounts" },
+                    exact_url: { type: Type.STRING, description: "The raw canonical link extracted directly from grounding chunks" }
+                  },
+                  required: ["platform", "current_price", "exact_url"]
+                }
+              }
+            },
+            required: ["product_name", "where_to_buy"]
+          },
           thinkingConfig: {
             thinkingLevel: ThinkingLevel.MINIMAL
           }
@@ -1503,8 +1510,19 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         console.log("[Price Verification Pre-fetch] Extracted Prices Data:", jsonText);
         const repaired = repairJson(jsonText);
         const parsed = JSON.parse(repaired);
-        let pricesArray = Array.isArray(parsed) ? parsed : (parsed.prices || []);
-        let resolvedName = parsed.resolvedProductName || productQuery;
+        let rawArray = parsed.where_to_buy || [];
+        let resolvedName = parsed.product_name || productQuery;
+        
+        let pricesArray = rawArray.map((item: any) => {
+          if (!item.platform) return null;
+          return {
+            platform: item.platform,
+            price: item.current_price > 0 ? `₹${item.current_price}` : "Out of Stock",
+            url: item.exact_url || "",
+            stockStatus: item.current_price > 0 ? "In Stock" : "Out of Stock",
+            exactVariantMatch: true
+          };
+        }).filter((x: any) => x !== null);
         
         if (Array.isArray(pricesArray) && pricesArray.length > 0) {
           // Pre-processing to decode numeric values to build protection filters
