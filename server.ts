@@ -1436,7 +1436,7 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
 
       STEP 1: SEMANTIC RESOLUTION
       If the User Query is a generic category (e.g., "best laptop under 50k"), you MUST resolve it to exactly ONE specific, highly-rated product model that perfectly matches the query, strictly fits under the budget, and perfectly aligns with their "Specific User Context/Need".
-      If it is already a specific product, just use that.
+      If it is already a specific product but its standard/base price exceeds the budget constraint, you MUST resolve to a lower specification variant (e.g. smaller storage/RAM/engine model), a previous-generation model, or a highly-comparable alternative model of that product that strictly fits under the budget. Otherwise, use the specific product.
 
       STEP 2: PRICE FETCHING
       You MUST identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for THAT EXACT RESOLVED SPECIFIC PRODUCT on at least 3 major e-commerce platforms in India.
@@ -1908,54 +1908,76 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       
       // Category-Specific Remapping of Platform Names to prevent trust-violating mismatches
       if (category === 'fashion') {
-        if (platformLower.includes("croma")) {
-          platform = "Myntra";
-          label = "Buy on Myntra";
-          rawUrl = `https://www.myntra.com/search?q=${encodedProdName}`;
-        } else if (platformLower.includes("reliance")) {
-          platform = "Ajio";
-          label = "Buy on Ajio";
-          rawUrl = `https://www.ajio.com/search/?text=${encodedProdName}`;
+        const allowedFashion = ["myntra", "ajio", "amazon", "flipkart"];
+        const isAllowed = allowedFashion.some(p => platformLower.includes(p));
+        if (!isAllowed) {
+          if (platformLower.includes("croma") || platformLower.includes("reliance") || platformLower.includes("digital")) {
+            platform = "Ajio";
+          } else if (platformLower.includes("brand") || platformLower.includes("official") || platformLower.includes("adidas") || platformLower.includes("nike") || platformLower.includes("puma") || platformLower.includes("superkicks")) {
+            platform = "Myntra";
+          } else {
+            platform = "Amazon";
+          }
+          label = `Buy on ${platform}`;
+          rawUrl = ""; // Force fallback generation
+          platformLower = platform.toLowerCase();
+        } else {
+          if (platformLower.includes("myntra")) platform = "Myntra";
+          else if (platformLower.includes("ajio")) platform = "Ajio";
+          else if (platformLower.includes("amazon")) platform = "Amazon";
+          else if (platformLower.includes("flipkart")) platform = "Flipkart";
+          label = `Buy on ${platform}`;
+          platformLower = platform.toLowerCase();
         }
       } else if (category === 'electronics') {
-        if (platformLower.includes("myntra")) {
-          platform = "Croma";
-          label = "Buy on Croma Store";
-          rawUrl = `https://www.croma.com/search/?text=${encodedProdName}`;
-        } else if (platformLower.includes("ajio")) {
-          platform = "Reliance Digital";
-          label = "Buy on Reliance Digital";
-          rawUrl = `https://www.reliancedigital.in/search?q=${encodedProdName}`;
+        const allowedElectronics = ["amazon", "flipkart", "croma", "reliance digital", "reliancedigital"];
+        const isAllowed = allowedElectronics.some(p => platformLower.includes(p));
+        if (!isAllowed) {
+          if (platformLower.includes("myntra") || platformLower.includes("ajio")) {
+            platform = "Croma";
+          } else {
+            platform = "Amazon";
+          }
+          label = `Buy on ${platform}`;
+          rawUrl = "";
+          platformLower = platform.toLowerCase();
+        } else {
+          if (platformLower.includes("croma")) platform = "Croma";
+          else if (platformLower.includes("reliance")) platform = "Reliance Digital";
+          else if (platformLower.includes("amazon")) platform = "Amazon";
+          else if (platformLower.includes("flipkart")) platform = "Flipkart";
+          label = `Buy on ${platform}`;
+          platformLower = platform.toLowerCase();
         }
       } else if (category === 'automotive') {
         const isTwoWh = isTwoWheeler(prodName, parsedQuery);
         if (isTwoWh) {
-          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
-            platform = "BikeWale";
-            label = "Check BikeWale Price";
-            rawUrl = `https://www.bikewale.com/search/?q=${encodedProdName}`;
-          } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
-            platform = "BikeDekho";
-            label = "Check BikeDekho Price";
-            rawUrl = `https://www.bikedekho.com/search/${encodedProdName}`;
-          } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
-            platform = "ZigWheels";
-            label = "ZigWheels Comparison";
-            rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
+          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon") || platformLower.includes("flipkart") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
+            const currentEx = Array.from(existingPlatforms);
+            if (!currentEx.includes("bikewale")) {
+              platform = "BikeWale";
+            } else if (!currentEx.includes("bikedekho")) {
+              platform = "BikeDekho";
+            } else {
+              platform = "ZigWheels";
+            }
+            label = `Check ${platform} Price`;
+            rawUrl = "";
+            platformLower = platform.toLowerCase();
           }
         } else {
-          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon")) {
-            platform = "CarWale";
-            label = "Check CarWale Price";
-            rawUrl = `https://www.carwale.com/search/?q=${encodedProdName}`;
-          } else if (platformLower.includes("ajio") || platformLower.includes("reliance") || platformLower.includes("flipkart")) {
-            platform = "CarDekho";
-            label = "Check CarDekho Price";
-            rawUrl = `https://www.cardekho.com/search/${encodedProdName}`;
-          } else if (!platformLower.includes("zigwheels") && !platformLower.includes(brandName.toLowerCase())) {
-            platform = "ZigWheels";
-            label = "ZigWheels Comparison";
-            rawUrl = `https://www.zigwheels.com/search/?q=${encodedProdName}`;
+          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon") || platformLower.includes("flipkart") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
+            const currentEx = Array.from(existingPlatforms);
+            if (!currentEx.includes("carwale")) {
+              platform = "CarWale";
+            } else if (!currentEx.includes("cardekho")) {
+              platform = "CarDekho";
+            } else {
+              platform = "ZigWheels";
+            }
+            label = `Check ${platform} Price`;
+            rawUrl = "";
+            platformLower = platform.toLowerCase();
           }
         }
       }
