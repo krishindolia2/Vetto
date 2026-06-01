@@ -345,6 +345,26 @@ const simplifyProductNameForSearch = (name: string): string => {
   return uniqueWords.join(" ").trim();
 };
 
+function deepMerge(target: any, source: any): any {
+  if (!source) return target;
+  if (!target) return source;
+  const output = { ...target };
+  if (typeof target === 'object' && typeof source === 'object') {
+    Object.keys(source).forEach(key => {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        if (!(key in target)) {
+          Object.assign(output, { [key]: source[key] });
+        } else {
+          output[key] = deepMerge(target[key], source[key]);
+        }
+      } else {
+        Object.assign(output, { [key]: source[key] });
+      }
+    });
+  }
+  return output;
+}
+
 export default function App() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [garageAssets, setGarageAssets] = useState<any[]>([]);
@@ -469,7 +489,7 @@ export default function App() {
       const years = matches ? parseInt(matches[0]) : 3;
       setOwnershipYears(years > 0 ? years : 3);
       setUsagePattern("daily");
-      setMaintenanceCost(result.statusTax > 10000 ? 5000 : 1500);
+      setMaintenanceCost((result.statusTax ?? 0) > 10000 ? 5000 : 1500);
       setSlainBuzzwords([]);
     }
   }, [result]);
@@ -492,7 +512,7 @@ export default function App() {
         (partial) => {
           setLoading(false);
           setResult(prev => {
-            const merged = { ...(prev || {}), ...partial } as any;
+            const merged = deepMerge(prev || {}, partial) as any;
             merged.pros = merged.pros || [];
             merged.cons = merged.cons || [];
             merged.features = merged.features || [];
@@ -1085,7 +1105,7 @@ export default function App() {
         (partial) => {
           setLoading(false);
           setResult(prev => {
-            const merged = { ...(prev || {}), ...partial } as any;
+            const merged = deepMerge(prev || {}, partial) as any;
             merged.pros = merged.pros || [];
             merged.cons = merged.cons || [];
             merged.features = merged.features || [];
@@ -4188,7 +4208,7 @@ export default function App() {
                             Shopping Tip from Vetto
                           </p>
                           <p className="text-xs font-semibold text-slate-700 leading-relaxed italic">
-                            &ldquo;{result.priceIntegrity.discountStrategy}
+                            &ldquo;{result?.priceIntegrity?.discountStrategy || ""}
                             &rdquo;
                           </p>
                           <p className="text-[10px] font-medium text-slate-400 mt-1">
@@ -4215,7 +4235,7 @@ export default function App() {
                         <div className="h-72 w-full bg-slate-50 rounded-[2rem] border border-slate-100 p-8 overflow-hidden relative">
                           <ResponsiveContainer width="100%" height="100%">
                             <AreaChart
-                              data={result.priceIntegrity.priceHistory}
+                              data={result?.priceIntegrity?.priceHistory ?? []}
                             >
                               <defs>
                                 <linearGradient
@@ -4288,7 +4308,7 @@ export default function App() {
                             Our Honest Price Analysis
                           </p>
                           <p className="text-xs font-semibold text-slate-700 leading-relaxed italic">
-                            &ldquo;{result.priceIntegrity.historicalContext}
+                            &ldquo;{result?.priceIntegrity?.historicalContext || ""}
                             &rdquo;
                           </p>
                         </div>
@@ -4327,7 +4347,7 @@ export default function App() {
                       </span>
                       <div className="flex items-end gap-2 justify-end">
                         <span className="text-6xl font-black text-white leading-none tracking-tighter">
-                          {result.platformWarShield.truthResilienceScore}
+                          {result?.platformWarShield?.truthResilienceScore ?? 0}
                         </span>
                         <span className="text-lg font-bold text-white/20 mb-1">
                           /100
@@ -4340,7 +4360,7 @@ export default function App() {
                     <div className="p-10 bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-between h-full hover:bg-white/[0.08] transition-all group/card">
                       <div className="space-y-6">
                         <div className="flex items-center gap-4">
-                          {result.platformWarShield.hasMarketingSilos ? (
+                          {result?.platformWarShield?.hasMarketingSilos ? (
                             <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover/card:scale-110 transition-transform">
                               <EyeOff className="w-4 h-4 text-red-500" />
                             </div>
@@ -4354,14 +4374,14 @@ export default function App() {
                               Market Signal
                             </span>
                             <span className="text-sm font-black text-white uppercase tracking-tight">
-                              {result.platformWarShield.hasMarketingSilos
+                              {result?.platformWarShield?.hasMarketingSilos
                                 ? "Ad Trap Active"
                                 : "Honest Market"}
                             </span>
                           </div>
                         </div>
                         <p className="text-xs text-white/60 leading-relaxed font-semibold transition-colors group-hover/card:text-white/80">
-                          {result.platformWarShield.siloExposure}
+                          {result?.platformWarShield?.siloExposure || ""}
                         </p>
                       </div>
                     </div>
@@ -4382,14 +4402,14 @@ export default function App() {
                           </div>
                         </div>
                         <div className="p-4 bg-black/40 rounded-2xl border border-white/5 font-mono text-[10px] text-zinc-400 leading-relaxed italic">
-                          &ldquo;{result.platformWarShield.bypassStrategyUsed}
+                          &ldquo;{result?.platformWarShield?.bypassStrategyUsed || ""}
                           &rdquo;
                         </div>
                       </div>
 
                       {/* Technical Nodes */}
                       <div className="pt-4 border-t border-white/5 space-y-4">
-                        {result.technicalNode && (
+                        {result?.technicalNode && (
                           <div className="flex items-center gap-3">
                             <Cpu className="w-3 h-3 text-white/20" />
                             <span className="text-[9px] font-mono text-white/40 uppercase truncate">
@@ -4397,7 +4417,7 @@ export default function App() {
                             </span>
                           </div>
                         )}
-                        {result.resaleValueNode && (
+                        {result?.resaleValueNode && (
                           <div className="flex items-center gap-3">
                             <TrendingUp className="w-3 h-3 text-white/20" />
                             <span className="text-[9px] font-mono text-white/40 uppercase truncate">
@@ -4455,7 +4475,7 @@ export default function App() {
                     </div>
                   </div>
                   <ul className="space-y-4 relative z-10">
-                    {result.pros.map((pro, i) => (
+                    {(result?.pros || []).map((pro, i) => (
                       <li
                         key={i}
                         className="flex gap-4 text-sm font-medium text-slate-600 leading-relaxed"
@@ -4485,7 +4505,7 @@ export default function App() {
                     </div>
                   </div>
                   <ul className="space-y-4 relative z-10">
-                    {result.cons.map((con, i) => (
+                    {(result?.cons || []).map((con, i) => (
                       <li
                         key={i}
                         className="flex gap-4 text-sm font-medium text-slate-600 leading-relaxed"
@@ -4513,7 +4533,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {result.features.map((feature, i) => (
+                  {(result?.features || []).map((feature, i) => (
                     <motion.div
                       key={i}
                       whileHover={{ y: -5, scale: 1.02 }}

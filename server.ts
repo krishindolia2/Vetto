@@ -2116,27 +2116,50 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       }
     }
     
-    // Determine absolute lowest pricing and ensure exactly one best deal flag matches the lowest numeric price
-    let lowestPrice = Infinity;
-    let lowestPriceIdx = -1;
-    
-    healedLinks.forEach((link: any, idx: number) => {
-      const numPrice = parseInt(link.price.replace(/[^\d]/g, ''));
-      if (!isNaN(numPrice) && numPrice < lowestPrice) {
-        lowestPrice = numPrice;
-        lowestPriceIdx = idx;
+    // OOS DYNAMIC PROMOTION & DEMOTION FALLBACK HEURISTICS:
+    // Split procurement links into active In Stock items vs Out of Stock items
+    const inStockLinks: any[] = [];
+    const oosLinks: any[] = [];
+
+    healedLinks.forEach((link: any) => {
+      const isLinkOos = link.stockStatus === "Out of Stock" || link.price === "Out of Stock" || /out of stock/i.test(link.price);
+      if (isLinkOos) {
+        link.stockStatus = "Out of Stock";
+        link.price = "Out of Stock";
+        link.url = ""; // Strip link since it is inactive/unavailable
+        oosLinks.push(link);
+      } else {
+        inStockLinks.push(link);
       }
     });
-    
-    if (lowestPrice === Infinity || isNaN(lowestPrice) || lowestPrice <= 0) {
-      lowestPrice = refPrice; // Just fallback for budget guard below
+
+    // Sort in-stock platforms by raw price ascending (lowest price first - promoted to the top)
+    inStockLinks.sort((a, b) => {
+      const priceA = parseInt(a.price.replace(/[^\d]/g, ''), 10) || 0;
+      const priceB = parseInt(b.price.replace(/[^\d]/g, ''), 10) || 0;
+      return priceA - priceB;
+    });
+
+    let lowestPrice = Infinity;
+    if (inStockLinks.length > 0) {
+      // First item in sorted list has lowest price and is flagged as Best Deal
+      lowestPrice = parseInt(inStockLinks[0].price.replace(/[^\d]/g, ''), 10) || 0;
+      inStockLinks.forEach((link: any, idx: number) => {
+        link.isBestDeal = (idx === 0);
+      });
+      // All OOS items are marked false for best deal
+      oosLinks.forEach((link: any) => {
+        link.isBestDeal = false;
+      });
+    } else {
+      lowestPrice = refPrice; // Fallback to reference price
+      oosLinks.forEach((link: any) => {
+        link.isBestDeal = false;
+      });
     }
 
-    healedLinks = healedLinks.map((link: any, idx: number) => ({
-      ...link,
-      isBestDeal: lowestPriceIdx !== -1 && idx === lowestPriceIdx
-    }));
-    
+    // Merge in-stock (promoted) and OOS (demoted) links back to enforce order
+    healedLinks = [...inStockLinks, ...oosLinks];
     data.priceIntegrity.procurementLinks = healedLinks;
     
     // 1. Synchronize priceHistory with lowestPrice node to prevent chart drift
@@ -2234,6 +2257,13 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     }
     if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum) {
       console.log(`[Budget Guard] Programmatically forcing verdict to WAIT because lowest deal price (₹${lowestPrice}) exceeds budget constraint (₹${parsedBudgetNum})`);
+      stableVerdict = "WAIT";
+    }
+
+    // Programmatic Out-of-Stock (OOS) Demotion Fallback Guard
+    const allPlatformsOos = healedLinks.every((link: any) => link.stockStatus === "Out of Stock" || link.price === "Out of Stock");
+    if (allPlatformsOos) {
+      console.log(`[OOS Guard] Programmatically forcing verdict to WAIT because all online platforms are Out of Stock.`);
       stableVerdict = "WAIT";
     }
     
@@ -2516,9 +2546,14 @@ app.post("/api/audit", securityGuard, async (req, res) => {
 
     // Set up active background keep-alive ping loop to keep Render warm
     heartbeatTimer = setInterval(() => {
-      if (!res.writableEnded) {
+      if (!res.writableEnded && !req.destroyed) {
         res.write(`data: ${JSON.stringify({ type: "ping" })}\n\n`);
         if (typeof res.flush === "function") res.flush();
+      } else {
+        if (heartbeatTimer) {
+          clearInterval(heartbeatTimer);
+          heartbeatTimer = null;
+        }
       }
     }, 15000);
 
@@ -2537,7 +2572,16 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       : '';
 
     // Step 1: Pre-fetch verified real-time prices & links (Now natively handles Semantic Resolution in parallel)
-    const preFetchResult = await preFetchLivePricesAndLinks(parsedQuery, parsedBudget, useCase);
+    let preFetchResult = null;
+    try {
+      preFetchResult = await withTimeout(
+        preFetchLivePricesAndLinks(parsedQuery, parsedBudget, useCase),
+        5000,
+        "PREFETCH_TIMEOUT"
+      );
+    } catch (e: any) {
+      console.warn(`[Launch Guard] Pre-fetch failed or timed out (${e.message}). Grounding recovered gracefully.`);
+    }
     const preFetchedPrices = preFetchResult?.prices || null;
     const resolvedProduct = preFetchResult?.resolvedProductName || parsedQuery;
     let queryType = preFetchResult?.queryType || "specific";
@@ -2918,16 +2962,23 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       // 1. Save to global persistent Firestore Cache
       if (backendDb) {
         const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
-        setDoc(cacheDocRef, {
-          data: auditData,
-          timestamp: Date.now(),
-          query: parsedQuery,
-          createdAt: serverTimestamp()
-        }).then(() => {
-          console.log(`[Cache Engine] Successfully stored audit in Firestore for query: ${parsedQuery} (ID: ${cacheKey})`);
-        }).catch((cacheStoreErr) => {
-          console.error("[Cache Engine] Firestore write failure:", cacheStoreErr);
-        });
+        (async () => {
+          try {
+            await withTimeout(
+              setDoc(cacheDocRef, {
+                data: auditData,
+                timestamp: Date.now(),
+                query: parsedQuery,
+                createdAt: serverTimestamp()
+              }),
+              1500,
+              "FIRESTORE_WRITE_TIMEOUT"
+            );
+            console.log(`[Cache Engine] Successfully stored audit in Firestore for query: ${parsedQuery} (ID: ${cacheKey})`);
+          } catch (cacheStoreErr: any) {
+            console.error("[Cache Engine] Firestore write failed or timed out:", cacheStoreErr.message);
+          }
+        })();
       }
 
       // 2. Save to local in-memory container fallback

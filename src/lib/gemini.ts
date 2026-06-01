@@ -250,6 +250,16 @@ export async function getRecommendation(
         }
       }
       
+      if (fullText.trim()) {
+        try {
+          const cleaned = cleanJsonString(fullText);
+          const repaired = jsonrepair(cleaned);
+          return JSON.parse(repaired) as Recommendation;
+        } catch (e) {
+          // ignore and throw original stream closed error
+        }
+      }
+      
       throw new Error("Stream closed before receiving final payload");
     } catch (error: any) {
       lastError = error;
