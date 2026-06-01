@@ -1413,6 +1413,7 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
        - "specific": User is asking about a single specific product model (e.g. "iQOO Neo 9 Pro", "Royal Enfield Himalayan").
     2. Resolve this to exactly ONE highly specific product model name ("productName").
        - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "OnePlus Nord CE 4 8GB 128GB" - NOT "OnePlus Nord").
+       - BUDGET MAXIMIZATION RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility (e.g. if budget is 5k, select a superior ₹4,000-₹4,900 option rather than aggressively downgrading them to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
        - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
        - If "comparison", return the primary or first product name.
 
