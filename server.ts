@@ -2305,20 +2305,31 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     const deal = Number(data.priceIntegrity?.dealScore || 0);
     const risk = String(data.regretRisk || "Medium").toLowerCase();
     
+    // Extract the LLM's original decision to prevent visual flipping
+    let llmDecision = String(data.finalDecision || data.marketTiming || "").trim().toUpperCase();
+    if (!["BUY", "WAIT", "RUN"].includes(llmDecision)) {
+      llmDecision = "";
+    }
+
     let stableVerdict: "BUY" | "WAIT" | "RUN" = "WAIT";
-    if (isBudgetCategoryQuery) {
-      if (deal >= 50) {
-        stableVerdict = "BUY";
-      } else {
-        stableVerdict = "WAIT";
-      }
+    if (llmDecision) {
+      stableVerdict = llmDecision as any;
+      console.log(`[Stability Alignment] Preserving LLM intelligent decision: "${stableVerdict}"`);
     } else {
-      if (pvi >= 70 && deal >= 60 && risk !== "high") {
-        stableVerdict = "BUY";
-      } else if (pvi <= 45 || deal <= 40 || risk === "high") {
-        stableVerdict = "RUN";
+      if (isBudgetCategoryQuery) {
+        if (deal >= 50) {
+          stableVerdict = "BUY";
+        } else {
+          stableVerdict = "WAIT";
+        }
       } else {
-        stableVerdict = "WAIT";
+        if (pvi >= 70 && deal >= 60 && risk !== "high") {
+          stableVerdict = "BUY";
+        } else if (pvi <= 45 || deal <= 40 || risk === "high") {
+          stableVerdict = "RUN";
+        } else {
+          stableVerdict = "WAIT";
+        }
       }
     }
 
