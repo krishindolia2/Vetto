@@ -1434,9 +1434,10 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
       Budget Constraint: ${budgetLimit ? `₹${budgetLimit}` : "None"}
       Specific User Context/Need: "${useCase || 'General use'}"
 
-      STEP 1: SEMANTIC RESOLUTION
-      If the User Query is a generic category (e.g., "best laptop under 50k"), you MUST resolve it to exactly ONE specific, highly-rated product model that perfectly matches the query, strictly fits under the budget, and perfectly aligns with their "Specific User Context/Need".
-      If it is already a specific product but its standard/base price exceeds the budget constraint, you MUST resolve to a lower specification variant (e.g. smaller storage/RAM/engine model), a previous-generation model, or a highly-comparable alternative model of that product that strictly fits under the budget. Otherwise, use the specific product.
+      STEP 1: SEMANTIC RESOLUTION & STRICT SPECIFICATION LOCK
+      - If the User Query specifies any explicit option, variant, specification, configuration, color, capacity, or processor (e.g., "128GB", "M2", "256GB SSD", "black color", "i5 processor"), you MUST strictly evaluate and lock onto THAT EXACT OPTION. Under no circumstances are you allowed to generalize to the base model, change the requested specification, or query/return prices for a different configuration. If the User Query specifies a specific option, capacity, memory, processor, color, or other variant, you MUST ONLY query the search engine for this specific option and return prices ONLY for this specific option. Returning prices/links for a base model or a different variant when a specific one was requested is a CRITICAL FAILURE and a direct violation of system integrity. Make sure the 'product_name' explicitly includes the requested specifications (e.g. 'Apple MacBook Air M2 8GB 256GB Black').
+      - If the User Query is a generic category (e.g., "best laptop under 50k"), you MUST resolve it to exactly ONE specific, highly-rated product model that perfectly matches the query, strictly fits under the budget, and perfectly aligns with their "Specific User Context/Need".
+      - If it is already a specific product but its standard/base price exceeds the budget constraint, you MUST resolve to a lower specification variant (e.g. smaller storage/RAM/engine model), a previous-generation model, or a highly-comparable alternative model of that product that strictly fits under the budget. Otherwise, use the specific product.
 
       STEP 2: PRICE FETCHING
       You MUST identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for THAT EXACT RESOLVED SPECIFIC PRODUCT on at least 3 major e-commerce platforms in India.
@@ -2258,6 +2259,8 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum) {
       console.log(`[Budget Guard] Programmatically forcing verdict to WAIT because lowest deal price (₹${lowestPrice}) exceeds budget constraint (₹${parsedBudgetNum})`);
       stableVerdict = "WAIT";
+      console.log(`[Budget Guard] Programmatically penalizing Paisa Vasool Index down under 50 because price exceeds budget limit.`);
+      data.paisaVasoolIndex = Math.min(49, data.paisaVasoolIndex || 45);
     }
 
     // Programmatic Out-of-Stock (OOS) Demotion Fallback Guard
@@ -2654,12 +2657,15 @@ CRITICAL LOGICAL BOUNDARIES (ANTI-CROSS CONTAMINATION)
 2. ZERO MEMORY / NO LINK GENERATION: You possess absolutely zero real-time market prices, stock statuses, or domain links within your internal weights. NEVER guess, predict, alter, or synthesize a URL or price. If the provided data does not contain an explicit verified link, do NOT generate a URL.
 
 STRICT PRICING & SCORING PROTOCOLS:
-0. STRICT VARIANT & OPTION DIFFERENTIATION:
-    - If the product query refers to a specific storage capacity (e.g. "128GB", "256GB", "512GB"), a RAM capacity (e.g. "8GB", "12GB", "16GB"), or a chip/processor (e.g. "M2", "M3"), you MUST return pricing, comparison links, and alternative choices specifically matching that CHOSEN option. Do NOT return the base model's pricing or a generic category pricing.
+0. STRICT VARIANT, OPTION & SPECIFICATION LOCK:
+    - If the User Query specifies a specific storage capacity (e.g. "128GB", "256GB", "512GB"), a RAM capacity (e.g. "8GB", "12GB", "16GB"), a chip/processor (e.g. "M2", "M3", "i5"), a color (e.g. "black", "gold"), or any other specific option/variant/specification, you MUST strictly evaluate and lock your entire analysis, pricing, and comparisons exclusively onto that specific option. Do NOT return base model or generic options. Every single parameter and review in your response must refer specifically to the requested configuration. If a specific variant is requested (like 128GB, M2, black color), Vetto's features, pros, cons, and tech nodes MUST strictly examine the exact trade-offs of that specific option (e.g., UFS speed of the 128GB storage variant, or battery/thermals of the M2 chip model).
 0.1. STRICT TARGET CAPITAL & BUDGET COMPLIANCE:
     - If the "Target Capital" constraint is specified and is NOT "Unlimited", you MUST mathematically compare the primary product's lowest platform price against the budget. 
     - If the price is LESS THAN or EQUAL to the budget, you MUST explicitly state that it fits their budget perfectly. NEVER hallucinate or claim that it exceeds their budget or tell them not to buy it for budget reasons.
-    - If the price genuinely exceeds the budget, explain clearly in "aamAadmiSummary" and recommend a high-value alternative in "vettoContrast" that strictly fits within or under the budget. YOU MUST ALSO SET the "finalDecision" to "WAIT" or "DON'T BUY". You cannot recommend "BUY" for a product that fails the user's explicit budget constraint.
+    - If the price genuinely exceeds the budget, explain clearly in "aamAadmiSummary", recommend a high-value alternative in "vettoContrast" that strictly fits within or under the budget, and HEAVILY PENALIZE the Paisa Vasool Score ("paisaVasoolIndex" must be under 50) because it does not represent value for the user's specific financial budget constraint. YOU MUST ALSO SET the "finalDecision" to "WAIT" or "RUN" (never "BUY"). You cannot recommend "BUY" for a product that fails the user's explicit budget constraint. The Paisa Vasool Score (paisaVasoolIndex) and final verdict (finalDecision) must strictly conform to the user's target capital. If the lowest verified price exceeds the Target Capital, you MUST automatically set finalDecision to WAIT or RUN (never BUY) and drop paisaVasoolIndex to under 50. Conversely, if it is well within budget and meets the user's use case perfectly, the score and decision should reflect that positive value alignment.
+0.2. STRICT DYNAMIC ALIGNMENT OF ALL JSON PROPERTIES:
+    - Every single property of VETTO's JSON response, including 'bhartiyaPersonaAudit', 'aamAadmiSummary', 'pros', 'cons', 'vettoContrast', 'finalDecision', and all technical/feature scores, MUST be programmatically aligned and dynamically tailored to the User Query, Budget, and Use Case/Strategic Context. Generic, static, or canned descriptions are STRICTLY FORBIDDEN.
+    - Every text field, pros/cons list, and persona summary must directly address the specific demographic/usage/situation defined in the Strategic Context. If no context is given, tailor it directly to the core user demographic inferred from the query. For example, if the use case is "buying a phone for my 70-year old grandmother with low eyesight", the 'pros', 'cons', 'aamAadmiSummary', 'bhartiyaPersonaAudit', 'features', and 'finalDecision' must explicitly address how the phone's font size, screen visibility, battery longevity, and ease-of-use directly suit a 70-year old grandmother within that budget.
 
 1. TRUTH DETECTOR & BOT CRACKDOWN ENGINE:
     A. REVIEW AUTHENTICITY ANALYSIS (fakeReviewScore, botSignalDetection):
