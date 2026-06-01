@@ -2211,18 +2211,39 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     data.statusTax = currentSurchargeTax;
 
     // 3. Coordinate vettoContrast pricing targets & save differentials
-    const altPrice = Math.max(99, lowestPrice - currentSurchargeTax);
+    let altPrice = 0;
+    if (data.vettoContrast && data.vettoContrast.fairPriceTarget) {
+      const parsedAltPrice = parseInt(String(data.vettoContrast.fairPriceTarget).replace(/[^\d]/g, ''));
+      if (!isNaN(parsedAltPrice) && parsedAltPrice > 0) {
+        altPrice = parsedAltPrice;
+      }
+    }
+
+    if (altPrice === 0 || altPrice >= lowestPrice * 1.5) {
+      altPrice = Math.max(99, lowestPrice - currentSurchargeTax);
+    }
+
+    const calculatedDelta = lowestPrice - altPrice;
+    let deltaText = "";
+    if (calculatedDelta > 0) {
+      deltaText = `Save ₹${calculatedDelta.toLocaleString('en-IN')}`;
+    } else if (calculatedDelta < 0) {
+      deltaText = `₹${Math.abs(calculatedDelta).toLocaleString('en-IN')} more`;
+    } else {
+      deltaText = "Same Price";
+    }
+
     if (!data.vettoContrast) {
       data.vettoContrast = {
         alternativeName: "Similar Specced Alternate Choice",
         whyContrast: "Value alternative that delivers equal core functions without Status Tax.",
         pviBoost: 20,
-        priceDelta: `Save ₹${currentSurchargeTax.toLocaleString('en-IN')}`,
+        priceDelta: deltaText,
         fairPriceTarget: `₹${altPrice.toLocaleString('en-IN')}`,
         procurementGuidance: "Standard option recommended for absolute price-to-performance efficiency."
       };
     } else {
-      data.vettoContrast.priceDelta = `Save ₹${currentSurchargeTax.toLocaleString('en-IN')}`;
+      data.vettoContrast.priceDelta = deltaText;
       data.vettoContrast.fairPriceTarget = `₹${altPrice.toLocaleString('en-IN')}`;
     }
 
@@ -2749,7 +2770,7 @@ STRICT PRICING & SCORING PROTOCOLS:
     - If the "Query Type" is "category", the user originally asked for a recommendation (e.g., "best washing machine under 20k"). The "Resolved Specific Target Product" you are evaluating is YOUR OWN top choice for them.
     - Do NOT treat this product as a random user-selected item that needs to be shot down. 
     - Evaluate it fairly. If it genuinely fits their criteria, give it a high rating (BUY or STEAL) and enthusiastically explain why it is the absolute best choice in the "aamAadmiSummary".
-    - In the "vettoContrast" alternative section, provide a slightly cheaper or slightly more premium alternative. You MUST ensure this alternative is a mainstream, widely available product that is ACTUALLY IN STOCK in India right now. Do not recommend obsolete or out-of-stock items as alternatives.
+    - In the "vettoContrast" alternative section, provide a slightly cheaper or slightly more premium alternative. You MUST ensure this alternative is a mainstream, widely available product that is ACTUALLY IN STOCK in India right now. Do not recommend obsolete or out-of-stock items as alternatives. The "alternativeName" must be highly specific (e.g. 'iQOO Neo 9 Pro 12GB 256GB' or 'Adidas Ultraboost Light' instead of generic category names). The "fairPriceTarget" MUST represent the actual, realistic current base retail price (in Indian Rupees, e.g. "₹37,999") of that exact alternative model in India today. Never write an imaginary, placeholder, or highly inaccurate price for the alternative choice.
     - If the "Query Type" is "comparison", analyze both items fairly and crown the true winner.
     - If the user asks a yes/no question like "is this product worth it?", your "aamAadmiSummary" and "finalDecision" must explicitly answer "Yes" or "No" based on your findings.
     - If the user asks for "best product under 10k", acknowledge their specific request and frame the recommendation around why this is the best for that budget.
