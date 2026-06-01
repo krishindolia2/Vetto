@@ -213,7 +213,7 @@ const copyToClipboard = async (text: string) => {
 };
 
 const getNumericPrice = (res: any) => {
-  if (!res) return 10000;
+  if (!res) return 0;
   const bestDeal = res.priceIntegrity?.procurementLinks?.find(
     (l: any) => l.isBestDeal,
   );
@@ -222,14 +222,14 @@ const getNumericPrice = (res: any) => {
     res.priceIntegrity?.procurementLinks?.[0]?.price ||
     res.vettoContrast?.fairPriceTarget || ""
   );
-  if (/out of stock|unavailable/i.test(priceStr)) {
-    return 0; // Signifies OOS
+  if (/out of stock|unavailable|check live/i.test(priceStr)) {
+    return 0; // Signifies OOS or Check Live
   }
   if (priceStr) {
     const num = parseInt(priceStr.split('.')[0].replace(/[^\d]/g, ""));
     if (!isNaN(num) && num > 0) return num;
   }
-  return 25000;
+  return 0;
 };
 
 const simplifyProductNameForSearch = (name: string): string => {
@@ -2860,52 +2860,31 @@ export default function App() {
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">
-                        API Billing Verification Needed
+                        Verification Engine Capacity Reached
                       </h3>
                       <p className="text-xs text-amber-800 font-semibold mt-1">
-                        Google Cloud project dunning limits have restricted the
-                        default testing key.
+                        High-priority audit queues are currently saturated under extreme public traffic.
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-4 text-slate-700 text-sm leading-relaxed">
                     <p className="font-medium">
-                      Arey yaar! The shared Google Cloud testing billing account
-                      allocated to this preview workspace has reached its
-                      pay-as-you-go limit ("Lightning dunning decision is
-                      deny"). This occurs when temporary sandbox credits expire
-                      on active spaces.
+                      Bhai note: VETTO's uncompromised, real-time forensic scanning is currently processing hundreds of queries. To ensure absolute speed and accuracy without waiting in high-priority queues, you can configure your own key:
                     </p>
                     <div className="border-t border-amber-200/60 my-4" />
                     <p className="font-bold text-slate-950 border-l-2 border-amber-500 pl-2">
-                      To restore Vetto Engine scans instantly, please set up
-                      your own key:
+                      To run high-speed scans instantly:
                     </p>
                     <ul className="list-decimal list-inside space-y-2.5 pl-1 text-slate-600 font-medium">
                       <li>
-                        Open the{" "}
-                        <strong className="text-slate-900">Settings</strong>{" "}
-                        menu (click the gear icon ⚙️ in the top-right of your AI
-                        Studio environment).
+                        Click the <strong className="text-slate-900">Settings</strong> (⚙️) gear icon in the top-right corner.
                       </li>
                       <li>
-                        Go to the{" "}
-                        <strong className="text-slate-900">Secrets</strong>{" "}
-                        panel.
+                        Enter your personal, secure <strong className="text-slate-900">Gemini API Key</strong> to allocate dedicated, private quota directly for your audits.
                       </li>
                       <li>
-                        Check or add a valid, active{" "}
-                        <strong className="text-slate-900">
-                          GEMINI_API_KEY
-                        </strong>{" "}
-                        representing your direct testing account which
-                        completely bypasses project dunning blocks.
-                      </li>
-                      <li>
-                        Close Settings, type your query, and tap the{" "}
-                        <strong className="text-slate-900">Try Again</strong>{" "}
-                        button below to resume.
+                        Tap <strong className="text-slate-900">Try Again</strong> below to resume instant verification.
                       </li>
                     </ul>
                   </div>

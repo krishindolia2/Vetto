@@ -2600,7 +2600,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     try {
       preFetchResult = await withTimeout(
         preFetchLivePricesAndLinks(parsedQuery, parsedBudget, useCase),
-        5000,
+        9500,
         "PREFETCH_TIMEOUT"
       );
     } catch (e: any) {
