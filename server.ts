@@ -1412,8 +1412,8 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
        - "comparison": User is comparing two or more products (e.g. "iPhone 15 vs S24").
        - "specific": User is asking about a single specific product model (e.g. "iQOO Neo 9 Pro", "Royal Enfield Himalayan").
     2. Resolve this to exactly ONE highly specific product model name ("productName").
-       - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "OnePlus Nord CE 4 8GB 128GB" - NOT "OnePlus Nord").
-       - BUDGET MAXIMIZATION RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility (e.g. if budget is 5k, select a superior ₹4,000-₹4,900 option rather than aggressively downgrading them to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
+       - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "Realme Buds Air 6 Pro 50dB ANC" or "OnePlus Buds 3" for earbuds under 5k - NOT "boat earbuds" or "OnePlus Buds Nord").
+       - BUDGET CEILING ALIGNMENT RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k", "under 30k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility. Select a superior, spec-dominating product that lands strictly between 80% to 100% of the budget range (e.g., if the budget is 5k, select a superior ₹4,000-₹4,900 option like "Realme Buds Air 6 Pro" or "OnePlus Buds 3", rather than aggressively downgrading the user to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
        - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
        - If "comparison", return the primary or first product name.
 
@@ -1454,23 +1454,11 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
 }
 
 // Perform internet search grounding to retrieve actual live pricing and platform links for a resolved specific product (Stage 2)
-async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", useCase = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
+async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQueryType: string, originalQuery: string, budgetLimit = "", useCase = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
   if (!ai) return null;
   
-  const cleanQuery = productQuery.trim();
-  if (!cleanQuery || cleanQuery.length < 2) return null;
-
-  // STAGE 1: Pure Semantic Resolution (Ultra-fast 800ms)
-  let resolvedProductName = cleanQuery;
-  let resolvedQueryType = "specific";
-  try {
-    const resolved = await resolveSpecificProductName(cleanQuery, budgetLimit, useCase);
-    resolvedProductName = resolved.productName;
-    resolvedQueryType = resolved.queryType;
-    console.log(`[Semantic Resolver] Successfully resolved query "${cleanQuery}" to specific product: "${resolvedProductName}" (Type: ${resolvedQueryType})`);
-  } catch (e) {
-    console.warn(`[Semantic Resolver] Warning: Stage 1 Resolution failed. Fallback to raw query.`);
-  }
+  const cleanQuery = originalQuery.trim();
+  if (!resolvedProductName) return null;
 
   const fallbackModels = [
     "gemini-3.5-flash",
@@ -2657,11 +2645,23 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       ? `\nPrevious Decisions History (Brief):\n${history.slice(0, 3).map((h: any, i: number) => `Decision ${i+1}: ${h.productName} -> ${h.marketTiming} (${h.finalDecision.substring(0, 50)}...)`).join('\n')}`
       : '';
 
-    // Step 1: Pre-fetch verified real-time prices & links (Now natively handles Semantic Resolution in parallel)
+    // Step 1: Stage 1 Semantic Resolution (Ultra-fast ~800ms) - ALWAYS succeeds & secures exact variant naming
+    let resolvedProduct = parsedQuery;
+    let queryType = "specific";
+    try {
+      const resolved = await resolveSpecificProductName(parsedQuery, parsedBudget, useCase);
+      resolvedProduct = resolved.productName;
+      queryType = resolved.queryType;
+      console.log(`[Semantic Resolver] Resolved query "${parsedQuery}" to specific product: "${resolvedProduct}" (Type: ${queryType})`);
+    } catch (e) {
+      console.warn(`[Semantic Resolver] Stage 1 failed. Fallback to raw query.`);
+    }
+
+    // Step 2: Stage 2 targeted price scrape (Grounding active on resolved specifications)
     let preFetchResult = null;
     try {
       preFetchResult = await withTimeout(
-        preFetchLivePricesAndLinks(parsedQuery, parsedBudget, useCase),
+        preFetchLivePricesAndLinks(resolvedProduct, queryType, parsedQuery, parsedBudget, useCase),
         9500,
         "PREFETCH_TIMEOUT"
       );
@@ -2669,8 +2669,6 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       console.warn(`[Launch Guard] Pre-fetch failed or timed out (${e.message}). Grounding recovered gracefully.`);
     }
     const preFetchedPrices = preFetchResult?.prices || null;
-    const resolvedProduct = preFetchResult?.resolvedProductName || parsedQuery;
-    let queryType = preFetchResult?.queryType || "specific";
     
     isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
 
@@ -2867,9 +2865,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       "1. 'priceIntegrity.currentPriceAudit' MUST contain honest feedback about today's price in simple everyday terms (e.g. 'This price is brilliant...').\n" +
       "2. 'priceIntegrity.historicalContext' MUST explain how the price relates to past sales without any math/finance jargon (e.g. 'Prices drop by ₹1,500 every Diwali...').\n" +
       "3. 'priceIntegrity.discountStrategy' MUST give practical card cashback or coupon advice (e.g. 'Buy with an HDFC card for a ₹1,000 instant discount...').\n" +
-      "\nCRITICAL REQUIREMENT FOR ZERO LATENCY & SPEED:\n" +
-      "Your response must comply 100% with the strict JSON structure. Because the structure is extensive, YOU MUST keep every single text value extremely short, terse, and punchy. " +
-      "Each text field (definitions, details, summaries, reasons) MUST BE at most 8-10 words (1 short sentence or quick phrase max). Do NOT generate multi-sentence text. This is absolutely essential to achieve ultra-fast generation and low latency." +
+      "\nCRITICAL REQUIREMENT FOR COMPREHENSIVE FORENSIC ANALYSIS & LOGIC DEPTH:\n" +
+      "To ensure premium value and address user feedback on empty logic, do NOT write short, generic, or truncated text values. Every single text value, summary, explanation, pro, con, and community consensus statement MUST be highly detailed, rich, authentic, and customized to the specific product configuration, budget, and use case. Each description field should be a robust, analytical paragraph (at least 2-3 sentences, 30-50 words) exposing real-world material blend, technical specs, thermal limits, wear characteristics, after-sales service, and exact numeric price differences. Do not compromise on logic depth or technical depth." +
       "\n\nCRITICAL HINGLISH PERSONA REQUIREMENT:\n" +
       "To ensure we preserve Vetto's authentic Bhartiya tone, the 'aamAadmiSummary' field MUST ALWAYS start with the exact word 'Bhai,' or 'Arey yaar,' or include the exact phrase 'le lo' or 'mat lena'. Do NOT ignore this rule. Never return a purely formal English sentence under any circumstances.";
 
