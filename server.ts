@@ -1397,15 +1397,79 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
   return null;
 }
 
-// Removed redundant resolveSpecificProduct to eliminate 3-4s sequential latency constraint.
-// Semantic resolution is now natively combined with Google Search Grounding in preFetchLivePricesAndLinks.
+// Ultra-fast pure semantic resolver (Stage 1) to determine exact product specifications without search latency
+async function resolveSpecificProductName(query: string, budget = "", useCase = ""): Promise<{ productName: string, queryType: "category" | "specific" | "comparison" }> {
+  if (!ai) return { productName: query, queryType: "specific" };
+  try {
+    const prompt = `You are a precision product semantic resolver. 
+    Analyze the user's query: "${query}"
+    Budget Limit: ${budget ? `₹${budget}` : "Unlimited"}
+    Specific Need/Context: "${useCase || "General Use"}"
 
-// Perform internet search grounding to retrieve actual live pricing and platform links for a given search query
+    Task:
+    1. Determine the "queryType":
+       - "category": User is asking for a general recommendation (e.g. "best phone under 30k", "running shoes").
+       - "comparison": User is comparing two or more products (e.g. "iPhone 15 vs S24").
+       - "specific": User is asking about a single specific product model (e.g. "iQOO Neo 9 Pro", "Royal Enfield Himalayan").
+    2. Resolve this to exactly ONE highly specific product model name ("productName").
+       - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "OnePlus Nord CE 4 8GB 128GB" - NOT "OnePlus Nord").
+       - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
+       - If "comparison", return the primary or first product name.
+
+    Return strictly a JSON object conforming to this schema:
+    {
+      "productName": "Resolved full specific product name with specifications",
+      "queryType": "category" | "specific" | "comparison"
+    }
+    No explanation, no markdown.`;
+
+    const response = await callGeminiWithRetry({
+      model: "gemini-2.5-flash",
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      config: {
+        temperature: 0.0,
+        maxOutputTokens: 150,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            productName: { type: Type.STRING },
+            queryType: { type: Type.STRING, enum: ["category", "specific", "comparison"] }
+          },
+          required: ["productName", "queryType"]
+        }
+      }
+    });
+
+    const parsed = JSON.parse(response);
+    return {
+      productName: parsed.productName || query,
+      queryType: parsed.queryType || "specific"
+    };
+  } catch (e) {
+    console.error("[Semantic Resolver] Error resolving query:", e);
+    return { productName: query, queryType: "specific" };
+  }
+}
+
+// Perform internet search grounding to retrieve actual live pricing and platform links for a resolved specific product (Stage 2)
 async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = "", useCase = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
   if (!ai) return null;
   
   const cleanQuery = productQuery.trim();
   if (!cleanQuery || cleanQuery.length < 2) return null;
+
+  // STAGE 1: Pure Semantic Resolution (Ultra-fast 800ms)
+  let resolvedProductName = cleanQuery;
+  let resolvedQueryType = "specific";
+  try {
+    const resolved = await resolveSpecificProductName(cleanQuery, budgetLimit, useCase);
+    resolvedProductName = resolved.productName;
+    resolvedQueryType = resolved.queryType;
+    console.log(`[Semantic Resolver] Successfully resolved query "${cleanQuery}" to specific product: "${resolvedProductName}" (Type: ${resolvedQueryType})`);
+  } catch (e) {
+    console.warn(`[Semantic Resolver] Warning: Stage 1 Resolution failed. Fallback to raw query.`);
+  }
 
   const fallbackModels = [
     "gemini-3.5-flash",
@@ -1415,9 +1479,9 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
   for (let attempt = 0; attempt < retries; attempt++) {
     const modelToUse = fallbackModels[attempt % fallbackModels.length];
     try {
-      console.log(`[Price Verification Pre-fetch] (Attempt ${attempt + 1}/${retries}) Querying Google Search grounding via ${modelToUse} for: "${cleanQuery}"${budgetLimit ? ` matching budget of ₹${budgetLimit}` : ""}`);
+      console.log(`[Price Verification Pre-fetch] (Attempt ${attempt + 1}/${retries}) Querying Google Search grounding via ${modelToUse} for resolved product: "${resolvedProductName}"`);
       
-      const category = detectProductCategory("", cleanQuery);
+      const category = detectProductCategory("", resolvedProductName);
       let platformRestrictionRule = "";
       if (category === 'fashion') {
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is a FASHION product query. You MUST actively restrict the e-commerce platforms and links to: Myntra, Ajio, Amazon India, and Flipkart. Do NOT look up or return prices/links for Croma, Reliance Digital, or other irrelevant sites.`;
@@ -1429,35 +1493,32 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra, or Tata CLiQ.`;
       }
 
-      const preFetchPrompt = `You are a precision internet search tool and semantic resolver for fetching live real-world e-commerce prices.
-      User Query: "${cleanQuery}"
-      Budget Constraint: ${budgetLimit ? `₹${budgetLimit}` : "None"}
-      Specific User Context/Need: "${useCase || 'General use'}"
-
-      STEP 1: SEMANTIC RESOLUTION & STRICT SPECIFICATION LOCK
-      - If the User Query specifies any explicit option, variant, specification, configuration, color, capacity, or processor (e.g., "128GB", "M2", "256GB SSD", "black color", "i5 processor"), you MUST strictly evaluate and lock onto THAT EXACT OPTION. Under no circumstances are you allowed to generalize to the base model, change the requested specification, or query/return prices for a different configuration. If the User Query specifies a specific option, capacity, memory, processor, color, or other variant, you MUST ONLY query the search engine for this specific option and return prices ONLY for this specific option. Returning prices/links for a base model or a different variant when a specific one was requested is a CRITICAL FAILURE and a direct violation of system integrity. Make sure the 'product_name' explicitly includes the requested specifications (e.g. 'Apple MacBook Air M2 8GB 256GB Black').
-      - If the User Query is a generic category (e.g., "best laptop under 50k"), you MUST resolve it to exactly ONE specific, highly-rated product model that perfectly matches the query, strictly fits under the budget, and perfectly aligns with their "Specific User Context/Need".
-      - If it is already a specific product but its standard/base price exceeds the budget constraint, you MUST resolve to a lower specification variant (e.g. smaller storage/RAM/engine model), a previous-generation model, or a highly-comparable alternative model of that product that strictly fits under the budget. Otherwise, use the specific product.
-
-      STEP 2: PRICE FETCHING
-      You MUST identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for THAT EXACT RESOLVED SPECIFIC PRODUCT on at least 3 major e-commerce platforms in India.
+      const preFetchPrompt = `You are a precision internet search tool and price scraper for fetching live real-world e-commerce prices.
+      Target Resolved Specific Product: "${resolvedProductName}"
+      Original User Query Context: "${cleanQuery}" ${budgetLimit ? `(Budget: ₹${budgetLimit})` : ""}
+      
+      Your single goal is to find active prices, stock status, and direct product links for the EXACT resolved product "${resolvedProductName}".
+      Do NOT look up general category listicles. You MUST focus your search strictly on this specific resolved product model.
+      
+      STEP 1: PRICE FETCHING
+      Identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for the EXACT resolved product "${resolvedProductName}" on at least 3 major e-commerce platforms in India.
       
       ${platformRestrictionRule}
       
-       CRITICAL ACCURACY, SPECIFICATION VARIANT, & LINK-SYNC RULES:
-      1. ONLY return pricing and stock status for the EXACT technical specifications requested.
+      CRITICAL ACCURACY & LINK-SYNC RULES:
+      1. ONLY return pricing and stock status for the EXACT specifications of "${resolvedProductName}".
       2. PRICE-TO-LINK SYNCHRONIZATION SAFEGUARD: The price you return for a platform MUST be the exact active price displayed on the returned URL page today. Under no circumstances are you allowed to pair a low price found in an outdated snippet with a URL that points to a higher-priced listing or a different specification variant.
-      3. VARIANT CONSISTENCY RULE: If the URL points to a different configuration (e.g. 8GB vs 16GB), mark that platform Out of Stock.
+      3. VARIANT CONSISTENCY RULE: If the URL points to a different configuration (e.g. different storage/RAM), mark that platform Out of Stock.
       4. If that specific model or spec variant is not available, or is out of stock on a retailer platform, you MUST set its "price" to "Out of Stock", "stockStatus" to "Out of Stock", "url" to "", and "exactVariantMatch" as false.
       5. NEVER substitute or return the price of a different variant.
       6. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, bags, refurbished/used units, or parts.
-      7. You MUST search the internet right now using search grounding. Actively perform multiple, targeted Google search queries for each platform specifically (e.g. search "[Resolved Product Name] Amazon India price", "[Resolved Product Name] Flipkart price", "[Resolved Product Name] Croma price") to fetch the exact active prices and direct product landing pages instead of generic blogs or outdated lists.
-      8. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/). If the exact direct product page URL cannot be confidently found but the product is visibly in stock, you MUST explicitly construct and return a valid search result URL for that platform (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]", "https://www.flipkart.com/search?q=[URL_ENCODED_PRODUCT_NAME]"). NEVER return a dead link or a listicle. A valid platform search URL is a mandatory safe fallback.
-      9. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
-      10. STRICT EXCLUSION OF BANK / EXCHANGE DISCOUNTS: You MUST completely ignore and filter out all temporary, credit-card specific, exchange program, bank EMI, or membership-only discounts. The price MUST be the regular, standard, out-of-the-box retail price displayed on the platform for any walk-in/online buyer.
-
+      7. BASE PUBLIC RETAIL PRICE RULE: Under no circumstances are you allowed to return prices that depend on trade-ins, exchange offers, corporate discounts, or specific bank credit card instant cashbacks. Only return the standard public retail selling price that any general user sees upon landing on the retailer product page.
+      8. You MUST search the internet right now using search grounding. Actively perform multiple, targeted Google search queries for each platform specifically (e.g. search "[Resolved Product Name] Amazon India price", "[Resolved Product Name] Flipkart price", "[Resolved Product Name] Croma price") to fetch the exact active prices and direct product landing pages instead of generic blogs or outdated lists.
+      9. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/). If the exact direct product page URL cannot be confidently found but the product is visibly in stock, you MUST explicitly construct and return a valid search result URL for that platform (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]", "https://www.flipkart.com/search?q=[URL_ENCODED_PRODUCT_NAME]"). NEVER return a dead link or a listicle. A valid platform search URL is a mandatory safe fallback.
+      10. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
+      
       Return the results in a strict JSON object conforming to the response schema:
-      - "product_name": set this exactly to the specific product model you resolved in Step 1.
+      - "product_name": set this exactly to the specific product model "${resolvedProductName}".
       - "where_to_buy": an array of objects, each containing:
         * "platform": e.g., Amazon, Flipkart, Croma.
         * "current_price": the exact numeric base price without bank discounts (as a number, e.g. 37999). If out of stock or unavailable, set to 0.
@@ -1711,10 +1772,10 @@ async function preFetchLivePricesAndLinks(productQuery: string, budgetLimit = ""
               });
             });
             
-            return { resolvedProductName: resolvedName, queryType: parsed.queryType || "specific", prices: healed };
+            return { resolvedProductName: resolvedProductName, queryType: resolvedQueryType, prices: healed };
           }
         }
-        return { resolvedProductName: resolvedName, queryType: parsed.queryType || "specific", prices: [] };
+        return { resolvedProductName: resolvedProductName, queryType: resolvedQueryType, prices: [] };
       }
     } catch (err: any) {
       console.error(`[Price Verification Pre-fetch] Error running price verification scanner (Attempt ${attempt + 1}):`, err);
