@@ -152,5 +152,50 @@ input, textarea, button {
   .hover\:bg-white\/5:hover { background-color: rgba(0, 0, 0, 0.05) !important; }
   .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.08) !important; }
   .hover\:border-white\/20:hover, .hover\:border-white\/30:hover { border-color: rgba(0, 0, 0, 0.15) !important; }
-  .hover\:text-white:hover { color: #0071E3 !important; } /* In light mode, hovering to "white" usually meant hovering to a primary/active state. Using accent blue is best. */
+  .hover\:text-white:hover { color: #0071E3 !important; }
+
+  /* ==========================================================================
+     SEMANTIC COMPONENT THEMES & DARK-ISOLATION SANDBOX
+     These rules override the global light theme above inside dark sections.
+     ========================================================================== */
+  .theme-card-dark {
+    background-color: #0E1015 !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    color: #F8FAFC !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Restore perfect readability inside isolated dark blocks */
+  .theme-card-dark .text-white,
+  .theme-card-dark .text-zinc-100,
+  .theme-card-dark .text-zinc-200,
+  .theme-card-dark .text-slate-100,
+  .theme-card-dark .text-slate-200 {
+    color: #F8FAFC !important;
+  }
+
+  .theme-card-dark .text-white\/90 { color: rgba(248, 250, 252, 0.9) !important; }
+  .theme-card-dark .text-white\/80 { color: rgba(248, 250, 252, 0.8) !important; }
+  .theme-card-dark .text-white\/70, .theme-card-dark .text-zinc-300, .theme-card-dark .text-slate-300 { 
+    color: rgba(248, 250, 252, 0.7) !important; 
+  }
+  .theme-card-dark .text-white\/60, .theme-card-dark .text-zinc-400, .theme-card-dark .text-slate-400 { 
+    color: rgba(248, 250, 252, 0.6) !important; 
+  }
+  .theme-card-dark .text-white\/50, .theme-card-dark .text-zinc-500, .theme-card-dark .text-slate-500 { 
+    color: rgba(248, 250, 252, 0.5) !important; 
+  }
+  
+  /* Retain original backgrounds inside the dark sandbox */
+  .theme-card-dark .bg-white\/5 { background-color: rgba(255, 255, 255, 0.05) !important; }
+  .theme-card-dark .bg-white\/10 { background-color: rgba(255, 255, 255, 0.10) !important; }
+  .theme-card-dark .bg-white\/20 { background-color: rgba(255, 255, 255, 0.20) !important; }
+  .theme-card-dark .border-white\/5 { border-color: rgba(255, 255, 255, 0.05) !important; }
+  .theme-card-dark .border-white\/10 { border-color: rgba(255, 255, 255, 0.10) !important; }
+  
+  /* Hover intercepts inside dark sandbox */
+  .theme-card-dark .hover\:bg-white\/5:hover { background-color: rgba(255, 255, 255, 0.08) !important; }
+  .theme-card-dark .hover\:bg-white\/10:hover { background-color: rgba(255, 255, 255, 0.15) !important; }
+  .theme-card-dark .hover\:border-white\/20:hover { border-color: rgba(255, 255, 255, 0.25) !important; }
+  .theme-card-dark .hover\:text-white:hover { color: #FFFFFF !important; }
 }

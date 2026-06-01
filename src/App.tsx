@@ -3342,7 +3342,7 @@ export default function App() {
               </div>
 
               {/* Checking if reviews are real */}
-              <div className="bg-slate-950 text-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-16 space-y-10 md:space-y-12 relative overflow-hidden">
+              <div className="theme-card-dark bg-slate-950 text-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-16 space-y-10 md:space-y-12 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-12 opacity-[0.05]">
                   <Target className="w-64 md:w-96 h-64 md:h-96 text-white" />
                 </div>
