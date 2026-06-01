@@ -1226,12 +1226,23 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
   const encodedPlusProdName = encodedProdName.replace(/%20/g, "+");
 
   // Detect if the incoming URL is a search URL to dynamically heal and force correct resolved query terms
-  const isSearchUrl = urlLower.includes("/search") || 
-                      urlLower.includes("/s?") || 
-                      urlLower.includes("?q=") || 
-                      urlLower.includes("?text=") || 
-                      urlLower.includes("search?") || 
-                      urlLower.includes("search/");
+  let isSearchUrl = false;
+  try {
+    const urlObj = new URL(targetUrl);
+    const host = urlObj.hostname.toLowerCase();
+    const path = urlObj.pathname.toLowerCase();
+    
+    // Only flag true search page path routes rather than product pages with query params
+    isSearchUrl = path === "/s" || 
+                  path.includes("/search") || 
+                  path.startsWith("/s/") || 
+                  (host.includes("google") && path.includes("/search"));
+  } catch (e) {
+    isSearchUrl = urlLower.includes("/search") || 
+                  urlLower.includes("/s?") || 
+                  urlLower.includes("search?") || 
+                  urlLower.includes("search/");
+  }
 
   // 4. Force high-fidelity deep-search query fallbacks for generic/mismatched/broken/search links
   if (isGenericOrMismatched || isSearchUrl) {
@@ -2780,6 +2791,11 @@ STRICT PRICING & SCORING PROTOCOLS:
        - Electronics: Check for thermal throttling, after-sales service response time in tier-2/3 Indian cities, battery health degradation over 6 months, and useless spec padding (e.g., secondary 2MP macro cameras).
        - Fashion/Sneakers: Check for sizing accuracy (runs small/large), material durability over wash cycles, creasing patterns, sole separation risk, and premium synthetic fabric markups.
        - Automotive/Accessories: Check for real-world fuel economy in Indian bumper-to-bumper traffic, cabin panel rattling, global NCAP safety scores, and spare parts availability/wait times.
+
+    E. INTERACTIVE BUZZWORD SLAYER SPECIFICATION LOCK:
+       - You MUST identify exactly 4 highly specific marketing buzzwords or trademarked claims used by the manufacturer in the resolved product's advertisements (e.g. for earbuds: "Spatial Audio", "50dB ANC", "Hi-Res Audio LDAC", "Titanium Drivers"; for phones: "100x Zoom", "AI Camera System", "120W HyperCharge", "VC Liquid Cooling"; for fashion: "100% Imperial Organic Cotton", "Weatherproof Shield").
+       - For each buzzword, unmask the exact, uncompromised real-world technical deficit, hardware bottleneck, or marketing exaggeration in the 'reality' field (e.g., "Spatial Audio is just simulated software reverb that makes music sound muddy; disable it immediately for clean stereo separation").
+       - Every 'reality' description MUST be a detailed, analytical, street-smart diagnostic statement of at least 20-30 words, not a generic phrase. Never return generic words like 'premium' or 'AI' without specific product context.
 
 2. THE ELDER BROTHER PERSONA & TONE DIRECTIVES:
     You are the user's street-smart, caring elder brother ("bhaiya") who wants to save them from being scammed by glossy ads and hype. 
