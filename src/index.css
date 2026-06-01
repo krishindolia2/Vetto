@@ -158,7 +158,11 @@ input, textarea, button {
      SEMANTIC COMPONENT THEMES & DARK-ISOLATION SANDBOX
      These rules override the global light theme above inside dark sections.
      ========================================================================== */
-  .theme-card-dark {
+  .theme-card-dark,
+  .theme-card-dark .bg-slate-950,
+  .theme-card-dark .bg-slate-900,
+  .theme-card-dark .bg-zinc-950,
+  .theme-card-dark .bg-zinc-900 {
     background-color: #0E1015 !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
     color: #F8FAFC !important;
