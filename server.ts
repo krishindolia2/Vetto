@@ -2197,24 +2197,45 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
 
     // Sort in-stock platforms by raw price ascending (lowest price first - promoted to the top)
     inStockLinks.sort((a, b) => {
+      const isCheckLiveA = a.price === "Check Live";
+      const isCheckLiveB = b.price === "Check Live";
+      if (isCheckLiveA && isCheckLiveB) return 0;
+      if (isCheckLiveA) return 1;
+      if (isCheckLiveB) return -1;
+
       const priceA = parseInt(a.price.replace(/[^\d]/g, ''), 10) || 0;
       const priceB = parseInt(b.price.replace(/[^\d]/g, ''), 10) || 0;
       return priceA - priceB;
     });
 
     let lowestPrice = Infinity;
-    if (inStockLinks.length > 0) {
-      // First item in sorted list has lowest price and is flagged as Best Deal
-      lowestPrice = parseInt(inStockLinks[0].price.replace(/[^\d]/g, ''), 10) || 0;
+    let lowestPriceIndex = -1;
+
+    // Find the actual lowest numeric price among in-stock links
+    inStockLinks.forEach((link: any, idx: number) => {
+      if (link.price !== "Check Live") {
+        const val = parseInt(link.price.replace(/[^\d]/g, ''), 10);
+        if (!isNaN(val) && val < lowestPrice && val > 0) {
+          lowestPrice = val;
+          lowestPriceIndex = idx;
+        }
+      }
+    });
+
+    if (lowestPriceIndex !== -1 && lowestPrice !== Infinity) {
+      // Flag the item with the lowest numeric price as the Best Deal
       inStockLinks.forEach((link: any, idx: number) => {
-        link.isBestDeal = (idx === 0);
+        link.isBestDeal = (idx === lowestPriceIndex);
       });
-      // All OOS items are marked false for best deal
       oosLinks.forEach((link: any) => {
         link.isBestDeal = false;
       });
     } else {
-      lowestPrice = refPrice; // Fallback to reference price
+      // If no platforms have a numeric price (e.g. all are "Check Live" or empty), then fallback to refPrice
+      lowestPrice = refPrice;
+      inStockLinks.forEach((link: any) => {
+        link.isBestDeal = false;
+      });
       oosLinks.forEach((link: any) => {
         link.isBestDeal = false;
       });
@@ -2905,7 +2926,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       systemInstruction: finalSystemPrompt,
       ...(useSearchGrounding ? { tools: [{ googleSearch: {} }] } : {}),
       temperature: 0.0,
-      maxOutputTokens: 2048,
+      maxOutputTokens: 8192,
       thinkingConfig: {
         thinkingLevel: ThinkingLevel.MINIMAL
       }
