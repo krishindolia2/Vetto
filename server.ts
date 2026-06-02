@@ -2287,7 +2287,7 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       ? data.statusTax 
       : parseInt(String(data.statusTax || "").replace(/[^\d]/g, ''));
       
-    if (isNaN(currentSurchargeTax) || currentSurchargeTax < 0 || currentSurchargeTax >= lowestPrice) {
+    if (isNaN(currentSurchargeTax) || currentSurchargeTax <= 0 || currentSurchargeTax >= lowestPrice) {
       currentSurchargeTax = Math.round(lowestPrice * 0.22); // Real premium ratio
     }
     data.statusTax = currentSurchargeTax;
@@ -2301,7 +2301,7 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       }
     }
 
-    if (altPrice === 0 || altPrice >= lowestPrice * 1.5) {
+    if (altPrice === 0 || altPrice >= lowestPrice * 1.5 || altPrice < Math.max(200, lowestPrice * 0.2)) {
       altPrice = Math.max(99, lowestPrice - currentSurchargeTax);
     }
 

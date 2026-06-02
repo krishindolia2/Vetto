@@ -4609,11 +4609,11 @@ export default function App() {
                       <div className="space-y-6">
                         <p className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-none font-display">
                           Upgrade to:{" "}
-                          <span className="text-accent block mt-3 drop-shadow-sm">
+                          <span className="text-slate-900 block mt-3 drop-shadow-sm">
                             {result?.vettoContrast?.alternativeName || ""}
                           </span>
                         </p>
-                        <p className="text-xl md:text-2xl font-medium text-slate-700 leading-relaxed italic border-l-4 border-accent/30 pl-8">
+                        <p className="text-xl md:text-2xl font-medium text-slate-700 leading-relaxed italic border-l-4 border-slate-300 pl-8">
                           &ldquo;{result?.vettoContrast?.whyContrast || ""}&rdquo;
                         </p>
                       </div>
@@ -4631,7 +4631,7 @@ export default function App() {
                           <span className="text-xs font-black text-slate-600 truncate">
                             {result?.productName || ""}
                           </span>
-                          <span className="text-xs font-black text-accent truncate">
+                          <span className="text-xs font-black text-slate-900 truncate">
                             {result?.vettoContrast?.alternativeName || ""}
                           </span>
                         </div>
@@ -4676,9 +4676,20 @@ export default function App() {
                             Cost Target
                           </span>
                           <span className="text-sm font-black text-slate-400 text-center line-through decoration-rose-500/50">
-                            {getNumericPrice(result) === 0 ? "Out of Stock" : `₹${getNumericPrice(result).toLocaleString()}`}
+                            {(() => {
+                              const numPrice = getNumericPrice(result);
+                              if (numPrice > 0) return `₹${numPrice.toLocaleString()}`;
+                              const history = result?.priceIntegrity?.priceHistory;
+                              if (Array.isArray(history) && history.length > 0) {
+                                const lastPrice = history[history.length - 1]?.price;
+                                if (typeof lastPrice === 'number' && lastPrice > 0) {
+                                  return `₹${lastPrice.toLocaleString()}`;
+                                }
+                              }
+                              return "Out of Stock";
+                            })()}
                           </span>
-                          <span className="text-sm font-black text-accent text-center font-mono bg-slate-50 py-1 rounded-md border border-slate-200">
+                          <span className="text-sm font-black text-slate-900 text-center font-mono bg-slate-50 py-1 rounded-md border border-slate-200">
                             {result?.vettoContrast?.fairPriceTarget || ""}
                           </span>
                         </div>
