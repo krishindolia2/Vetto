@@ -1054,9 +1054,7 @@ function formatIndianRetailPrice(numericPrice: number, targetPercentage: number)
  * and platform mismatches, ensuring user flows directly to product listings.
  */
 function cleanAndResolveUrl(url: string, platform: string, productName: string): string {
-  if (!url) return "";
-  
-  let targetUrl = url.trim();
+  let targetUrl = (url || "").trim();
   
   // Decouple double encoding: if productName contains %20 or other signs of encoding, decode it first
   let decodedProdName = productName;
