@@ -4297,23 +4297,23 @@ export default function App() {
                 </div>
 
                 {/* Buying Safety Check */}
-                <div className="bg-slate-900 text-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-16 space-y-8 md:space-y-12 relative overflow-hidden group">
+                <div className="bg-white border border-slate-100 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-16 space-y-8 md:space-y-12 relative overflow-hidden group shadow-sm text-slate-900">
                   {/* Advanced Grid Background */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(113,113,122,0.15),transparent_50%)]" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,113,227,0.02),transparent_50%)]" />
 
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative z-10 border-b border-white/5 pb-12">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative z-10 border-b border-slate-100 pb-12">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
-                          <Lock className="w-5 h-5 text-zinc-400" />
+                        <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-150 flex items-center justify-center">
+                          <Lock className="w-5 h-5 text-slate-700" />
                         </div>
                         <div className="space-y-0.5">
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
+                          <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
                             Is it Safe to Buy?
                           </h3>
-                          <p className="text-2xl md:text-3xl font-black tracking-tighter">
+                          <p className="text-2xl md:text-3xl font-black tracking-tighter text-slate-950">
                             Shopping Safety{" "}
-                            <span className="text-zinc-450 text-white/90">
+                            <span className="text-slate-800">
                               Check
                             </span>
                           </p>
@@ -4321,14 +4321,14 @@ export default function App() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-2">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
                         Safety Score
                       </span>
                       <div className="flex items-end gap-2 justify-end">
-                        <span className="text-6xl font-black text-white leading-none tracking-tighter">
+                        <span className="text-6xl font-black text-slate-900 leading-none tracking-tighter font-display">
                           {result?.platformWarShield?.truthResilienceScore ?? 0}
                         </span>
-                        <span className="text-lg font-bold text-white/20 mb-1">
+                        <span className="text-lg font-bold text-slate-400 mb-1">
                           /100
                         </span>
                       </div>
@@ -4336,70 +4336,70 @@ export default function App() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
-                    <div className="p-10 bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-between h-full hover:bg-white/[0.08] transition-all group/card">
+                    <div className="p-10 bg-slate-50/60 border border-slate-150 rounded-[2rem] flex flex-col justify-between h-full hover:bg-slate-50 transition-all group/card">
                       <div className="space-y-6">
                         <div className="flex items-center gap-4">
                           {result?.platformWarShield?.hasMarketingSilos ? (
-                            <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover/card:scale-110 transition-transform">
-                              <EyeOff className="w-4 h-4 text-red-500" />
+                            <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center group-hover/card:scale-110 transition-transform">
+                              <EyeOff className="w-4 h-4 text-red-600" />
                             </div>
                           ) : (
-                            <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center group-hover/card:scale-110 transition-transform">
-                              <ShieldCheck className="w-4 h-4 text-green-500" />
+                            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center group-hover/card:scale-110 transition-transform">
+                              <ShieldCheck className="w-4 h-4 text-green-600" />
                             </div>
                           )}
                           <div>
-                            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest block">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
                               Market Signal
                             </span>
-                            <span className="text-sm font-black text-white uppercase tracking-tight">
+                            <span className="text-sm font-black text-slate-900 uppercase tracking-tight">
                               {result?.platformWarShield?.hasMarketingSilos
                                 ? "Ad Trap Active"
                                 : "Honest Market"}
                             </span>
                           </div>
                         </div>
-                        <p className="text-xs text-white/60 leading-relaxed font-semibold transition-colors group-hover/card:text-white/80">
+                        <p className="text-xs text-slate-700 leading-relaxed font-semibold transition-colors">
                           {result?.platformWarShield?.siloExposure || ""}
                         </p>
                       </div>
                     </div>
 
-                    <div className="p-10 bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-between h-full hover:bg-white/[0.08] transition-all group/card">
+                    <div className="p-10 bg-slate-50/60 border border-slate-150 rounded-[2rem] flex flex-col justify-between h-full hover:bg-slate-50 transition-all group/card">
                       <div className="space-y-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover/card:scale-110 transition-transform">
-                            <Network className="w-4 h-4 text-zinc-400" />
+                          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center group-hover/card:scale-110 transition-transform">
+                            <Network className="w-4 h-4 text-slate-700" />
                           </div>
                           <div>
-                            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest block">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
                               How We Checked
                             </span>
-                            <span className="text-sm font-black text-white uppercase tracking-tight">
+                            <span className="text-sm font-black text-slate-900 uppercase tracking-tight">
                               Deep Truth Scan
                             </span>
                           </div>
                         </div>
-                        <div className="p-4 bg-black/40 rounded-2xl border border-white/5 font-mono text-[10px] text-zinc-400 leading-relaxed italic">
+                        <div className="p-4 bg-slate-100/70 rounded-2xl border border-slate-200 font-mono text-[10px] text-slate-800 leading-relaxed italic">
                           &ldquo;{result?.platformWarShield?.bypassStrategyUsed || ""}
                           &rdquo;
                         </div>
                       </div>
 
                       {/* Technical Nodes */}
-                      <div className="pt-4 border-t border-white/5 space-y-4">
+                      <div className="pt-4 border-t border-slate-200 space-y-4">
                         {result?.technicalNode && (
                           <div className="flex items-center gap-3">
-                            <Cpu className="w-3 h-3 text-white/20" />
-                            <span className="text-[9px] font-mono text-white/40 uppercase truncate">
+                            <Cpu className="w-3 h-3 text-slate-400" />
+                            <span className="text-[9px] font-mono text-slate-600 uppercase truncate">
                               Key Feature: {result.technicalNode}
                             </span>
                           </div>
                         )}
                         {result?.resaleValueNode && (
                           <div className="flex items-center gap-3">
-                            <TrendingUp className="w-3 h-3 text-white/20" />
-                            <span className="text-[9px] font-mono text-white/40 uppercase truncate">
+                            <TrendingUp className="w-3 h-3 text-slate-400" />
+                            <span className="text-[9px] font-mono text-slate-600 uppercase truncate">
                               Resale value: {result.resaleValueNode}
                             </span>
                           </div>
