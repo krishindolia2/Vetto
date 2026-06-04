@@ -462,7 +462,7 @@ const auditResponseSchema = {
     pros: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Advantages (max 3, brief)" },
     cons: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Dealbreakers (max 3, brief)" },
     whyBest: { type: Type.STRING, description: "Logic behind decision (1 sentence)" },
-    aamAadmiSummary: { type: Type.STRING, description: "Direct Hinglish summary" },
+    aamAadmiSummary: { type: Type.STRING, description: "Simple, easy English summary with a short real-world example" },
     avoid: { type: Type.STRING, description: "What to avoid" },
     regretWarning: { type: Type.STRING, description: "Regret warning" },
     confidenceScore: { type: Type.INTEGER, description: "Confidence 0-100" },
@@ -2372,13 +2372,11 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     data.marketTiming = stableVerdict;
     data.finalDecision = stableVerdict;
 
-    // Programmatic Hinglish Persona Compliance Guard (Persona Shield)
+    // Programmatic Persona Compliance Guard (Persona Shield)
+    // Simply ensure summary has a value, no Hinglish prefix enforcement
     let summary = String(data.aamAadmiSummary || "").trim();
-    const hasBhaiOrArey = /^(bhai|arey\s+yaar)/i.test(summary);
-    const hasLeLoOrMatLena = /le\s+lo|mat\s+lena/i.test(summary);
-    if (!hasBhaiOrArey && !hasLeLoOrMatLena) {
-      console.log(`[Persona Shield] Healing summary to ensure strict Hinglish persona compliance.`);
-      data.aamAadmiSummary = "Bhai, " + summary.charAt(0).toLowerCase() + summary.slice(1);
+    if (!summary) {
+      data.aamAadmiSummary = "This product offers reliable core features tailored to your needs.";
     }
   }
     
@@ -2904,8 +2902,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       "3. 'priceIntegrity.discountStrategy' MUST give practical card cashback or coupon advice (e.g. 'Buy with an HDFC card for a ₹1,000 instant discount...').\n" +
       "\nCRITICAL REQUIREMENT FOR COMPREHENSIVE FORENSIC ANALYSIS & LOGIC DEPTH:\n" +
       "To ensure premium value and address user feedback on empty logic, do NOT write short, generic, or truncated text values. Every single text value, summary, explanation, pro, con, and community consensus statement MUST be highly detailed, rich, authentic, and customized to the specific product configuration, budget, and use case. Each description field should be a robust, analytical paragraph (at least 2-3 sentences, 30-50 words) exposing real-world material blend, technical specs, thermal limits, wear characteristics, after-sales service, and exact numeric price differences. Do not compromise on logic depth or technical depth." +
-      "\n\nCRITICAL HINGLISH PERSONA REQUIREMENT:\n" +
-      "To ensure we preserve Vetto's authentic Bhartiya tone, the 'aamAadmiSummary' field MUST ALWAYS start with the exact word 'Bhai,' or 'Arey yaar,' or include the exact phrase 'le lo' or 'mat lena'. Do NOT ignore this rule. Never return a purely formal English sentence under any circumstances.";
+      "\n\nCRITICAL SUMMARY REQUIREMENT:\n" +
+      "The 'aamAadmiSummary' field MUST be written in simple, clear, and easy English (NOT Hinglish). It must be highly specific and non-generic. You MUST include a brief, practical real-world example so the user can easily understand (for example: instead of saying 'has fast charging', say 'it charges from 0 to 50% in just 15 minutes, which is enough to last your entire morning commute'). Keep it short, direct, and incredibly easy to understand.";
 
     if (preFetchedPrices && preFetchedPrices.length > 0) {
       finalSystemPrompt += `\n\nCRITICAL REAL-TIME CURRENT PRICING DATAFEED:\nYou MUST use the following exact prices and URLs for the platforms in your JSON's "priceIntegrity.procurementLinks" array. Do NOT make up other prices or change these fields. Use exactly these values:\n${JSON.stringify(preFetchedPrices.map(p => ({ platform: p.platform, price: p.price, url: p.url, isBestDeal: p.isBestDeal })), null, 2)}`;
