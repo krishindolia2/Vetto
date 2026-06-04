@@ -3351,7 +3351,7 @@ export default function App() {
                   <div className="group p-8 bg-white/5 border border-white/10 rounded-3xl flex flex-col justify-between h-full hover:bg-white/[0.08] transition-all duration-500">
                     <div className="space-y-6">
                       <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                           Hype vs Reality Gap
                         </span>
                         <ShieldAlert className="w-4 h-4 text-red-500/50" />
@@ -3361,7 +3361,7 @@ export default function App() {
                           <span className="text-5xl font-black text-white">
                             {result?.socialAudit?.integrityAudit?.divergenceIndex ?? 0}%
                           </span>
-                          <span className="text-[10px] font-bold text-white/30 mb-2 uppercase">
+                          <span className="text-[10px] font-bold text-slate-400 mb-2 uppercase">
                             Gap
                           </span>
                         </div>
@@ -3376,7 +3376,7 @@ export default function App() {
                         </div>
                       </div>
                     </div>
-                    <p className="text-xs text-white/60 leading-relaxed italic mt-6">
+                    <p className="text-xs text-white/70 leading-relaxed italic mt-6">
                       &ldquo;{result?.socialAudit?.userRealityCheck || ""}&rdquo;
                     </p>
                   </div>
@@ -3393,7 +3393,7 @@ export default function App() {
                         </span>
                       </div>
 
-                      <p className="text-xs text-white/50 leading-relaxed font-sans">
+                      <p className="text-xs text-slate-300 leading-relaxed font-sans">
                         Companies use heavy jargon to inflate their prices. Tap
                         any buzzword below to "slay" it and inspect the actual
                         honest truth:
@@ -3453,7 +3453,7 @@ export default function App() {
                                     className={cn(
                                       "text-[8px] font-mono font-black uppercase px-1.5 py-0.5 rounded",
                                       isSlain
-                                        ? "bg-emerald-900/30 text-emerald-400"
+                                        ? "bg-emerald-950/30 text-emerald-400"
                                         : "bg-red-500/10 text-red-400 group-hover:bg-red-500/20",
                                     )}
                                   >
@@ -3488,7 +3488,7 @@ export default function App() {
                   <div className="p-8 bg-slate-900 border border-white/10 rounded-3xl flex flex-col justify-between h-full relative overflow-hidden group/card">
                     <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover/card:opacity-100 transition-opacity" />
                     <div className="relative z-10 space-y-6">
-                      <span className="text-[10px] font-black text-white/30 uppercase tracking-widest block">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
                         Review Authenticity Score
                       </span>
                       <div className="space-y-4">
@@ -3496,11 +3496,11 @@ export default function App() {
                           <span className="text-6xl font-black text-white">
                             {result?.socialAudit?.integrityAudit?.fakeReviewScore ?? 0}
                           </span>
-                          <span className="text-xl font-bold text-white/20 mb-2 font-sans">
+                          <span className="text-xl font-bold text-slate-400 mb-2 font-sans">
                             /100
                           </span>
                         </div>
-                        <p className="text-xs text-white/40">
+                        <p className="text-xs text-slate-300">
                           Higher score indicates real, honest reviews from
                           actual buyers.
                         </p>
