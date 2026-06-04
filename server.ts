@@ -1268,8 +1268,10 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
       targetUrl = `https://www.zigwheels.com/search/?q=${encodedPlusProdName}`;
     } else {
       // For automotive brands or any other custom platform, let's direct to their official website search or search Google
-      if (platformLower.includes("tata")) {
+      if (platformLower.includes("tata") && !platformLower.includes("cliq")) {
         targetUrl = "https://www.tatamotors.com";
+      } else if (platformLower.includes("tatacliq") || platformLower.includes("cliq")) {
+        targetUrl = `https://www.tatacliq.com/search/?text=${encodedPlusProdName}`;
       } else if (platformLower.includes("mahindra")) {
         targetUrl = "https://auto.mahindra.com";
       } else if (platformLower.includes("hyundai")) {
@@ -1451,7 +1453,16 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       }
     });
 
-    const parsed = JSON.parse(response);
+    let text = "";
+    if (response && typeof response.text === 'string') {
+      text = response.text.trim();
+    } else if (response?.candidates?.[0]?.content?.parts) {
+      text = response.candidates[0].content.parts
+        .map((p: any) => p.text || "")
+        .join("")
+        .trim();
+    }
+    const parsed = JSON.parse(text);
     return {
       productName: parsed.productName || query,
       queryType: parsed.queryType || "specific"
@@ -1530,26 +1541,6 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
           tools: [{ googleSearch: {} }],
           temperature: 0.0,
           maxOutputTokens: 1000,
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              product_name: { type: Type.STRING },
-              where_to_buy: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    platform: { type: Type.STRING, description: "e.g., Amazon, Flipkart, Croma" },
-                    current_price: { type: Type.NUMBER, description: "The exact numeric base price without bank discounts" },
-                    exact_url: { type: Type.STRING, description: "The raw canonical link extracted directly from grounding chunks" }
-                  },
-                  required: ["platform", "current_price", "exact_url"]
-                }
-              }
-            },
-            required: ["product_name", "where_to_buy"]
-          },
           thinkingConfig: {
             thinkingLevel: ThinkingLevel.MINIMAL
           }
@@ -1567,11 +1558,16 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
       }
 
       if (jsonText) {
+        const jsonStart = jsonText.indexOf('{');
+        const jsonEnd = jsonText.lastIndexOf('}');
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+          jsonText = jsonText.substring(jsonStart, jsonEnd + 1);
+        }
         console.log("[Price Verification Pre-fetch] Extracted Prices Data:", jsonText);
         const repaired = repairJson(jsonText);
         const parsed = JSON.parse(repaired);
         let rawArray = parsed.where_to_buy || [];
-        let resolvedName = parsed.product_name || productQuery;
+        let resolvedName = parsed.product_name || resolvedProductName;
         
         let pricesArray = rawArray.map((item: any) => {
           if (!item.platform) return null;
@@ -1836,18 +1832,8 @@ function isProductPageUrl(url: string): boolean {
     return false;
   }
   
-  // Must be a specific product page, e.g. Amazon DP/Flipkart P/Croma P/Ajio P, or contain common product patterns
-  return url.length >= 25 && (
-    urlLower.includes("/dp/") || 
-    urlLower.includes("/p/") || 
-    urlLower.includes("-p-") || 
-    urlLower.includes("/product/") || 
-    urlLower.includes("/buy/") ||
-    urlLower.includes("/item/") ||
-    urlLower.includes("/details/") ||
-    urlLower.includes("/cars/") ||
-    urlLower.includes("/bikes/")
-  );
+  // Must not be a homepage or search page, and length must be reasonable to represent a specific page
+  return url.length >= 20;
 }
 
 // Encapsulates the entire programmatic healing, outlier filtering, and pricing/link synchronization logic

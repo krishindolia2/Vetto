@@ -3846,7 +3846,7 @@ export default function App() {
                                 resolvedUrl.includes("B0CXXYZ") ||
                                 resolvedUrl.includes("12345") ||
                                 resolvedUrl.includes("searchB") ||
-                                /itm\d+/.test(resolvedUrl) ||
+                                resolvedUrl.includes("itm12345") ||
                                 resolvedUrl.includes("example.com");
 
                               if (isPlaceholderUrl) {
