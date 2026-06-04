@@ -9,7 +9,7 @@ async function runAudit(query, budget, useCase) {
   console.log(`[TESTING] Query: "${query}", Budget: "${budget || 'None'}"`);
   console.log(`============================================================`);
 
-  const response = await fetch('http://localhost:3000/api/audit', {
+  const response = await fetch('http://localhost:3010/api/audit', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -180,28 +180,34 @@ async function main() {
   try {
     const results = [];
 
-    // Test 1: Electronics
-    const electronicsRes = await runAudit("best phone under 40k", "", "Tech-savvy student looking for a durable daily driver with a clean UI and solid battery life.");
-    const electronicsAudit = auditCategory("electronics", "best phone under 40k", "40000", electronicsRes);
-    results.push(electronicsAudit);
+    // Test 1: Electronics (Category with Budget)
+    const elRes1 = await runAudit("best earbuds under 5k", "5000", "Daily train commuter needing great active noise cancellation and clear mic quality.");
+    const elAudit1 = auditCategory("electronics", "best earbuds under 5k", "5000", elRes1);
+    results.push(elAudit1);
 
-    // Sleep to respect rate limits
-    console.log("Sleeping 4 seconds before next request...");
+    console.log("Sleeping 4 seconds to respect rate limits...");
     await sleep(4000);
 
-    // Test 2: Fashion
-    const fashionRes = await runAudit("Adidas Samba vs Nike Dunk", "10000", "College student wanting durable sneakers that look trendy and run true to size.");
-    const fashionAudit = auditCategory("fashion", "Adidas Samba vs Nike Dunk", "10000", fashionRes);
-    results.push(fashionAudit);
+    // Test 2: Electronics (Specific Product without Budget)
+    const elRes2 = await runAudit("MacBook Air M2 256GB", "", "CS student looking for a thin laptop for college coding projects.");
+    const elAudit2 = auditCategory("electronics", "MacBook Air M2 256GB", "", elRes2);
+    results.push(elAudit2);
 
-    // Sleep to respect rate limits
-    console.log("Sleeping 4 seconds before next request...");
+    console.log("Sleeping 4 seconds to respect rate limits...");
     await sleep(4000);
 
-    // Test 3: Automotive
-    const automotiveRes = await runAudit("Royal Enfield Himalayan", "300000", "Weekend tourer and highway rider wanting real-world mileage details and panel rattle alerts.");
-    const automotiveAudit = auditCategory("automotive", "Royal Enfield Himalayan", "300000", automotiveRes);
-    results.push(automotiveAudit);
+    // Test 3: Fashion (Category with specific use case and no budget)
+    const faRes = await runAudit("durable running shoes for flat feet", "", "Marathon runner wanting durable cushioning and high arch support.");
+    const faAudit = auditCategory("fashion", "durable running shoes for flat feet", "", faRes);
+    results.push(faAudit);
+
+    console.log("Sleeping 4 seconds to respect rate limits...");
+    await sleep(4000);
+
+    // Test 4: Automotive (Comparison with Budget)
+    const auRes = await runAudit("Ather 450x vs Ola S1 Pro", "150000", "Daily city commuter looking for low maintenance electric scooter with good build quality.");
+    const auAudit = auditCategory("automotive", "Ather 450x vs Ola S1 Pro", "150000", auRes);
+    results.push(auAudit);
 
     // Write results to file
     const reportPath = path.join('/Users/krish/antigravity/Vetto', 'test_results.json');
