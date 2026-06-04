@@ -2564,7 +2564,8 @@ app.post("/api/audit", securityGuard, async (req, res) => {
   }
   const cacheKey = Buffer.from(normKeyParts.join("-")).toString('base64').replace(/[/+=]/g, '_').substring(0, 200);
 
-  if (cacheKey) {
+  // Live Real-Time Grounding: Bypassing cache reads to ensure 100% accurate live recommendations
+  if (false && cacheKey) {
     // 1. First attempt to fetch from persistent, global Firestore-based Shared Cache
     if (backendDb) {
       try {
@@ -3078,8 +3079,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         }
       }
 
-    // Store in cache if applicable
-    if (cacheKey) {
+    // Live Real-Time Grounding: Bypassing cache writes to optimize response time
+    if (false && cacheKey) {
       // 1. Save to global persistent Firestore Cache
       if (backendDb) {
         const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
