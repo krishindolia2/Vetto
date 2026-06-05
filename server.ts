@@ -2511,6 +2511,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     });
   }
 
+  let heartbeatTimer: NodeJS.Timeout | null = null;
   try {
     const { query, budget, useCase, history, images } = req.body;
 
@@ -2708,7 +2709,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
               res.flushHeaders();
               res.write(`data: ${JSON.stringify({ type: "final", auditData: healedCachedData })}\n\n`);
               res.write("data: [DONE]\n\n");
-              if (typeof res.flush === "function") res.flush();
+              if (typeof (res as any).flush === "function") (res as any).flush();
               return res.end();
             } else {
               return res.json(healedCachedData);
@@ -2737,7 +2738,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           res.flushHeaders();
           res.write(`data: ${JSON.stringify({ type: "final", auditData: healedCachedData })}\n\n`);
           res.write("data: [DONE]\n\n");
-          if (typeof res.flush === "function") res.flush();
+          if (typeof (res as any).flush === "function") (res as any).flush();
           return res.end();
         } else {
           return res.json(healedCachedData);
@@ -2749,7 +2750,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
   }
 
   const isSSE = req.headers.accept === "text/event-stream";
-  let heartbeatTimer: NodeJS.Timeout | null = null;
+  heartbeatTimer = null;
 
   if (isSSE) {
     res.setHeader("Content-Type", "text/event-stream");
@@ -2761,13 +2762,13 @@ app.post("/api/audit", securityGuard, async (req, res) => {
 
     // Send initial warm-up SSE message so proxies know the connection is active
     res.write(`data: ${JSON.stringify({ type: "progress", message: "Launching Vetto Strategic Price Scanners..." })}\n\n`);
-    if (typeof res.flush === "function") res.flush();
+    if (typeof (res as any).flush === "function") (res as any).flush();
 
     // Set up active background keep-alive ping loop to keep Render warm
     heartbeatTimer = setInterval(() => {
       if (!res.writableEnded && !req.destroyed) {
         res.write(`data: ${JSON.stringify({ type: "ping" })}\n\n`);
-        if (typeof res.flush === "function") res.flush();
+        if (typeof (res as any).flush === "function") (res as any).flush();
       } else {
         if (heartbeatTimer) {
           clearInterval(heartbeatTimer);
@@ -3086,7 +3087,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       
       // Send initial metadata with preFetchedPrices
       res.write(`data: ${JSON.stringify({ type: "metadata", preFetchedPrices })}\n\n`);
-      if (typeof res.flush === "function") res.flush();
+      if (typeof (res as any).flush === "function") (res as any).flush();
 
       try {
         let stream: any;
@@ -3131,7 +3132,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           if (chunkText) {
             text += chunkText;
             res.write(`data: ${JSON.stringify({ type: "chunk", text: chunkText })}\n\n`);
-            if (typeof res.flush === "function") res.flush();
+            if (typeof (res as any).flush === "function") (res as any).flush();
           }
         }
 
@@ -3145,7 +3146,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         console.error("Stream generation failed:", err);
         if (heartbeatTimer) clearInterval(heartbeatTimer);
         res.write(`data: ${JSON.stringify({ type: "error", message: err.message })}\n\n`);
-        if (typeof res.flush === "function") res.flush();
+        if (typeof (res as any).flush === "function") (res as any).flush();
         res.end();
         return;
       }
@@ -3202,7 +3203,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           if (heartbeatTimer) clearInterval(heartbeatTimer);
           res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
           res.write("data: [DONE]\n\n");
-          if (typeof res.flush === "function") res.flush();
+          if (typeof (res as any).flush === "function") (res as any).flush();
           res.end();
         } else {
           res.status(200).json(auditData);
@@ -3212,7 +3213,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         if (isSSE) {
           if (heartbeatTimer) clearInterval(heartbeatTimer);
           res.write(`data: ${JSON.stringify({ type: "error", message: "Engine failed to format results cleanly." })}\n\n`);
-          if (typeof res.flush === "function") res.flush();
+          if (typeof (res as any).flush === "function") (res as any).flush();
           res.end();
         } else {
           res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
@@ -3294,7 +3295,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         res.flushHeaders();
       }
       res.write(`data: ${JSON.stringify({ type: "error", message, errorType })}\n\n`);
-      if (typeof res.flush === "function") res.flush();
+      if (typeof (res as any).flush === "function") (res as any).flush();
       res.end();
     } else {
       res.status(status).json({ 

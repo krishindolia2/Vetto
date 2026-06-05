@@ -60,7 +60,6 @@ import {
   Skull,
   Phone,
   Radio,
-  Settings,
   Fingerprint,
   Layers,
   Loader2,
@@ -476,8 +475,6 @@ export default function App() {
   const [isFounder, setIsFounder] = useState(() => localStorage.getItem("vetto_founder") === "true"); // Load from local storage
   const [founderKey, setFounderKey] = useState("");
   const [showFounderAuth, setShowFounderAuth] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [customApiKey, setCustomApiKey] = useState(() => localStorage.getItem("vetto_gemini_api_key") || "");
   const [lastAuditTime, setLastAuditTime] = useState<number>(0);
   const AUDIT_COOLDOWN = 10000; // 10 seconds between audits
   const [hotlineMessage, setHotlineMessage] = useState("");
@@ -1159,7 +1156,7 @@ export default function App() {
         logEvent(analytics, 'audit_generated', {
           product_name: recommendationWithMeta.productName || 'unknown',
           value_index: recommendationWithMeta.paisaVasoolIndex || 0,
-          category: recommendationWithMeta.category || 'unknown'
+          category: (recommendationWithMeta as any).category || 'unknown'
         });
       }
 
@@ -1431,16 +1428,6 @@ export default function App() {
               <HelpCircle className="w-4 h-4" />
               <span className="font-bold text-[10px] uppercase tracking-widest hidden sm:inline">
                 How it Works
-              </span>
-            </button>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="flex items-center gap-2 px-4 py-2 text-zinc-400 hover:text-accent transition-all duration-300 cursor-pointer"
-              title="Settings"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="font-bold text-[10px] uppercase tracking-widest hidden sm:inline">
-                Settings
               </span>
             </button>
             {user ? (
@@ -2558,76 +2545,7 @@ export default function App() {
           </motion.div>
         )}
 
-        <AnimatePresence>
-          {showSettings && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[200] bg-bg/95 backdrop-blur-3xl flex items-center justify-center p-6"
-            >
-              <div className="w-full max-w-md glass-panel p-12 space-y-10 border-accent/20 relative">
-                <button
-                  onClick={() => setShowSettings(false)}
-                  className="absolute top-6 right-6 text-white/20 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </button>
 
-                <div className="text-center space-y-4">
-                  <span className="text-[10px] font-mono text-accent uppercase tracking-[0.5em]">
-                    Engine Settings
-                  </span>
-                  <p className="text-sm font-serif italic text-white/40">
-                    Configure your personal keys and custom parameters.
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">
-                      Gemini API Key
-                    </label>
-                    <input
-                      type="password"
-                      placeholder="Enter API Key (starts with AIzaSy...)"
-                      value={customApiKey}
-                      onChange={(e) => setCustomApiKey(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 font-mono text-xs text-white focus:outline-none focus:border-accent transition-colors"
-                    />
-                    <p className="text-[9px] text-zinc-400 leading-normal">
-                      Your key is saved locally in your browser and used directly for all verification scans to bypass public high-priority queue saturation.
-                    </p>
-                  </div>
-
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      onClick={() => {
-                        localStorage.setItem("vetto_gemini_api_key", customApiKey);
-                        showToast("Settings saved successfully!", "success");
-                        setShowSettings(false);
-                      }}
-                      className="flex-grow bg-accent text-bg py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white transition-all"
-                    >
-                      Save Settings
-                    </button>
-                    <button
-                      onClick={() => {
-                        setCustomApiKey("");
-                        localStorage.removeItem("vetto_gemini_api_key");
-                        showToast("Custom API key cleared.", "info");
-                        setShowSettings(false);
-                      }}
-                      className="px-6 py-4 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/5 hover:text-white transition-all"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <AnimatePresence>
           {showFounderAuth && (
@@ -2972,23 +2890,12 @@ export default function App() {
 
                   <div className="space-y-4 text-slate-700 text-sm leading-relaxed">
                     <p className="font-medium">
-                      Bhai note: VETTO's uncompromised, real-time forensic scanning is currently processing hundreds of queries. To ensure absolute speed and accuracy without waiting in high-priority queues, you can configure your own key:
+                      Bhai note: VETTO's uncompromised, real-time forensic scanning is currently processing hundreds of queries. High-priority audit queues are currently saturated.
                     </p>
                     <div className="border-t border-amber-200/60 my-4" />
-                    <p className="font-bold text-slate-950 border-l-2 border-amber-500 pl-2">
-                      To run high-speed scans instantly:
+                    <p className="font-medium">
+                      Please wait a few moments and click <strong className="text-slate-900">Try Again</strong> below to retry.
                     </p>
-                    <ul className="list-decimal list-inside space-y-2.5 pl-1 text-slate-600 font-medium">
-                      <li>
-                        Click the <strong className="text-slate-900">Settings</strong> (⚙️) gear icon in the top-right corner.
-                      </li>
-                      <li>
-                        Enter your personal, secure <strong className="text-slate-900">Gemini API Key</strong> to allocate dedicated, private quota directly for your audits.
-                      </li>
-                      <li>
-                        Tap <strong className="text-slate-900">Try Again</strong> below to resume instant verification.
-                      </li>
-                    </ul>
                   </div>
                 </div>
               ) : (

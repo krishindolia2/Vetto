@@ -134,10 +134,7 @@ export async function getRecommendation(
         "Content-Type": "application/json",
         "Accept": "text/event-stream"
       };
-      const customKey = typeof window !== 'undefined' ? localStorage.getItem("vetto_gemini_api_key") : null;
-      if (customKey) {
-        headers["X-Gemini-API-Key"] = customKey.trim();
-      }
+
 
       const response = await fetch("/api/audit", {
         method: "POST",
