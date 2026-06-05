@@ -801,6 +801,16 @@ function getReferencePrice(auditData: any, parsedQuery: string, budget: string):
   return 12000; // Sensible generic fallback
 }
 
+// Helper to classify if an automotive item is an accessory (helmet, dashcam, tyre, etc.) rather than a whole vehicle
+function isAutomotiveAccessory(prodName: string, query: string): boolean {
+  const combined = `${prodName} ${query}`.toLowerCase();
+  const accessoryKeywords = [
+    'helmet', 'dashcam', 'gps tracker', 'tyre', 'tire', 'inflator', 'lubricant', 
+    'engine oil', 'riding gear', 'car perfume', 'alloy wheels', 'car wash', 'riding gloves'
+  ];
+  return accessoryKeywords.some(kw => combined.includes(kw));
+}
+
 // Helper to classify if an automotive item is a two-wheeler (scooter, bike, etc.)
 function isTwoWheeler(prodName: string, query: string): boolean {
   const combined = `${prodName} ${query}`.toLowerCase();
@@ -852,7 +862,13 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
   const hasAutomotive = automotiveKeywords.some(matchKeyword);
   const hasAccessory = accessoryKeywords.some(matchKeyword);
   
-  if (hasAutomotive && !hasAccessory) {
+  const automotiveAccessoryKeywords = [
+    'helmet', 'dashcam', 'gps tracker', 'tyre', 'tire', 'inflator', 'lubricant', 
+    'engine oil', 'riding gear', 'car perfume', 'alloy wheels', 'car wash', 'riding gloves'
+  ];
+  const isAutoAccessory = automotiveAccessoryKeywords.some(matchKeyword);
+
+  if (isAutoAccessory || (hasAutomotive && !hasAccessory)) {
     return 'automotive';
   } else if (hasFashion && !hasElectronics) {
     return 'fashion';
@@ -1580,46 +1596,75 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
       const category = detectProductCategory("", resolvedProductName);
       let platformRestrictionRule = "";
       if (category === 'fashion') {
-        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is a FASHION product query. You MUST actively restrict the e-commerce platforms and links to: Myntra, Ajio, Amazon India, and Flipkart. Do NOT look up or return prices/links for Croma, Reliance Digital, or other irrelevant sites.`;
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is a FASHION product query. You MUST actively restrict the e-commerce platforms and links to: Myntra, Ajio, Tata CLiQ, and Amazon. Do NOT look up or return prices/links for Croma, Reliance Digital, or other irrelevant sites.`;
       } else if (category === 'electronics') {
-        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an ELECTRONICS product query. You MUST actively restrict the e-commerce platforms and links to: Croma, Reliance Digital, Amazon India, and Flipkart. Do NOT look up or return prices/links for Myntra, Ajio, or other irrelevant sites.`;
+        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an ELECTRONICS product query. You MUST actively restrict the e-commerce platforms and links to: Flipkart, Amazon, Croma, and Reliance Digital. Do NOT look up or return prices/links for Myntra, Ajio, or other irrelevant sites.`;
       } else if (category === 'automotive') {
-        platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE (cars, bikes) query. You MUST actively restrict the platforms and links to: CarWale, BikeWale, CarDekho, BikeDekho, ZigWheels, and the official brand store web page (e.g. Maruti Suzuki, Tata Motors, Hyundai India, Honda, Ather Energy, Ola Electric, Royal Enfield, Yamaha, etc.). Do NOT look up or return prices/links for Amazon, Flipkart, Myntra, Ajio, Croma, or Reliance Digital under any circumstances.`;
+        const isAccessory = isAutomotiveAccessory(resolvedProductName, cleanQuery);
+        if (isAccessory) {
+          platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE ACCESSORY query. You MUST actively restrict the platforms and links to: Amazon, Flipkart, CaratLane, or Garware. Do NOT look up or return prices/links for Myntra, Croma, or Reliance Digital under any circumstances.`;
+        } else {
+          platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: This is an AUTOMOTIVE VEHICLE query. You MUST actively restrict the platforms and links to: CarWale, BikeWale, CarDekho, BikeDekho, ZigWheels, and official brand direct sites. Do NOT look up or return prices/links for Amazon, Flipkart, Myntra, Ajio, Croma, or Reliance Digital.`;
+        }
       } else {
         platformRestrictionRule = `CRITICAL CATEGORY PLATFORM RULE: For general products, restrict e-commerce platforms to: Amazon India, Flipkart, Croma, Reliance Digital, Ajio, Myntra, or Tata CLiQ.`;
       }
 
-      const preFetchPrompt = `You are a precision internet search tool and price scraper for fetching live real-world e-commerce prices.
-      Target Resolved Specific Product: "${resolvedProductName}"
-      Original User Query Context: "${cleanQuery}" ${budgetLimit ? `(Budget: ₹${budgetLimit})` : ""}
-      
-      Your single goal is to find active prices, stock status, and direct product links for the EXACT resolved product "${resolvedProductName}".
-      Do NOT look up general category listicles. You MUST focus your search strictly on this specific resolved product model.
-      
-      STEP 1: PRICE FETCHING
-      Identify the currently active real-world selling prices (in Indian Rupees, ₹), actual stock status (e.g., 'In Stock', 'Out of Stock'), and matching product direct URLs (specifically product pages, e.g. /dp/ or /p/) for the EXACT resolved product "${resolvedProductName}" on at least 3 major e-commerce platforms in India.
-      
-      ${platformRestrictionRule}
-      
-      CRITICAL ACCURACY & LINK-SYNC RULES:
-      1. ONLY return pricing and stock status for the EXACT specifications of "${resolvedProductName}".
-      2. PRICE-TO-LINK SYNCHRONIZATION SAFEGUARD: The price you return for a platform MUST be the exact active price displayed on the returned URL page today. Under no circumstances are you allowed to pair a low price found in an outdated snippet with a URL that points to a higher-priced listing or a different specification variant.
-      3. VARIANT CONSISTENCY RULE: If the URL points to a different configuration (e.g. different storage/RAM), mark that platform Out of Stock.
-      4. If that specific model or spec variant is not available, or is out of stock on a retailer platform, you MUST set its "price" to "Out of Stock", "stockStatus" to "Out of Stock", "url" to "", and "exactVariantMatch" as false.
-      5. NEVER substitute or return the price of a different variant.
-      6. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, bags, refurbished/used units, or parts.
-      7. BASE PUBLIC RETAIL PRICE RULE: Under no circumstances are you allowed to return prices that depend on trade-ins, exchange offers, corporate discounts, or specific bank credit card instant cashbacks. Only return the standard public retail selling price that any general user sees upon landing on the retailer product page.
-      8. You MUST search the internet right now using search grounding. Actively perform multiple, targeted Google search queries for each platform specifically (e.g. search "[Resolved Product Name] Amazon India price", "[Resolved Product Name] Flipkart price", "[Resolved Product Name] Croma price") to fetch the exact active prices and direct product landing pages instead of generic blogs or outdated lists.
-      9. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/) ONLY if it is explicitly present in the grounding chunks/metadata. If it is NOT present in the grounding metadata, you MUST return the platform's search URL fallback (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]") or an empty string. Under no circumstances are you allowed to fabricate, guess, or invent a product page URL containing made-up numeric IDs or placeholders (like itm99999 or itm00000). Doing so violates Vetto's safety rules.
-      10. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
-      
-      Return the results in a strict JSON object conforming to the response schema:
-      - "product_name": set this exactly to the specific product model "${resolvedProductName}".
-      - "where_to_buy": an array of objects, each containing:
-        * "platform": e.g., Amazon, Flipkart, Croma.
-        * "current_price": the exact numeric base price without bank discounts (as a number, e.g. 37999). If out of stock or unavailable, set to 0.
-        * "exact_url": the raw canonical link extracted directly from grounding chunks.
-      Only return valid JSON conforming to the schema. No markdown, no explanations.`;
+      const preFetchPrompt = `You are the primary Data Isolation & Price-Mapping Engine for Vetto. Your goal is to generate 100% accurate marketplace links and stock data for the "WHERE TO BUY & STOCK CHECK" section based strictly on the item's industry category.
+
+Target Resolved Specific Product: "${resolvedProductName}"
+Original User Query Context: "${cleanQuery}" ${budgetLimit ? `(Budget: ₹${budgetLimit})` : ""}
+
+Follow these rules with absolute precision:
+
+1. CATEGORY PLATFORM MATCHING (NEVER CROSS LINK):
+Before looking up or creating links, identify the product's category and ONLY use the allowed platforms:
+- ELECTRONICS (e.g., Phones, Laptops, Gadgets): Only use Flipkart, Amazon, Croma, and Reliance Digital.
+- FASHION (e.g., Shoes, Clothes, Watches): Only use Myntra, Ajio, Tata CLiQ, and Amazon. Never show Croma or Reliance Digital here.
+- AUTOMOTIVE (e.g., Car accessories, Riding Gear, Helmets): Only use Amazon, Flipkart, CaratLane/Garware (if applicable), or dedicated auto accessory hubs. Never show Myntra or Croma here.
+
+2. STRICT ITEM ISOLATION (NO MIXING RECOMMENDED ALTERNATIVES):
+- Identify the exact "Primary Analyzed Item" at the top of the page. 
+- The links in the "Where to Buy" section must ONLY point to this exact primary item "${resolvedProductName}". 
+- If a "Smarter Alternative" or secondary recommendation is mentioned lower down on the page, you must completely ignore its keywords, brand names, and URLs when generating the main purchase buttons.
+
+3. LOGICAL LINK DOUBLE-CHECK:
+- Before outputting the final webpage payload, verify the generated URLs.
+- If the primary item is "${resolvedProductName}" and the URL contains words for the alternative item, discard it immediately. 
+- If the primary item is a "Leather Jacket" and a link points to Flipkart Electronics instead of Flipkart Fashion, discard it immediately.
+
+4. SAFE FALLBACK SEARCH LINKS:
+- If a direct, precise product page URL cannot be verified for the primary item "${resolvedProductName}", do not guess and do not borrow an alternative product's link.
+- Instead, fallback to a clean, optimized platform search query using the exact primary item name. 
+  (Example for Electronics: https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME])
+  (Example for Fashion: https://www.myntra.com/[URL_ENCODED_PRODUCT_NAME])
+
+5. LATENCY BUDGET (FAST TRACK EXECUTION):
+- Skip all hidden chain-of-thought processing, internal commentary, or pre-calculations. 
+- Deliver this link mapping instantly alongside the frontend cards to maintain an 8-10 second generation speed.
+
+Current Dynamic Category Directives:
+${platformRestrictionRule}
+
+CRITICAL ACCURACY & LINK-SYNC RULES:
+1. ONLY return pricing and stock status for the EXACT specifications of "${resolvedProductName}".
+2. PRICE-TO-LINK SYNCHRONIZATION SAFEGUARD: The price you return for a platform MUST be the exact active price displayed on the returned URL page today. Under no circumstances are you allowed to pair a low price found in an outdated snippet with a URL that points to a higher-priced listing or a different specification variant.
+3. VARIANT CONSISTENCY RULE: If the URL points to a different configuration (e.g. different storage/RAM), mark that platform Out of Stock.
+4. If that specific model or spec variant is not available, or is out of stock on a retailer platform, you MUST set its "price" to "Out of Stock", "stockStatus" to "Out of Stock", "url" to "", and "exactVariantMatch" as false.
+5. NEVER substitute or return the price of a different variant.
+6. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, bags, refurbished/used units, or parts.
+7. BASE PUBLIC RETAIL PRICE RULE: Under no circumstances are you allowed to return prices that depend on trade-ins, exchange offers, corporate discounts, or specific bank credit card instant cashbacks. Only return the standard public retail selling price that any general user sees upon landing on the retailer product page.
+8. You MUST search the internet right now using search grounding. Actively perform multiple, targeted Google search queries for each platform specifically (e.g. search "[Resolved Product Name] Amazon India price", "[Resolved Product Name] Flipkart price", "[Resolved Product Name] Croma price") to fetch the exact active prices and direct product landing pages instead of generic blogs or outdated lists.
+9. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/) ONLY if it is explicitly present in the grounding chunks/metadata. If it is NOT present in the grounding metadata, you MUST return the platform's search URL fallback (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]") or an empty string. Under no circumstances are you allowed to fabricate, guess, or invent a product page URL containing made-up numeric IDs or placeholders (like itm99999 or itm00000). Doing so violates Vetto's safety rules.
+10. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
+
+Return the results in a strict JSON object conforming to the response schema:
+- "product_name": set this exactly to the specific product model "${resolvedProductName}".
+- "where_to_buy": an array of objects, each containing:
+  * "platform": e.g., Amazon, Flipkart, Croma.
+  * "current_price": the exact numeric base price without bank discounts (as a number, e.g. 37999). If out of stock or unavailable, set to 0.
+  * "exact_url": the raw canonical link extracted directly from grounding chunks.
+Only return valid JSON conforming to the schema. No markdown, no explanations.`;
 
       const response = await callGeminiWithRetry({
         model: modelToUse,
@@ -2068,10 +2113,55 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       let rawUrl = String(link.url || "").trim();
       
       let platformLower = platform.toLowerCase();
+
+      // Rule 2 & 3: STRICT ITEM ISOLATION & LOGICAL LINK DOUBLE-CHECK
+      // Discard/filter out URLs that contain terms from the alternative name but not from the product name, or are otherwise mismatched.
+      const altName = data.vettoContrast?.alternativeName || "";
+      let isMismatchedAltUrl = false;
+      if (altName && rawUrl) {
+        const altLower = altName.toLowerCase();
+        const prodLower = prodName.toLowerCase();
+        const urlLower = rawUrl.toLowerCase();
+        
+        // Split alternative name into words, filter out common/short words and words that are in the product name
+        const commonWords = new Set(["phone", "laptop", "buds", "air", "pro", "plus", "max", "ultra", "earbuds", "running", "shoes", "shoe", "bike", "car", "scooter", "vs", "with", "for", "the", "and"]);
+        const altWords = altLower.split(/\s+/).filter(w => w.length > 2 && !commonWords.has(w) && !prodLower.includes(w));
+        
+        if (altWords.length > 0) {
+          const containsAltWord = altWords.some(w => urlLower.includes(w));
+          if (containsAltWord) {
+            console.log(`[Safety Guard] Discarding URL containing alternative item terms: ${rawUrl} (Alternative: ${altName}, Product: ${prodName})`);
+            isMismatchedAltUrl = true;
+          }
+        }
+      }
+
+      // Category cross-contamination double check
+      let isCategoryContaminated = false;
+      if (rawUrl) {
+        const urlLower = rawUrl.toLowerCase();
+        if (category === 'fashion') {
+          // If the URL contains electronics stores or keywords
+          const electronicsStores = ["/electronics-store/", "electronics", "mobiles", "laptops", "appliances", "computers", "/cameras/"];
+          const hasElectronicsTerm = electronicsStores.some(w => urlLower.includes(w));
+          if (hasElectronicsTerm && !prodName.toLowerCase().includes("watch") && !prodName.toLowerCase().includes("smartwatch")) {
+            console.log(`[Safety Guard] Discarding Fashion URL pointing to Electronics store/category: ${rawUrl}`);
+            isCategoryContaminated = true;
+          }
+        } else if (category === 'electronics') {
+          // If the URL contains fashion stores or keywords
+          const fashionStores = ["/clothing-store/", "apparel", "clothing", "shoes", "fashion", "handbags", "/beauty/"];
+          const hasFashionTerm = fashionStores.some(w => urlLower.includes(w));
+          if (hasFashionTerm && !prodName.toLowerCase().includes("wear") && !prodName.toLowerCase().includes("watch")) {
+            console.log(`[Safety Guard] Discarding Electronics URL pointing to Fashion store/category: ${rawUrl}`);
+            isCategoryContaminated = true;
+          }
+        }
+      }
       
       // Category-Specific Remapping of Platform Names to prevent trust-violating mismatches
       if (category === 'fashion') {
-        const allowedFashion = ["myntra", "ajio", "amazon", "flipkart"];
+        const allowedFashion = ["myntra", "ajio", "amazon", "flipkart", "tata cliq", "tatacliq"];
         const isAllowed = allowedFashion.some(p => platformLower.includes(p));
         if (!isAllowed) {
           if (platformLower.includes("croma") || platformLower.includes("reliance") || platformLower.includes("digital")) {
@@ -2089,6 +2179,7 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
           else if (platformLower.includes("ajio")) platform = "Ajio";
           else if (platformLower.includes("amazon")) platform = "Amazon";
           else if (platformLower.includes("flipkart")) platform = "Flipkart";
+          else if (platformLower.includes("tata cliq") || platformLower.includes("tatacliq")) platform = "Tata CLiQ";
           label = `Buy on ${platform}`;
           platformLower = platform.toLowerCase();
         }
@@ -2114,33 +2205,45 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
         }
       } else if (category === 'automotive') {
         const isTwoWh = isTwoWheeler(prodName, parsedQuery);
-        if (isTwoWh) {
-          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon") || platformLower.includes("flipkart") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
-            const currentEx = Array.from(existingPlatforms);
-            if (!currentEx.includes("bikewale")) {
-              platform = "BikeWale";
-            } else if (!currentEx.includes("bikedekho")) {
-              platform = "BikeDekho";
-            } else {
-              platform = "ZigWheels";
-            }
-            label = `Check ${platform} Price`;
+        const isAccessory = isAutomotiveAccessory(prodName, parsedQuery);
+        if (isAccessory) {
+          // Automotive Accessory: only Amazon, Flipkart, CaratLane/Garware, or dedicated hubs (never Myntra or Croma)
+          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
+            platform = "Amazon";
+            label = `Buy on ${platform}`;
             rawUrl = "";
             platformLower = platform.toLowerCase();
           }
         } else {
-          if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon") || platformLower.includes("flipkart") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
-            const currentEx = Array.from(existingPlatforms);
-            if (!currentEx.includes("carwale")) {
-              platform = "CarWale";
-            } else if (!currentEx.includes("cardekho")) {
-              platform = "CarDekho";
-            } else {
-              platform = "ZigWheels";
+          // Vehicle: Use bikewale/carwale etc.
+          if (isTwoWh) {
+            if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon") || platformLower.includes("flipkart") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
+              const currentEx = Array.from(existingPlatforms);
+              if (!currentEx.includes("bikewale")) {
+                platform = "BikeWale";
+              } else if (!currentEx.includes("bikedekho")) {
+                platform = "BikeDekho";
+              } else {
+                platform = "ZigWheels";
+              }
+              label = `Check ${platform} Price`;
+              rawUrl = "";
+              platformLower = platform.toLowerCase();
             }
-            label = `Check ${platform} Price`;
-            rawUrl = "";
-            platformLower = platform.toLowerCase();
+          } else {
+            if (platformLower.includes("myntra") || platformLower.includes("croma") || platformLower.includes("amazon") || platformLower.includes("flipkart") || platformLower.includes("ajio") || platformLower.includes("reliance")) {
+              const currentEx = Array.from(existingPlatforms);
+              if (!currentEx.includes("carwale")) {
+                platform = "CarWale";
+              } else if (!currentEx.includes("cardekho")) {
+                platform = "CarDekho";
+              } else {
+                platform = "ZigWheels";
+              }
+              label = `Check ${platform} Price`;
+              rawUrl = "";
+              platformLower = platform.toLowerCase();
+            }
           }
         }
       }
@@ -2171,7 +2274,7 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       }
 
       // Strip Google redirects, tracking parameters, and heal any generic/mismatched links
-      const urlToClean = isAccessoryOutlier ? "" : rawUrl;
+      const urlToClean = (isAccessoryOutlier || isMismatchedAltUrl || isCategoryContaminated) ? "" : rawUrl;
       const cleanedUrl = cleanAndResolveUrl(urlToClean, platform, prodName);
 
       // Self-heal prices if they are placeholders or non-numeric
@@ -2219,8 +2322,8 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       standardPlatforms = [
         { name: "Myntra", label: "Buy on Myntra Store", path: `https://www.myntra.com/search?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
         { name: "Ajio", label: "Buy on Ajio", path: `https://www.ajio.com/search/?text=${encodedPlusQueryForSearch}`, pct: 0.978 },
-        { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 0.992 },
-        { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.985 }
+        { name: "Tata CLiQ", label: "Buy on Tata CLiQ", path: `https://www.tatacliq.com/search/?text=${encodedPlusQueryForSearch}`, pct: 0.99 },
+        { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 0.992 }
       ];
     } else if (category === 'electronics') {
       standardPlatforms = [
@@ -2230,21 +2333,30 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
         { name: "Reliance Digital", label: "Buy on Reliance Digital", path: `https://www.reliancedigital.in/search?q=${encodedPlusQueryForSearch}`, pct: 1.002 }
       ];
     } else if (category === 'automotive') {
-      const isTwoWh = isTwoWheeler(prodName, parsedQuery);
-      if (isTwoWh) {
+      const isAccessory = isAutomotiveAccessory(prodName, parsedQuery);
+      if (isAccessory) {
         standardPlatforms = [
-          { name: "BikeWale", label: "Check BikeWale Price", path: `https://www.bikewale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
-          { name: "BikeDekho", label: "Check BikeDekho Price", path: `https://www.bikedekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.998 },
-          { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.002 },
-          { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+          { name: "Amazon", label: "Buy on Amazon India", path: `https://www.amazon.in/s?k=${encodedQueryForSearch}`, pct: 1.00 },
+          { name: "Flipkart", label: "Buy on Flipkart", path: `https://www.flipkart.com/search?q=${encodedQueryForSearch}`, pct: 0.99 },
+          { name: "CaratLane", label: "Check CaratLane", path: `https://www.caratlane.com/search?q=${encodedPlusQueryForSearch}`, pct: 1.05 }
         ];
       } else {
-        standardPlatforms = [
-          { name: "CarWale", label: "Check CarWale Price", path: `https://www.carwale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
-          { name: "CarDekho", label: "Check CarDekho Price", path: `https://www.cardekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.995 },
-          { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.005 },
-          { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
-        ];
+        const isTwoWh = isTwoWheeler(prodName, parsedQuery);
+        if (isTwoWh) {
+          standardPlatforms = [
+            { name: "BikeWale", label: "Check BikeWale Price", path: `https://www.bikewale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+            { name: "BikeDekho", label: "Check BikeDekho Price", path: `https://www.bikedekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.998 },
+            { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.002 },
+            { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+          ];
+        } else {
+          standardPlatforms = [
+            { name: "CarWale", label: "Check CarWale Price", path: `https://www.carwale.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.00 },
+            { name: "CarDekho", label: "Check CarDekho Price", path: `https://www.cardekho.com/search/${encodedPlusQueryForSearch}`, pct: 0.995 },
+            { name: "ZigWheels", label: "ZigWheels Comparison", path: `https://www.zigwheels.com/search/?q=${encodedPlusQueryForSearch}`, pct: 1.005 },
+            { name: brandName, label: `Official ${brandName} Site`, path: brandUrl, pct: 1.00 }
+          ];
+        }
       }
     } else {
       standardPlatforms = [

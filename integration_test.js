@@ -83,14 +83,14 @@ function auditCategory(category, query, budget, data) {
   
   const allowedDomains = {
     electronics: ['amazon', 'flipkart', 'croma', 'reliancedigital', 'reliance.com'],
-    fashion: ['myntra', 'ajio', 'amazon', 'flipkart'],
-    automotive: ['carwale', 'bikewale', 'cardekho', 'bikedekho', 'zigwheels']
+    fashion: ['myntra', 'ajio', 'amazon', 'flipkart', 'tatacliq'],
+    automotive: ['amazon', 'flipkart', 'caratlane', 'garware', 'carwale', 'bikewale', 'cardekho', 'bikedekho', 'zigwheels']
   };
 
   const disallowedDomains = {
     electronics: ['myntra', 'ajio', 'carwale', 'bikewale', 'cardekho', 'bikedekho', 'zigwheels'],
     fashion: ['croma', 'reliancedigital', 'reliance.com', 'carwale', 'bikewale', 'cardekho', 'bikedekho', 'zigwheels'],
-    automotive: ['amazon', 'flipkart', 'myntra', 'ajio', 'croma', 'reliancedigital', 'reliance.com']
+    automotive: ['myntra', 'ajio', 'croma', 'reliancedigital', 'reliance.com']
   };
 
   procurementLinks.forEach(link => {
