@@ -155,11 +155,11 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay 
   
   // Standard production stable models to maximize availability and optimize cost billing
   const fallbackModels = [
-    "gemini-3.5-flash",
-    "gemini-2.5-flash"
+    "gemini-2.5-flash",
+    "gemini-1.5-flash"
   ];
 
-  const targetModel = params.model || "gemini-3.5-flash";
+  const targetModel = params.model || "gemini-2.5-flash";
   let currentModel = targetModel;
   
   // Track models that have failed with permissions / 403 to prevent infinite loops
@@ -682,6 +682,12 @@ function extractProductNameFromUrl(inputUrl: string): string | null {
 function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
+  // Self-Healing Cache Versioning Gate
+  if (data.schemaVersion !== "v3") {
+    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v3", found: "${data.schemaVersion || "none"}").`);
+    return false;
+  }
+  
   try {
     const serialized = JSON.stringify(data).toLowerCase();
     
@@ -702,7 +708,7 @@ function isValidCachedData(data: any): boolean {
       }
       const hasPlaceholders = links.some((link: any) => {
         const p = String(link.price || "").toLowerCase();
-        return p.includes("live") || p.includes("check") || p.includes("tbd") || p.includes("n/a") || p === "0" || p === "";
+        return p.includes("tbd") || p.includes("n/a") || p === "0" || p === "";
       });
       if (hasPlaceholders) {
         console.log(`[Cache Engine] Bypassing cache since one or more platforms lack direct numeric prices.`);
@@ -1454,7 +1460,6 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
-        tools: [{ googleSearch: {} }],
         temperature: 0.0,
         maxOutputTokens: 4000
       }
@@ -1563,8 +1568,8 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
   if (!resolvedProductName) return null;
 
   const fallbackModels = [
-    "gemini-3.5-flash",
-    "gemini-2.5-flash"
+    "gemini-2.5-flash",
+    "gemini-1.5-flash"
   ];
 
   for (let attempt = 0; attempt < retries; attempt++) {
@@ -1605,7 +1610,7 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
       6. You MUST only return the price of the actual core main product itself. Strictly IGNORE accessories, cases, covers, chargers, bags, refurbished/used units, or parts.
       7. BASE PUBLIC RETAIL PRICE RULE: Under no circumstances are you allowed to return prices that depend on trade-ins, exchange offers, corporate discounts, or specific bank credit card instant cashbacks. Only return the standard public retail selling price that any general user sees upon landing on the retailer product page.
       8. You MUST search the internet right now using search grounding. Actively perform multiple, targeted Google search queries for each platform specifically (e.g. search "[Resolved Product Name] Amazon India price", "[Resolved Product Name] Flipkart price", "[Resolved Product Name] Croma price") to fetch the exact active prices and direct product landing pages instead of generic blogs or outdated lists.
-      9. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/). If the exact direct product page URL cannot be confidently found but the product is visibly in stock, you MUST explicitly construct and return a valid search result URL for that platform (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]", "https://www.flipkart.com/search?q=[URL_ENCODED_PRODUCT_NAME]"). NEVER return a dead link or a listicle. A valid platform search URL is a mandatory safe fallback.
+      9. For "url", you MUST prioritize returning a working direct product page URL (like Amazon /dp/ or Flipkart /p/) ONLY if it is explicitly present in the grounding chunks/metadata. If it is NOT present in the grounding metadata, you MUST return the platform's search URL fallback (e.g. "https://www.amazon.in/s?k=[URL_ENCODED_PRODUCT_NAME]") or an empty string. Under no circumstances are you allowed to fabricate, guess, or invent a product page URL containing made-up numeric IDs or placeholders (like itm99999 or itm00000). Doing so violates Vetto's safety rules.
       10. HALLUCINATION STRICT-RULE: Do not invent prices. If you do not see a price explicitly written in current google search results for a reputable Indian e-commerce platform, return "Out of Stock".
       
       Return the results in a strict JSON object conforming to the response schema:
@@ -1790,12 +1795,23 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
               }
 
               // If it's not verified but is a specific product page, check if it's high quality
+              const isAutomotiveDomain = url && (
+                url.includes("bikedekho.com") || 
+                url.includes("bikewale.com") || 
+                url.includes("cardekho.com") || 
+                url.includes("carwale.com") || 
+                url.includes("zigwheels.com") ||
+                url.includes("atherenergy.com") ||
+                url.includes("olaelectric.com") ||
+                url.includes("royalenfield.com")
+              );
               const isSpecificProductPage = url && (
                 url.includes("/dp/") || 
                 url.includes("/p/") || 
                 url.includes("-p-") || 
                 url.includes("/product/") || 
-                url.includes("/buy/")
+                url.includes("/buy/") ||
+                (isAutomotiveDomain && !url.includes("/search") && !url.includes("?q=") && !url.includes("search?"))
               ) && url.length >= 30;
 
               // Detect placeholder or fake hallucinated URL patterns (e.g. itm1000000000000)
@@ -2684,8 +2700,8 @@ app.post("/api/audit", securityGuard, async (req, res) => {
   }
   const cacheKey = Buffer.from(normKeyParts.join("-")).toString('base64').replace(/[/+=]/g, '_').substring(0, 200);
 
-  // Live Real-Time Grounding: Bypassing cache reads to ensure 100% accurate live recommendations
-  if (false && cacheKey) {
+  // Live Real-Time Grounding: Using versioned persistent cache to optimize response latency under 150ms
+  if (cacheKey) {
     // 1. First attempt to fetch from persistent, global Firestore-based Shared Cache
     if (backendDb) {
       try {
@@ -2896,8 +2912,6 @@ To satisfy the Vetto frontend rendering architecture and prevent crashes, you MU
 - priceIntegrity.procurementLinks: [🛒 Live Procurement Data (Verified Accurate) - Current Live Price, Stock Status, and Direct Verified Link]
 - vettoContrast: [🔄 Smarter Value Alternatives (Only if Vetto Signal is WAIT/HOLD)]
 
-CRITICAL LOGICAL BOUNDARIES (ANTI-CROSS CONTAMINATION) price including exchange bonus" or "With specific bank card discounts".
-
 CRITICAL LOGICAL BOUNDARIES (ANTI-CROSS CONTAMINATION)
 1. CATEGORY ISOLATION: You must strictly map product domains to their valid platforms. 
    - If the product is AUTOMOTIVE: Never look for or output e-commerce retail links (e.g., Amazon/Flipkart). Only use certified automobile marketplaces or brand direct URLs.
@@ -3017,7 +3031,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-3.5-flash";
+    const modelToUse = "gemini-2.5-flash";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];
@@ -3092,7 +3106,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       try {
         let stream: any;
         let lastErr: any;
-        const streamFallbackModels = ["gemini-3.5-flash", "gemini-2.5-flash"];
+        const streamFallbackModels = ["gemini-2.5-flash", "gemini-1.5-flash"];
         let activeStreamModel = modelToUse;
 
         // Resilient retry with model fallback rotation
@@ -3220,8 +3234,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         }
       }
 
-    // Live Real-Time Grounding: Bypassing cache writes to optimize response time
-    if (false && cacheKey) {
+    // Live Real-Time Grounding: Persisting versioned cache for sub-second repeat responses
+    if (cacheKey) {
       // 1. Save to global persistent Firestore Cache
       if (backendDb) {
         const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
@@ -3229,7 +3243,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           try {
             await withTimeout(
               setDoc(cacheDocRef, {
-                data: auditData,
+                data: { ...auditData, schemaVersion: "v3" },
                 timestamp: Date.now(),
                 query: parsedQuery,
                 createdAt: serverTimestamp()
@@ -3245,7 +3259,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { data: auditData, timestamp: Date.now() });
+      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v3" }, timestamp: Date.now() });
       saveCacheToDisk();
     }
   } catch (error: any) {

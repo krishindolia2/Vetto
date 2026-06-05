@@ -4,125 +4,111 @@
     "query": "best earbuds under 5k",
     "budget": "5000",
     "resolvedName": "Realme Buds Air 6 Pro",
-    "finalDecision": "BUY",
+    "finalDecision": "WAIT",
     "checks": [
       "Resolved Product Name: \"Realme Buds Air 6 Pro\"",
-      "Budget: ₹5,000, Lowest Active Price: ₹3,999",
-      "PASS: Recommended product's lowest active price fits the budget constraint.",
+      "Budget: ₹5,000, Fair Price Target (OOS fallback): ₹4,999",
+      "PASS: Recommended product's fair price target fits the budget constraint.",
       "Found 4 procurement links.",
-      "Link: Flipkart | Price: ₹3999 | Stock: In Stock | URL: https://www.flipkart.com/realme-buds-air-6-pro-50db-anc-360-spatial-audio-upto-40-hours-playback-bluetooth-headset/p/itm90760b20lxyj7",
-      "PASS: Platform link for Flipkart is appropriate for electronics category.",
-      "Link: Croma | Price: ₹4374 | Stock: In Stock | URL: https://www.croma.com/realme-buds-air-6-pro-tws-earbuds-with-active-noise-cancellation-ip55-water-resistant-google-fast-pairing-sliver-blue-/p/307411",
-      "PASS: Platform link for Croma is appropriate for electronics category.",
-      "Link: Reliance Digital | Price: ₹4499 | Stock: In Stock | URL: https://www.reliancedigital.in/realme-air-6-pro-tws-bluetooth-earbuds-with-11-mm-dynamic-bass-boost-drivers-6-mm-micro-planer-tweeter-40-hours-play-time-fast-charge---10-min-charge-for-7-hours-playback-titanium-twilight-/p/494410760",
-      "PASS: Platform link for Reliance Digital is appropriate for electronics category.",
+      "Link: Flipkart | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Flipkart correctly has an empty URL string.",
       "Link: Amazon | Price: Out of Stock | Stock: Out of Stock | URL: ",
       "PASS: OOS item on Amazon correctly has an empty URL string.",
-      "Expected Current Price: ₹3999, Latest Chart Node Price: ₹3999 (May 2026)",
+      "Link: Croma | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Croma correctly has an empty URL string.",
+      "Link: Reliance Digital | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Reliance Digital correctly has an empty URL string.",
+      "Expected Current Price: ₹3999, Latest Chart Node Price: ₹3999 (June)",
       "PASS: Price history latest node matches the expected current price.",
-      "Lowest Deal: ₹3999, Fair Target: ₹4499, Expected Delta:  ₹500, Parsed Delta: ₹500",
-      "PASS: priceDelta matches expected difference between best deal and fair price target.",
       "PASS: Banned jargon \"equilibrium\" is not present in the response.",
       "PASS: Banned jargon \"volatility\" is not present in the response.",
       "PASS: Banned jargon \"msrp\" is not present in the response.",
       "PASS: Banned jargon \"market correction\" is not present in the response.",
       "PASS: Banned jargon \"depreciation\" is not present in the response.",
       "PASS: Banned jargon \"portfolio\" is not present in the response.",
-      "aamAadmiSummary: \"This is a fantastic pair of earbuds that gives you premium sound and peace of mind without breaking the bank. For example, when you are sitting in a noisy local train, turning on the noise cancellation instantly blocks out the loud track clatter and passenger chatter, letting you enjoy your music or take office calls clearly.\"",
-      "bhartiyaPersonaAudit: \"Perfect for the middle-class Indian commuter who travels in crowded buses or trains daily and needs reliable noise blockout and clear calling without spending a fortune.\""
+      "aamAadmiSummary: \"Bhaiya, for your daily train travel, these Realme Buds Air 6 Pro are a solid pick. They cut out most of that annoying train rumble, so you can listen to music or podcasts in peace. Plus, the mic is clear enough for calls even when you're on the go. For example, you can easily take a work call while commuting from Thane to CST without shouting.\"",
+      "bhartiyaPersonaAudit: \"For the average Indian train commuter, these earbuds are a godsend. They block out the constant chatter and horn honking, letting you enjoy your journey. The battery lasts long enough for multiple daily commutes without constant charging, fitting perfectly into a busy schedule.\""
     ],
     "issues": [],
     "rawResponse": {
       "isAnalysis": true,
       "productName": "Realme Buds Air 6 Pro",
       "isComparison": false,
-      "finalDecision": "BUY",
-      "whyBest": "It is the absolute best choice under ₹5,000 because it offers genuine dual-driver hardware and flagship-grade noise cancellation that outperforms every competitor in this budget.",
+      "finalDecision": "WAIT",
+      "whyBest": "The Realme Buds Air 6 Pro offers a fantastic balance of active noise cancellation, decent call quality, and long battery life, making it the best value for a daily train commuter under ₹5,000.",
       "pros": [
-        "Dual coaxial drivers (11mm + 6mm) deliver exceptional high-resolution audio clarity.",
-        "Highly effective 50dB Active Noise Cancellation that easily silences train engine hums.",
-        "Dual-device smart pairing works seamlessly across laptops and mobile phones."
+        "Excellent Active Noise Cancellation for train commutes.",
+        "Clear call quality with AI ENC in most urban settings.",
+        "Good battery life for daily use, including the charging case."
       ],
       "cons": [
-        "The glossy plastic charging case is highly prone to micro-scratches without a cover.",
-        "LDAC high-res codec drains the battery significantly faster when fully enabled.",
-        "The companion Link app requires intrusive location permissions to function on Android."
+        "Mic performance can struggle in extremely loud environments.",
+        "Sound quality is good for the price but not for audiophiles.",
+        "Long-term durability of plastic build might be a concern."
       ],
-      "aamAadmiSummary": "This is a fantastic pair of earbuds that gives you premium sound and peace of mind without breaking the bank. For example, when you are sitting in a noisy local train, turning on the noise cancellation instantly blocks out the loud track clatter and passenger chatter, letting you enjoy your music or take office calls clearly.",
-      "avoid": "Avoid using the 360-degree Spatial Audio feature as it is a software gimmick that makes your music sound hollow and artificial.",
-      "regretWarning": "You will regret it if you carry the case in your pocket with keys, as the shiny finish will look old and scratched within a single week.",
-      "confidenceScore": 95,
-      "regretRisk": "Low",
-      "whyRegret": "The only minor regret would be the rapid battery drain when using LDAC codec and ANC together, requiring a charge every 4 to 5 hours.",
-      "saferChoice": "OnePlus Buds 3",
-      "marketTiming": "BUY",
-      "marketReasoning": "At ₹3,999 on Flipkart, this product is retailing at its lowest historical price point, making it an absolute steal before stocks run out.",
-      "specLongevity": "3 Years",
-      "personalizedInsight": "For a daily train commuter, toggle the ANC to 'Max' instead of 'Smart' mode to completely isolate the low-frequency rumble of the train tracks.",
-      "socialHook": "The ultimate budget flagship killer for daily Indian commuters is here!",
-      "postOutputHook": "Always buy a cheap silicone protective case immediately to keep the charging case looking brand new.",
-      "paisaVasoolIndex": 92,
-      "statusTax": 880,
-      "utilityScore": 94,
-      "hiddenCosts": "₹299 for a protective silicone case since the original case scratches very easily.",
+      "aamAadmiSummary": "Bhaiya, for your daily train travel, these Realme Buds Air 6 Pro are a solid pick. They cut out most of that annoying train rumble, so you can listen to music or podcasts in peace. Plus, the mic is clear enough for calls even when you're on the go. For example, you can easily take a work call while commuting from Thane to CST without shouting.",
+      "avoid": "Don't expect these to sound like premium audiophile earbuds or have flawless mic performance in a super noisy fish market. They are great for their price, but not a flagship killer.",
+      "regretWarning": "You might regret it if you expect studio-grade sound or if the mic struggles in extremely chaotic environments, which can happen with any budget TWS.",
+      "confidenceScore": 92,
+      "regretRisk": "Medium",
+      "whyRegret": "The mic's noise reduction might occasionally make your voice sound a bit processed to the caller in very loud, unpredictable train station environments, leading to frustration.",
+      "saferChoice": "OnePlus Buds 3 for slightly better overall refinement and mic performance, though at a slightly higher price point.",
+      "marketTiming": "WAIT",
+      "marketReasoning": "The current price of ₹3,999 is excellent for the features offered, especially the strong ANC and good mic quality, making it a great deal right now for the target budget.",
+      "specLongevity": "2-3 years",
+      "personalizedInsight": "For your train commute, make sure to try different ear tip sizes to get the best seal for optimal ANC. Also, keep the earbuds and case clean to maintain charging efficiency and sound quality.",
+      "socialHook": "Train commuters, listen up! 🎧 Ditch the noise, embrace the peace. Realme Buds Air 6 Pro: Your ticket to quiet commutes under ₹5K!",
+      "postOutputHook": "Remember, even the best budget earbuds need care. Keep them clean and avoid dropping them to ensure they last long.",
+      "paisaVasoolIndex": 88,
+      "statusTax": 250,
+      "utilityScore": 90,
+      "hiddenCosts": "No major hidden costs, but consider investing in a good quality cleaning kit for long-term hygiene and performance.",
       "platformWarShield": {
         "hasMarketingSilos": true,
-        "siloExposure": "Some platforms push sponsored lesser-known brands with fake 5-star ratings over this genuine performer.",
-        "truthResilienceScore": 88,
-        "bypassStrategyUsed": "Scraped direct technical specifications and cross-verified real-world user reviews on Reddit and tech forums."
+        "siloExposure": "Realme heavily promotes its ANC and battery life, which are strong points, but often overstates the 'AI' capabilities of its mic.",
+        "truthResilienceScore": 80,
+        "bypassStrategyUsed": "Focused on real-world user feedback and technical specifications of ANC and mic arrays rather than marketing claims."
       },
       "vettoContrast": {
         "alternativeName": "OnePlus Buds 3",
-        "whyContrast": "Offers a slightly more ergonomic fit and physical slide volume controls on the stems, though it lacks the dual-driver sparkle of the Realme.",
+        "whyContrast": "The OnePlus Buds 3 offer a more balanced sound profile and slightly more consistent mic performance, along with a more premium build, for a small increase in budget.",
         "pviBoost": 5,
-        "priceDelta": "₹500 more",
-        "fairPriceTarget": "₹4,499",
-        "procurementGuidance": "Buy from OnePlus official store using bank discounts if you prefer physical volume swipe controls.",
-        "strategicAdvantage": "Better companion app integration on OnePlus devices and slightly more durable matte case finish."
+        "priceDelta": "₹1,000 more",
+        "fairPriceTarget": "₹4,999",
+        "procurementGuidance": "Look for the OnePlus Buds 3 on Amazon or Flipkart during flash sales or with specific bank card offers to get the best deal.",
+        "strategicAdvantage": "You get a more refined audio experience and slightly better overall reliability, which can be worth the extra cost for long-term satisfaction."
       },
       "priceIntegrity": {
         "currentPriceAudit": "₹3,999 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
-        "historicalContext": "This product launched at ₹4,999 and has gradually settled down to the ₹3,999 mark during seasonal sales.",
+        "historicalContext": "Realme's Buds Air Pro series usually launches at a similar price point and sees minor discounts during major festive sales like Diwali or Republic Day. This current price is a good standard offering.",
         "priceHistory": [
           {
-            "month": "March 2026",
-            "price": 4499
-          },
-          {
-            "month": "April 2026",
+            "month": "March",
             "price": 4299
           },
           {
-            "month": "May 2026",
+            "month": "April",
+            "price": 4199
+          },
+          {
+            "month": "May",
+            "price": 3999
+          },
+          {
+            "month": "June",
             "price": 3999
           }
         ],
-        "dealScore": 95,
-        "discountStrategy": "Use Flipkart Axis Bank credit card for an extra 5% unlimited cashback to bring the effective price down to ₹3,799.",
+        "dealScore": 85,
+        "discountStrategy": "Keep an eye out for instant bank discounts, especially with SBI, HDFC, or ICICI cards, which can often shave off an extra ₹200-₹500. Flipkart often has these offers during weekend sales.",
         "procurementLinks": [
           {
             "platform": "Flipkart",
             "label": "Buy on Flipkart",
-            "price": "₹3999",
-            "isBestDeal": true,
-            "url": "https://www.flipkart.com/realme-buds-air-6-pro-50db-anc-360-spatial-audio-upto-40-hours-playback-bluetooth-headset/p/itm90760b20lxyj7",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Croma",
-            "label": "Buy on Croma",
-            "price": "₹4374",
+            "price": "Out of Stock",
             "isBestDeal": false,
-            "url": "https://www.croma.com/realme-buds-air-6-pro-tws-earbuds-with-active-noise-cancellation-ip55-water-resistant-google-fast-pairing-sliver-blue-/p/307411",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Reliance Digital",
-            "label": "Buy on Reliance Digital",
-            "price": "₹4499",
-            "isBestDeal": false,
-            "url": "https://www.reliancedigital.in/realme-air-6-pro-tws-bluetooth-earbuds-with-11-mm-dynamic-bass-boost-drivers-6-mm-micro-planer-tweeter-40-hours-play-time-fast-charge---10-min-charge-for-7-hours-playback-titanium-twilight-/p/494410760",
-            "stockStatus": "In Stock"
+            "url": "",
+            "stockStatus": "Out of Stock"
           },
           {
             "platform": "Amazon",
@@ -131,28 +117,44 @@
             "isBestDeal": false,
             "url": "",
             "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
           }
         ]
       },
       "strategicRoadmap": {
-        "immediateAction": "Purchase immediately from Flipkart at ₹3,999 before the current discount cycle ends.",
-        "peakUtilityAge": "18 to 24 Months",
-        "exitStrategy": "Upgrade to premium tier ANC earbuds once battery capacity naturally degrades after 2 years of heavy daily commuting."
+        "immediateAction": "If you need good ANC and mic for your commute right now, this is a strong 'Buy'. Check for any ongoing bank offers.",
+        "peakUtilityAge": "These earbuds will perform optimally for about 1.5 to 2 years before battery degradation or minor wear and tear might start affecting performance.",
+        "exitStrategy": "After 2-3 years, you can consider upgrading to a newer model. Resale value for budget TWS is generally low, so plan to use them until they wear out."
       },
       "communityPulse": {
-        "redditConsensus": "Users highly praise the soundstage and dual-driver separation, calling it the best sounding TWS under 5k, though some complain about the glossy case quality.",
-        "twitterPulse": "Commuters are highly satisfied with the microphone quality during noisy outdoor walks and metro rides.",
-        "youtubeReality": "Independent reviewers confirm that the 50dB ANC claim is highly accurate and easily beats the OnePlus Buds 3 in deep bass cancellation.",
-        "linkedinProfessional": "Audio enthusiasts highlight the inclusion of LDAC and Hi-Res certification at this price point as a major industry disruptor.",
-        "topUSP": "Dual Coaxial Drivers (11mm bass driver + 6mm micro-planar tweeter)",
-        "topGripe": "The glossy case gets scratched almost instantly when kept in pockets."
+        "redditConsensus": "Users generally praise the ANC performance for its price point, often comparing it favorably to more expensive options for blocking out low-frequency noise. Some mention mic quality can be hit or miss in very windy conditions.",
+        "twitterPulse": "Many users tweet about the great battery life and how effective the ANC is for daily commutes. Occasional complaints about connectivity glitches or app issues are seen, but generally positive.",
+        "youtubeReality": "Independent reviewers confirm the ANC is a standout feature for the price, effectively reducing ambient noise. They often highlight the balanced sound but note it's not for critical listening. Mic tests show good performance indoors but can struggle with strong wind or extreme background noise.",
+        "linkedinProfessional": "While not a professional-grade headset, for casual business calls during commutes, the mic quality is considered acceptable by many, especially given the price point. The ANC helps maintain focus in busy environments.",
+        "topUSP": "Class-leading Active Noise Cancellation for its price segment, making train commutes much quieter.",
+        "topGripe": "Inconsistent microphone performance in very loud or windy outdoor environments, sometimes making calls difficult."
       },
       "lifecyclePhase": {
-        "status": "Mature Product",
+        "status": "Current Model",
         "isObsoleteSoon": false,
-        "nextMajorUpdate": "Realme Buds Air 7 Pro expected in late 2026."
+        "nextMajorUpdate": "Realme typically updates its Buds Air Pro series annually, so a new model (Buds Air 7 Pro) might be expected in late 2026 or early 2027."
       },
-      "bhartiyaPersonaAudit": "Perfect for the middle-class Indian commuter who travels in crowded buses or trains daily and needs reliable noise blockout and clear calling without spending a fortune.",
+      "bhartiyaPersonaAudit": "For the average Indian train commuter, these earbuds are a godsend. They block out the constant chatter and horn honking, letting you enjoy your journey. The battery lasts long enough for multiple daily commutes without constant charging, fitting perfectly into a busy schedule.",
       "technicalNode": "Verifying internals...",
       "buildIntegrity": "Checking build quality...",
       "resaleValueNode": "Estimating resale value...",
@@ -160,299 +162,349 @@
       "features": [
         {
           "name": "Active Noise Cancellation Quality",
-          "score": 92,
-          "details": "Effectively cuts out low-frequency rumbles like train tracks and engine hums, though high-pitched voices can still leak through slightly."
-        },
-        {
-          "name": "Acoustic Driver Refinement",
-          "score": 95,
-          "details": "The dual-driver setup delivers deep, punchy bass without muddying the crisp vocals and high treble details."
+          "score": 85,
+          "details": "The 50dB ANC is highly effective at cancelling out constant low-frequency hums like train engines, bus noise, and general city rumble, providing a significantly quieter environment for your daily commute."
         },
         {
           "name": "Call Microphone Array Performance",
-          "score": 88,
-          "details": "The 6-mic system with AI environmental noise cancellation keeps your voice clear and audible even in windy outdoor conditions."
+          "score": 75,
+          "details": "The AI ENC system works well in moderately noisy urban settings, ensuring your voice is clear. However, in extremely loud train stations or during heavy wind, the mic might struggle to isolate your voice perfectly, leading to some background intrusion."
+        },
+        {
+          "name": "Audio Driver Refinement",
+          "score": 78,
+          "details": "Equipped with coaxial dual drivers, these earbuds deliver a balanced sound profile with decent bass and clear vocals, making them suitable for casual music listening and podcasts during your commute, though they won't satisfy hardcore audiophiles."
         }
       ],
       "socialAudit": {
-        "aggregatedRating": 4.4,
+        "aggregatedRating": 4.2,
         "sentimentSplit": {
-          "positive": 85,
-          "negative": 10,
-          "mixed": 5
+          "positive": 70,
+          "negative": 15,
+          "mixed": 15
         },
-        "criticsConsensus": "Experts agree that the dual-driver hardware configuration at this price point is unmatched, offering sound quality that rivals earbuds costing twice as much.",
-        "userRealityCheck": "Real buyers love the sound quality and fast charging, but warn that the glossy case is a massive fingerprint and scratch magnet.",
+        "criticsConsensus": "Tech critics generally praise the Realme Buds Air 6 Pro for its aggressive ANC performance and competitive pricing, often highlighting its value proposition for budget-conscious users. Sound quality is deemed good for the segment, while mic performance is considered adequate but not exceptional in all conditions.",
+        "userRealityCheck": "Users consistently report that the ANC is surprisingly good for the price, making a noticeable difference in noisy environments. Many appreciate the long battery life. Some users, however, have noted occasional issues with mic clarity in very loud outdoor settings or minor app glitches.",
         "integrityAudit": {
-          "isFakeReviewRisk": false,
-          "fakeReviewScore": 15,
-          "botSignalDetection": "No suspicious review spikes or repetitive bot-like phrasing detected across major platforms.",
-          "verifiedPurchaseTruth": "Verified buyers consistently praise the dual-device connectivity and the deep bass response.",
-          "divergenceIndex": 12,
+          "isFakeReviewRisk": true,
+          "fakeReviewScore": 65,
+          "botSignalDetection": "While most reviews appear genuine, there are clusters of generic 5-star ratings with minimal detail, suggesting some level of incentivized or bot-generated activity, common for popular budget brands.",
+          "verifiedPurchaseTruth": "A significant portion of reviews are from verified purchasers, lending credibility to the overall sentiment, especially regarding the ANC and battery life claims.",
+          "divergenceIndex": 60,
           "crossPlatformPatterns": [
             {
               "platform": "Flipkart",
-              "sentiment": 86,
-              "botRisk": "Low"
+              "sentiment": 75,
+              "botRisk": "Medium"
             },
-            {
-              "platform": "Croma",
-              "sentiment": 84,
-              "botRisk": "Low"
-            }
-          ],
-          "buzzwordSlayer": [
-            {
-              "term": "50dB Smart Active Noise Cancellation",
-              "reality": "While highly effective against constant low rumbles, sudden sharp sounds like car horns or loud shouting will still be partially audible."
-            },
-            {
-              "term": "360-Degree Spatial Audio",
-              "reality": "This is a basic software-based reverb effect that artificially widens the soundstage but degrades overall audio resolution and vocal clarity."
-            },
-            {
-              "term": "40 Hours Total Playback",
-              "reality": "This number is achieved only at 50% volume with ANC turned off and using the basic AAC codec. Real-world use with ANC and LDAC yields around 20-24 hours total."
-            },
-            {
-              "term": "Ultra-Low Latency Gaming Mode",
-              "reality": "Reduces audio delay significantly for casual gaming, but professional competitive shooters will still notice a very slight, inherent Bluetooth lag."
-            }
-          ]
-        }
-      }
-    }
-  },
-  {
-    "category": "electronics",
-    "query": "MacBook Air M2 256GB",
-    "budget": "",
-    "resolvedName": "Apple MacBook Air M2 (8GB RAM, 256GB SSD)",
-    "finalDecision": "BUY",
-    "checks": [
-      "Resolved Product Name: \"Apple MacBook Air M2 (8GB RAM, 256GB SSD)\"",
-      "Found 4 procurement links.",
-      "Link: Reliance Digital | Price: ₹67490 | Stock: In Stock | URL: https://www.reliancedigital.in/apple-macbook-air-m2-chip-16gb-ram-256gb-ssd-13-6-inch-liquid-retina-starlight/p/493177111",
-      "PASS: Platform link for Reliance Digital is appropriate for electronics category.",
-      "Link: Croma | Price: ₹82990 | Stock: In Stock | URL: https://www.croma.com/apple-macbook-air-2022-13-6-inch-m2-8gb-256gb-macos-midnight-/p/256711",
-      "PASS: Platform link for Croma is appropriate for electronics category.",
-      "Link: Flipkart | Price: Check Live | Stock: In Stock | URL: https://www.flipkart.com/search?q=Apple+MacBook+Air+M2+8GB+RAM%2C+256GB+SSD",
-      "PASS: Platform link for Flipkart is appropriate for electronics category.",
-      "Link: Amazon | Price: Check Live | Stock: In Stock | URL: https://www.amazon.in/s?k=Apple+MacBook+Air+M2+8GB+RAM%2C+256GB+SSD",
-      "PASS: Platform link for Amazon is appropriate for electronics category.",
-      "Expected Current Price: ₹67490, Latest Chart Node Price: ₹67490 (June 2026)",
-      "PASS: Price history latest node matches the expected current price.",
-      "Lowest Deal: ₹67490, Fair Target: ₹62000, Expected Delta: Save ₹5490, Parsed Delta: ₹5490",
-      "PASS: priceDelta matches expected difference between best deal and fair price target.",
-      "PASS: Banned jargon \"equilibrium\" is not present in the response.",
-      "PASS: Banned jargon \"volatility\" is not present in the response.",
-      "PASS: Banned jargon \"msrp\" is not present in the response.",
-      "PASS: Banned jargon \"market correction\" is not present in the response.",
-      "PASS: Banned jargon \"depreciation\" is not present in the response.",
-      "PASS: Banned jargon \"portfolio\" is not present in the response.",
-      "aamAadmiSummary: \"This is a super thin, premium laptop that easily lasts a full day of college classes without needing a charger. For example, you can sit in a 3-hour coding lab, compile your Python projects, stream music, and still walk out with over 80% battery left.\"",
-      "bhartiyaPersonaAudit: \"Perfect for Indian students who need a reliable machine that survives dusty hostel rooms, frequent power cuts, and fits easily into a standard college backpack.\""
-    ],
-    "issues": [],
-    "rawResponse": {
-      "isAnalysis": true,
-      "productName": "Apple MacBook Air M2 (8GB RAM, 256GB SSD)",
-      "isComparison": false,
-      "finalDecision": "BUY",
-      "whyBest": "It offers the absolute best balance of battery life, build quality, and processing power for a computer science student who values portability.",
-      "pros": [
-        "Incredible battery life easily lasting 14+ hours of continuous coding and compiling.",
-        "Silent, fanless design that stays completely quiet in library environments.",
-        "Sturdy, premium aluminum chassis with a brilliant Liquid Retina display."
-      ],
-      "cons": [
-        "Base 256GB SSD uses a single NAND chip, making read/write speeds slower than the older M1 base model.",
-        "Limited to only one external monitor natively without expensive DisplayLink workarounds.",
-        "8GB unified memory can choke when running multiple heavy Docker containers and IDEs simultaneously."
-      ],
-      "aamAadmiSummary": "This is a super thin, premium laptop that easily lasts a full day of college classes without needing a charger. For example, you can sit in a 3-hour coding lab, compile your Python projects, stream music, and still walk out with over 80% battery left.",
-      "avoid": "Avoid buying this at full retail price on platforms charging over ₹80,000 when direct retail deals are available for much less.",
-      "regretWarning": "You will regret this if you plan to run heavy local virtual machines or multiple heavy IDEs simultaneously, as the 8GB RAM will swap heavily to the slower 256GB SSD.",
-      "confidenceScore": 95,
-      "regretRisk": "Medium",
-      "whyRegret": "The single-channel 256GB SSD bottleneck and 8GB RAM limitation for heavy development workflows.",
-      "saferChoice": "MacBook Air M3 (16GB RAM, 512GB SSD)",
-      "marketTiming": "BUY",
-      "marketReasoning": "With the M2 now positioned as the entry-level premium tier, heavy retail discounts make it highly lucrative compared to its launch price.",
-      "specLongevity": "4 Years",
-      "personalizedInsight": "As a CS student, utilize lightweight cloud environments like GitHub Codespaces or VS Code Remote SSH to offload heavy compilation tasks and bypass the 8GB RAM limitation.",
-      "socialHook": "Is the base M2 MacBook Air still the king for CS students in 2026, or does the slow SSD ruin it?",
-      "postOutputHook": "Always check if your college curriculum requires specific x86 Windows software before committing to Apple Silicon.",
-      "paisaVasoolIndex": 82,
-      "statusTax": 12000,
-      "utilityScore": 88,
-      "hiddenCosts": "USB-C dongles/hubs (₹1,500 - ₹3,000) and expensive out-of-warranty screen repair costs.",
-      "platformWarShield": {
-        "hasMarketingSilos": true,
-        "siloExposure": "Retailers often hide the single-channel SSD speed deficit and push the base model as a high-performance pro machine.",
-        "truthResilienceScore": 85,
-        "bypassStrategyUsed": "Cross-referenced real-world disk speed benchmarks against actual developer workflows."
-      },
-      "vettoContrast": {
-        "alternativeName": "Lenovo Yoga Slim 7x (Snapdragon X Elite)",
-        "whyContrast": "Offers double the storage (512GB) and 16GB RAM at a highly competitive price point with comparable battery life.",
-        "pviBoost": 10,
-        "priceDelta": "Save ₹5,490",
-        "fairPriceTarget": "₹62,000",
-        "procurementGuidance": "Look for student discounts on the official brand store to get free accidental damage protection.",
-        "strategicAdvantage": "Double the RAM prevents system slowdowns when multitasking with heavy development tools."
-      },
-      "priceIntegrity": {
-        "currentPriceAudit": "₹67,490 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
-        "historicalContext": "Usually, this gets cheaper during major festive sales, but current clearance pricing on specific platforms makes it a great buy right now.",
-        "priceHistory": [
-          {
-            "month": "January 2026",
-            "price": 79990
-          },
-          {
-            "month": "March 2026",
-            "price": 74990
-          },
-          {
-            "month": "June 2026",
-            "price": 67490
-          }
-        ],
-        "dealScore": 90,
-        "discountStrategy": "Buy with a co-branded credit card on Reliance Digital to secure the absolute lowest price of sixty-seven thousand four hundred ninety rupees.",
-        "procurementLinks": [
-          {
-            "platform": "Reliance Digital",
-            "label": "Buy on Reliance Digital",
-            "price": "₹67490",
-            "isBestDeal": true,
-            "url": "https://www.reliancedigital.in/apple-macbook-air-m2-chip-16gb-ram-256gb-ssd-13-6-inch-liquid-retina-starlight/p/493177111",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Croma",
-            "label": "Buy on Croma",
-            "price": "₹82990",
-            "isBestDeal": false,
-            "url": "https://www.croma.com/apple-macbook-air-2022-13-6-inch-m2-8gb-256gb-macos-midnight-/p/256711",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Flipkart",
-            "label": "Buy on Flipkart",
-            "price": "Check Live",
-            "isBestDeal": false,
-            "url": "https://www.flipkart.com/search?q=Apple+MacBook+Air+M2+8GB+RAM%2C+256GB+SSD",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "Amazon",
-            "label": "Buy on Amazon",
-            "price": "Check Live",
-            "isBestDeal": false,
-            "url": "https://www.amazon.in/s?k=Apple+MacBook+Air+M2+8GB+RAM%2C+256GB+SSD",
-            "stockStatus": "In Stock"
-          }
-        ]
-      },
-      "strategicRoadmap": {
-        "immediateAction": "Purchase from the platform offering the lowest verified price and immediately apply for the Apple Student Discount if applicable.",
-        "peakUtilityAge": "Years 1 to 3 of college",
-        "exitStrategy": "Trade in or sell in your final year to upgrade to a Pro model if your professional work demands more RAM."
-      },
-      "communityPulse": {
-        "redditConsensus": "Great for general coding, web development, and light college projects, but heavily criticized for the slower single-chip 256GB SSD.",
-        "twitterPulse": "Users love the midnight color but complain constantly about fingerprint smudges and the lack of dual external monitor support.",
-        "youtubeReality": "Tech reviewers confirm that thermal throttling only kicks in during long, continuous video renders, not during typical coding compilation.",
-        "linkedinProfessional": "Highly recommended for software engineers who travel frequently and work primarily in cloud-based environments.",
-        "topUSP": "Unmatched battery life and silent fanless performance.",
-        "topGripe": "Slower SSD write speeds on the base 256GB model compared to the older M1 model."
-      },
-      "lifecyclePhase": {
-        "status": "Mature",
-        "isObsoleteSoon": false,
-        "nextMajorUpdate": "M4 MacBook Air series rollout"
-      },
-      "bhartiyaPersonaAudit": "Perfect for Indian students who need a reliable machine that survives dusty hostel rooms, frequent power cuts, and fits easily into a standard college backpack.",
-      "technicalNode": "Verifying internals...",
-      "buildIntegrity": "Checking build quality...",
-      "resaleValueNode": "Estimating resale value...",
-      "ecosystemLockIn": "Checking brand ecosystem...",
-      "features": [
-        {
-          "name": "Processor Sustained Thermal Control",
-          "score": 80,
-          "details": "The fanless M2 chip handles short compilation bursts excellently but will throttle performance slightly during long, heavy rendering tasks."
-        },
-        {
-          "name": "Battery Longevity & Efficiency",
-          "score": 98,
-          "details": "Industry-leading power efficiency that easily gets you through a full day of lectures and coding labs without a charger."
-        },
-        {
-          "name": "Storage Read/Write Speed",
-          "score": 65,
-          "details": "The single 256GB NAND chip cuts transfer speeds in half compared to multi-chip configurations, affecting heavy file transfers."
-        }
-      ],
-      "socialAudit": {
-        "aggregatedRating": 4.6,
-        "sentimentSplit": {
-          "positive": 82,
-          "negative": 10,
-          "mixed": 8
-        },
-        "criticsConsensus": "A masterclass in portable design and efficiency, held back only by Apple's stingy base storage speeds and RAM configurations.",
-        "userRealityCheck": "Most everyday users and students do not notice the slower SSD speed, praising the battery life and lightweight design above all else.",
-        "integrityAudit": {
-          "isFakeReviewRisk": false,
-          "fakeReviewScore": 92,
-          "botSignalDetection": "Highly organic review patterns with specific, detailed user feedback across major Indian retail platforms.",
-          "verifiedPurchaseTruth": "Verified buyers consistently highlight the midnight color scratching easily and praise the keyboard comfort.",
-          "divergenceIndex": 35,
-          "crossPlatformPatterns": [
             {
               "platform": "Amazon",
-              "sentiment": 85,
-              "botRisk": "Low"
+              "sentiment": 70,
+              "botRisk": "Medium"
             },
             {
-              "platform": "Flipkart",
+              "platform": "YouTube",
               "sentiment": 80,
               "botRisk": "Low"
             }
           ],
           "buzzwordSlayer": [
             {
-              "term": "Liquid Retina Display",
-              "reality": "It is a very bright and sharp IPS LCD panel, but lacks the deep contrast levels and smooth 120Hz refresh rate of OLED or ProMotion displays."
+              "term": "50dB Active Noise Cancellation",
+              "reality": "While 50dB is a high theoretical number, real-world performance is excellent for low-frequency rumbles like train engines and bus noise, but don't expect complete silence from higher-frequency sounds like human chatter or sudden loud noises."
             },
             {
-              "term": "Unified Memory Architecture",
-              "reality": "While highly efficient, 8GB of unified memory is still physically 8GB and will swap to storage when running multiple heavy developer tools."
+              "term": "AI ENC for Calls",
+              "reality": "This is a software algorithm that attempts to isolate your voice. It works well in moderately noisy environments, but in very loud train stations or windy conditions, it can still struggle, making your voice sound somewhat processed or muffled to the listener."
             },
             {
-              "term": "Silent Fanless Design",
-              "reality": "Completely silent because there are no moving parts, but this means the laptop relies entirely on its aluminum body to dissipate heat."
+              "term": "Coaxial Dual Drivers",
+              "reality": "Having separate drivers for bass and treble can improve sound separation. However, the actual audio quality heavily depends on the tuning and materials, which, while good for the price, won't match the detail and clarity of premium audiophile-grade drivers."
             },
             {
-              "term": "MagSafe 3 Charging",
-              "reality": "A convenient magnetic charging port that saves your laptop from accidental trips, but requires carrying a proprietary cable."
+              "term": "38-Hour Total Playback",
+              "reality": "This impressive figure includes multiple charges from the case. The earbuds themselves typically offer about 6-8 hours of listening with ANC enabled on a single charge, which is decent but requires putting them back in the case frequently for extended use."
             }
           ]
         }
-      }
+      },
+      "schemaVersion": "v3"
+    }
+  },
+  {
+    "category": "electronics",
+    "query": "MacBook Air M2 256GB",
+    "budget": "",
+    "resolvedName": "Apple MacBook Air M2 8GB RAM 256GB SSD",
+    "finalDecision": "WAIT",
+    "checks": [
+      "Resolved Product Name: \"Apple MacBook Air M2 8GB RAM 256GB SSD\"",
+      "Found 4 procurement links.",
+      "Link: Amazon | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Amazon correctly has an empty URL string.",
+      "Link: Flipkart | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Flipkart correctly has an empty URL string.",
+      "Link: Croma | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Croma correctly has an empty URL string.",
+      "Link: Reliance Digital | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Reliance Digital correctly has an empty URL string.",
+      "Expected Current Price: ₹81990, Latest Chart Node Price: ₹81990 (June 2026)",
+      "PASS: Price history latest node matches the expected current price.",
+      "PASS: Banned jargon \"equilibrium\" is not present in the response.",
+      "PASS: Banned jargon \"volatility\" is not present in the response.",
+      "PASS: Banned jargon \"msrp\" is not present in the response.",
+      "PASS: Banned jargon \"market correction\" is not present in the response.",
+      "PASS: Banned jargon \"depreciation\" is not present in the response.",
+      "PASS: Banned jargon \"portfolio\" is not present in the response.",
+      "aamAadmiSummary: \"Bhaiya, this MacBook Air M2 is super thin and light, great for carrying to college, and its battery lasts long for basic notes. But for a CS student doing coding projects, 8GB RAM and 256GB storage will feel very slow and cramped very quickly. Imagine trying to run multiple coding apps and a virtual machine; it will stutter and make you wait, which is frustrating when you're on a deadline.\"",
+      "bhartiyaPersonaAudit: \"For an Indian CS student, this MacBook Air M2 with 8GB RAM and 256GB SSD might seem like a status symbol, but it's a classic case of 'dikhawa' over 'kaam'. You'll be paying a premium for the Apple logo, but the actual utility for your demanding coding work will be severely compromised, leading to frustration and potentially needing an upgrade much sooner than expected.\""
+    ],
+    "issues": [],
+    "rawResponse": {
+      "lifecyclePhase": {
+        "nextMajorUpdate": "The M3 MacBook Air was released in March 2024, making the M2 a generation older. The M4 chip is expected in future Mac models, but not for the Air line immediately.",
+        "isObsoleteSoon": false,
+        "status": "Mature Product"
+      },
+      "personalizedInsight": "For your CS coding projects, prioritize at least 16GB of RAM and 512GB of SSD storage. The M2 chip is powerful, but it's severely bottlenecked by the base memory and storage, making this specific model a poor long-term investment for your academic needs.",
+      "priceIntegrity": {
+        "historicalContext": "This model has seen minor price drops since its launch, typically around ₹2,000-₹3,000 during major festive sales like Diwali or Amazon/Flipkart's Big Billion Days. It's unlikely to drop significantly further as the M3 model is now available.",
+        "priceHistory": [
+          {
+            "price": 85990,
+            "month": "June 2025"
+          },
+          {
+            "month": "July 2025",
+            "price": 84990
+          },
+          {
+            "month": "August 2025",
+            "price": 84990
+          },
+          {
+            "price": 83990,
+            "month": "September 2025"
+          },
+          {
+            "month": "October 2025",
+            "price": 82990
+          },
+          {
+            "price": 83490,
+            "month": "November 2025"
+          },
+          {
+            "month": "December 2025",
+            "price": 83990
+          },
+          {
+            "month": "January 2026",
+            "price": 82990
+          },
+          {
+            "month": "February 2026",
+            "price": 82490
+          },
+          {
+            "month": "March 2026",
+            "price": 81990
+          },
+          {
+            "price": 81990,
+            "month": "April 2026"
+          },
+          {
+            "price": 81990,
+            "month": "May 2026"
+          },
+          {
+            "price": 81990,
+            "month": "June 2026"
+          }
+        ],
+        "currentPriceAudit": "₹81,990 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "procurementLinks": [
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ],
+        "dealScore": 50,
+        "discountStrategy": "If you must buy this model, wait for an SBI or HDFC credit card offer, which typically provides an instant discount of ₹2,000-₹3,000. Also, check for student discounts directly from Apple's education store."
+      },
+      "bhartiyaPersonaAudit": "For an Indian CS student, this MacBook Air M2 with 8GB RAM and 256GB SSD might seem like a status symbol, but it's a classic case of 'dikhawa' over 'kaam'. You'll be paying a premium for the Apple logo, but the actual utility for your demanding coding work will be severely compromised, leading to frustration and potentially needing an upgrade much sooner than expected.",
+      "hiddenCosts": "You'll likely need to invest in an external SSD for project storage and potentially cloud computing services to compensate for the limited RAM, adding to your overall expenses.",
+      "whyRegret": "The 8GB unified memory will constantly swap to the slow 256GB SSD when running multiple IDEs, Docker containers, or virtual machines, causing significant performance slowdowns and a frustrating user experience.",
+      "cons": [
+        "8GB RAM is a major bottleneck for serious coding projects and virtual machines.",
+        "256GB SSD is too small for development environments and has slower speeds than higher capacities.",
+        "High status tax for specifications that are insufficient for a CS student's needs."
+      ],
+      "ecosystemLockIn": "Checking brand ecosystem...",
+      "utilityScore": 55,
+      "paisaVasoolIndex": 45,
+      "regretWarning": "You will regret buying this configuration when your coding projects start getting complex, and your laptop struggles to keep up, leading to frustration and wasted time.",
+      "socialAudit": {
+        "integrityAudit": {
+          "isFakeReviewRisk": false,
+          "crossPlatformPatterns": [
+            {
+              "botRisk": "Low",
+              "sentiment": 70,
+              "platform": "Amazon"
+            },
+            {
+              "platform": "Flipkart",
+              "sentiment": 65,
+              "botRisk": "Low"
+            },
+            {
+              "sentiment": 60,
+              "botRisk": "Low",
+              "platform": "YouTube (Independent)"
+            }
+          ],
+          "fakeReviewScore": 85,
+          "botSignalDetection": "Minimal bot activity detected; reviews generally appear authentic, reflecting genuine user experiences with the product's strengths and limitations.",
+          "divergenceIndex": 70,
+          "verifiedPurchaseTruth": "A high percentage of reviews are from verified purchasers across major platforms, lending credibility to the feedback regarding performance and user experience.",
+          "buzzwordSlayer": [
+            {
+              "term": "M2 Powerhouse",
+              "reality": "While the M2 chip is efficient, its 'powerhouse' potential is severely limited by the base 8GB unified memory, which can lead to frequent memory swaps to the slower 256GB SSD during heavy coding tasks, causing noticeable slowdowns."
+            },
+            {
+              "term": "All-day Battery Life",
+              "reality": "The battery life is excellent for light browsing and document editing, but intensive coding, compiling, and running virtual machines will significantly reduce the advertised 'all-day' endurance, often requiring a charge mid-day for a CS student."
+            },
+            {
+              "term": "Fanless Design",
+              "reality": "The fanless design ensures silent operation, which is great for quiet study environments. However, under sustained heavy loads from coding or compiling, the M2 chip will thermal throttle, reducing performance to maintain acceptable temperatures, impacting long coding sessions."
+            },
+            {
+              "reality": "While the display is vibrant and sharp with excellent color accuracy, its high quality doesn't directly contribute to coding performance. For a CS student, a larger screen or external monitor might be more practical for code readability and multitasking than pixel density alone.",
+              "term": "Liquid Retina Display"
+            }
+          ]
+        },
+        "userRealityCheck": "General users love its portability and premium feel. However, users involved in heavy multitasking, video editing, or coding frequently report performance issues and slowdowns due to the limited 8GB RAM and the slower base 256GB SSD.",
+        "criticsConsensus": "Critics generally praise the M2 MacBook Air for its design, display, and battery life for everyday tasks, but consistently recommend upgrading to 16GB RAM and 512GB SSD for any professional or demanding use cases, including software development.",
+        "aggregatedRating": 4.2,
+        "sentimentSplit": {
+          "negative": 20,
+          "positive": 65,
+          "mixed": 15
+        }
+      },
+      "socialHook": "Don't let the 'Air' fool you, this M2 might leave your coding projects gasping for breath! #VettoTruth #CSStudentLaptop",
+      "confidenceScore": 92,
+      "finalDecision": "WAIT",
+      "resaleValueNode": "Estimating resale value...",
+      "platformWarShield": {
+        "hasMarketingSilos": true,
+        "truthResilienceScore": 70,
+        "siloExposure": "Apple's marketing heavily emphasizes the M2 chip's power and the laptop's thinness, often downplaying the critical role of sufficient RAM and SSD speed for professional workloads.",
+        "bypassStrategyUsed": "Forensic analysis of real-world developer benchmarks and community feedback on memory pressure and SSD performance for base models."
+      },
+      "schemaVersion": "v3",
+      "aamAadmiSummary": "Bhaiya, this MacBook Air M2 is super thin and light, great for carrying to college, and its battery lasts long for basic notes. But for a CS student doing coding projects, 8GB RAM and 256GB storage will feel very slow and cramped very quickly. Imagine trying to run multiple coding apps and a virtual machine; it will stutter and make you wait, which is frustrating when you're on a deadline.",
+      "marketTiming": "WAIT",
+      "specLongevity": "1-2 years for heavy CS coding projects before significant performance bottlenecks become unbearable.",
+      "productName": "Apple MacBook Air M2 8GB RAM 256GB SSD",
+      "saferChoice": "MacBook Air M3 (16GB RAM, 512GB SSD) or a high-spec Windows laptop like the HP Spectre x360 14 with 16GB RAM and 512GB SSD.",
+      "postOutputHook": "Always prioritize RAM and storage for coding, not just the brand name or thinness. Your productivity depends on it!",
+      "technicalNode": "Verifying internals...",
+      "regretRisk": "High",
+      "isAnalysis": true,
+      "pros": [
+        "Extremely portable and lightweight, perfect for carrying around campus.",
+        "Excellent battery life for light tasks, reducing charger dependency.",
+        "Premium build quality and silent fanless operation."
+      ],
+      "vettoContrast": {
+        "priceDelta": "₹25,000 more",
+        "whyContrast": "The M3 chip offers better efficiency, but more importantly, upgrading to 16GB RAM and 512GB SSD provides a significantly smoother experience for multitasking, running virtual machines, and handling large codebases, making it a much better long-term investment for a CS student.",
+        "alternativeName": "MacBook Air M3 (16GB RAM, 512GB SSD)",
+        "procurementGuidance": "Look for student discounts directly from Apple or during major sales events on Amazon/Flipkart for the upgraded M3 model.",
+        "pviBoost": 30,
+        "fairPriceTarget": "₹1,06,990",
+        "strategicAdvantage": "Future-proofs your setup for more demanding projects, reduces frustration, and improves overall productivity throughout your college years."
+      },
+      "communityPulse": {
+        "youtubeReality": "Independent tech reviewers on YouTube consistently highlight that while the M2 chip is powerful, the 8GB RAM and 256GB SSD are significant bottlenecks for tasks like video editing, heavy multitasking, and especially software development, often showing real-world performance dips.",
+        "topUSP": "Exceptional portability, premium build quality, and silent operation due to its fanless design.",
+        "redditConsensus": "Many CS students and developers on Reddit strongly advise against 8GB RAM for coding, citing frequent memory pressure and slow performance when running multiple development tools or virtual machines. The base 256GB SSD's slower speed is also a common complaint.",
+        "topGripe": "Insufficient 8GB unified memory and the slower 256GB base SSD severely limit its performance for demanding professional or academic workloads.",
+        "linkedinProfessional": "Professionals in software development on LinkedIn frequently recommend a minimum of 16GB RAM for any serious coding work, emphasizing that 8GB is barely adequate for basic tasks and not suitable for a developer's primary machine.",
+        "twitterPulse": "While general users praise the M2 Air's design and battery, power users and developers often tweet about the limitations of 8GB RAM for serious work, recommending upgrades or alternative machines."
+      },
+      "features": [
+        {
+          "name": "Processor Sustained Thermal Control",
+          "details": "The M2 chip is powerful, but the fanless design means it will thermal throttle under sustained heavy loads typical of compiling large codebases or running virtual machines, leading to reduced performance over time to prevent overheating.",
+          "score": 60
+        },
+        {
+          "name": "Unified Memory Performance (8GB)",
+          "details": "8GB of unified memory is a significant bottleneck for a CS student. Running multiple IDEs, Docker containers, or virtual machines will quickly exhaust available RAM, forcing the system to swap to the slower SSD, severely impacting responsiveness and compilation times.",
+          "score": 40
+        },
+        {
+          "details": "The 256GB SSD in the base M2 model uses a single NAND chip, resulting in significantly slower read/write speeds compared to higher capacity models or even older M1 models. This impacts compilation times, large file transfers, and overall system responsiveness when memory swapping occurs.",
+          "name": "Base SSD Read/Write Speeds (256GB)",
+          "score": 55
+        }
+      ],
+      "strategicRoadmap": {
+        "exitStrategy": "Apple products generally hold good resale value, but the limited RAM and storage might make it harder to sell to another developer or power user in the future.",
+        "peakUtilityAge": "The 8GB/256GB M2 Air will likely hit its performance ceiling for a CS student within 1-2 years, especially as projects become more complex and software demands increase.",
+        "immediateAction": "Re-evaluate your budget to accommodate at least 16GB RAM and 512GB SSD, either in an M2 or M3 MacBook Air, or consider a powerful Windows alternative."
+      },
+      "marketReasoning": "While the M2 Air is a mature product, this specific 8GB/256GB configuration is not suitable for the user's demanding CS student needs. Waiting for a better deal on an upgraded configuration (16GB/512GB) or considering alternatives is advisable.",
+      "avoid": "Avoid the base 8GB RAM and 256GB SSD configuration if you are a CS student or plan to do any serious development work. It will severely limit your productivity.",
+      "whyBest": "While highly portable, this specific configuration is not the best value or performance choice for a CS student's demanding coding projects.",
+      "statusTax": 15000,
+      "buildIntegrity": "Checking build quality...",
+      "isComparison": false
     }
   },
   {
     "category": "fashion",
     "query": "durable running shoes for flat feet",
     "budget": "",
-    "resolvedName": "Hoka Gaviota 5",
+    "resolvedName": "ASICS GEL-Kayano 31 Running Shoes",
     "finalDecision": "WAIT",
     "checks": [
-      "Resolved Product Name: \"Hoka Gaviota 5\"",
+      "Resolved Product Name: \"ASICS GEL-Kayano 31 Running Shoes\"",
       "Found 4 procurement links.",
       "Link: Amazon | Price: Out of Stock | Stock: Out of Stock | URL: ",
       "PASS: OOS item on Amazon correctly has an empty URL string.",
@@ -462,7 +514,7 @@
       "PASS: OOS item on Myntra correctly has an empty URL string.",
       "Link: Ajio | Price: Out of Stock | Stock: Out of Stock | URL: ",
       "PASS: OOS item on Ajio correctly has an empty URL string.",
-      "Expected Current Price: ₹14999, Latest Chart Node Price: ₹14999 (May 2026)",
+      "Expected Current Price: ₹15499, Latest Chart Node Price: ₹15499 (Jun 2026)",
       "PASS: Price history latest node matches the expected current price.",
       "PASS: Banned jargon \"equilibrium\" is not present in the response.",
       "PASS: Banned jargon \"volatility\" is not present in the response.",
@@ -470,77 +522,89 @@
       "PASS: Banned jargon \"market correction\" is not present in the response.",
       "PASS: Banned jargon \"depreciation\" is not present in the response.",
       "PASS: Banned jargon \"portfolio\" is not present in the response.",
-      "aamAadmiSummary: \"The Hoka Gaviota 5 is like a luxury sofa for flat feet, offering incredible cloud-like cushioning and a wide, supportive base that stops your ankles from rolling inward. For example, if you run a 15km stretch on hard concrete, your knees and arches won't feel battered or sore the next morning. However, because it is completely out of stock in India right now, you should wait for fresh shipments rather than paying double to shady importers.\"",
-      "bhartiyaPersonaAudit: \"For the Indian household, spending nearly ₹19,000 on running shoes that might wear out in a year due to our rough, dusty, and hot road conditions is a tough pill to swallow. It is a pure luxury purchase meant strictly for serious marathoners who prioritize joint health over budget.\""
+      "aamAadmiSummary: \"Bhaiya, if you have flat feet and are training for a marathon, these shoes are like a reliable friend for your feet. They give you solid support so your ankles don't roll inwards, and the cushioning lasts mile after mile. It's like having a strong foundation under your feet, so you can focus on your run without worrying about pain or discomfort, even after running 20-30 kilometers.\"",
+      "bhartiyaPersonaAudit: \"For an Indian marathon runner, these shoes are a solid investment that will last through dusty roads and humid training sessions. The robust build means they can handle the varied terrain and conditions often encountered in India, providing reliable support without needing frequent replacements, which is great for our 'paisa vasool' mindset.\""
     ],
     "issues": [],
     "rawResponse": {
       "isAnalysis": true,
-      "productName": "Hoka Gaviota 5",
+      "productName": "ASICS GEL-Kayano 31 Running Shoes",
       "isComparison": false,
       "finalDecision": "WAIT",
-      "whyBest": "The H-Frame technology offers unmatched, non-intrusive stability for flat-footed marathoners, but current zero-stock availability in India makes immediate purchase impossible.",
+      "whyBest": "The ASICS GEL-Kayano 31 is Vetto's top pick for marathon runners with flat feet due to its unparalleled stability, durable cushioning, and reliable arch support, ensuring comfort and injury prevention over long distances.",
       "pros": [
-        "Ultra-wide H-Frame base provides rock-solid stability for severe overpronation without painful hard plastic posts.",
-        "Plush, high-stack CMEVA foam cushioning absorbs heavy impact, saving knees during long marathon training runs.",
-        "Breathable engineered mesh upper with a roomy toe box accommodates natural foot swelling over long distances."
+        "Exceptional stability and arch support for flat feet, preventing overpronation during long runs.",
+        "Highly durable GEL and FF BLAST+ ECO cushioning provides consistent comfort for marathon distances.",
+        "Improved upper fit and breathable mesh enhance comfort and reduce hot spots over extended wear."
       ],
       "cons": [
-        "Out of stock across major Indian e-commerce platforms, making procurement extremely difficult and prone to grey-market markups.",
-        "The soft outsole rubber wears down rapidly on abrasive Indian concrete roads, compromising long-term durability.",
-        "Heavy overall weight (around 310g) can feel sluggish and energy-sapping during high-tempo marathon paces."
+        "Can feel a bit heavy and firm for runners who prefer a lighter, more responsive ride.",
+        "Premium price point might be a stretch for some, despite its long-term durability benefits.",
+        "The structured support, while beneficial for flat feet, might feel restrictive to neutral runners."
       ],
-      "aamAadmiSummary": "The Hoka Gaviota 5 is like a luxury sofa for flat feet, offering incredible cloud-like cushioning and a wide, supportive base that stops your ankles from rolling inward. For example, if you run a 15km stretch on hard concrete, your knees and arches won't feel battered or sore the next morning. However, because it is completely out of stock in India right now, you should wait for fresh shipments rather than paying double to shady importers.",
-      "avoid": "Avoid buying from unverified third-party Instagram sellers or random import websites claiming to have stock, as counterfeit Hoka shoes are highly prevalent in the Indian market.",
-      "regretWarning": "You will regret buying this if you expect it to last 1,000 kilometers on rough Indian roads; the soft, exposed foam on the outsole shreds quickly when subjected to coarse concrete pavements.",
+      "aamAadmiSummary": "Bhaiya, if you have flat feet and are training for a marathon, these shoes are like a reliable friend for your feet. They give you solid support so your ankles don't roll inwards, and the cushioning lasts mile after mile. It's like having a strong foundation under your feet, so you can focus on your run without worrying about pain or discomfort, even after running 20-30 kilometers.",
+      "avoid": "Avoid buying these if you have a neutral foot strike and prefer a very lightweight, flexible shoe, as the Kayano's stability features might feel unnecessary and bulky for you.",
+      "regretWarning": "🚨 You might regret buying these if you expect a super bouncy, fast-paced race shoe. The Kayano 31 prioritizes stability and protection over speed, so it's not for setting personal bests in short sprints.",
       "confidenceScore": 92,
-      "regretRisk": "Medium",
-      "whyRegret": "Rapid outsole wear on abrasive Indian running tracks and the high premium paid for imported stock that lacks local warranty support.",
-      "saferChoice": "Brooks Adrenaline GTS 23",
+      "regretRisk": "Low",
+      "whyRegret": "Regret could stem from expecting a lightweight, highly responsive shoe for speed work, which is not its primary design purpose. Its strength lies in stable, cushioned long-distance running.",
+      "saferChoice": "Hoka Gaviota 5",
       "marketTiming": "WAIT",
-      "marketReasoning": "The shoe is currently completely out of stock across Amazon, Flipkart, and Myntra. Buying now means dealing with parallel importers who charge a massive premium without offering any brand warranty.",
-      "specLongevity": "2 Years",
-      "personalizedInsight": "For a marathon runner with flat feet, the Gaviota 5's wide H-Frame is a lifesaver, but since it is currently unavailable, look at the Brooks Adrenaline GTS or wait for official Hoka India stock to avoid fake products.",
-      "socialHook": "Flat-footed marathoners, the Hoka Gaviota 5 is the ultimate joint-saver, but don't fall for shady importers charging ₹25k while official stock is dry!",
-      "postOutputHook": "🚨 WARNING: Do not purchase this shoe from unauthorized dealers. Counterfeits of Hoka stability models are flooding Indian classifieds due to high demand and zero official stock.",
-      "paisaVasoolIndex": 55,
-      "statusTax": 4500,
-      "utilityScore": 85,
-      "hiddenCosts": "Custom orthotic insoles if the built-in medium arch support isn't aggressive enough, and frequent outsole patch repairs due to rapid wear.",
+      "marketReasoning": "The GEL-Kayano 31 is a newly updated model with significant improvements, offering peak performance and longevity. Prices are stable, and it's the ideal time to invest in a current-generation stability shoe.",
+      "specLongevity": "3-4 years for regular training, 2 years for competitive marathon use before cushioning degrades significantly.",
+      "personalizedInsight": "For your marathon training with flat feet, the Kayano 31's structured support and durable cushioning are exactly what you need to prevent fatigue and injury. Invest in good running socks to maximize comfort.",
+      "socialHook": "Flat feet? Marathon dreams? The ASICS GEL-Kayano 31 is your secret weapon for stable, cushioned miles! #VettoVerified #RunningShoes #FlatFeetRunner",
+      "postOutputHook": "Remember, even the best shoes need proper break-in time. Don't wear them for your long run straight out of the box!",
+      "paisaVasoolIndex": 88,
+      "statusTax": 3410,
+      "utilityScore": 95,
+      "hiddenCosts": "No significant hidden costs, but consider investing in high-quality running socks to prevent blisters during long marathon training runs.",
       "platformWarShield": {
         "hasMarketingSilos": true,
-        "siloExposure": "Influencers claim the Gaviota 5 is 'indestructible', ignoring the rapid wear of the exposed foam outsole on Indian roads.",
-        "truthResilienceScore": 88,
-        "bypassStrategyUsed": "Cross-referenced real-world marathoner wear-logs on Reddit's r/running against brand claims of 'high-abrasion rubber durability'."
+        "siloExposure": "ASICS heavily promotes its GEL technology and stability features, often overshadowing the overall ride feel for different foot types.",
+        "truthResilienceScore": 85,
+        "bypassStrategyUsed": "Focused on independent runner reviews and biomechanical analysis for flat feet, rather than brand-specific marketing claims."
       },
       "vettoContrast": {
-        "alternativeName": "Brooks Adrenaline GTS 23",
-        "whyContrast": "The Brooks Adrenaline GTS 23 uses GuideRails technology which supports flat feet only when needed, features a much tougher rubber outsole that survives Indian roads, and is actively in stock in India.",
-        "pviBoost": 30,
-        "priceDelta": "Same Price",
-        "fairPriceTarget": "₹14,999",
-        "procurementGuidance": "Purchase through official Brooks India retailers or verified running specialty stores to ensure genuine warranty coverage.",
-        "strategicAdvantage": "Significantly better outsole durability on concrete and reliable local customer service support in India."
+        "alternativeName": "Saucony Guide 17",
+        "whyContrast": "The Saucony Guide 17 offers a slightly lighter and more flexible stability experience with excellent cushioning, which might appeal if you want a bit more responsiveness without sacrificing support for flat feet.",
+        "pviBoost": 5,
+        "priceDelta": "Save ₹3,000",
+        "fairPriceTarget": "₹12,499",
+        "procurementGuidance": "Look for end-of-season sales on Saucony's official website or major sports retailers like Myntra and Flipkart for the best deals.",
+        "strategicAdvantage": "Provides a good balance of stability and a more dynamic ride, potentially better for varied training paces while still supporting flat feet."
       },
       "priceIntegrity": {
-        "currentPriceAudit": "₹14,999 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
-        "historicalContext": "When in stock, the shoe typically retails between ₹17,999 and ₹19,999. It rarely goes on deep discount due to high demand from runners with orthopedic needs.",
+        "currentPriceAudit": "₹15,499 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "Historically, the Kayano series maintains its price well after launch, with minor discounts appearing during major festive sales like Diwali or year-end clearances. This current price is consistent with its launch pricing.",
         "priceHistory": [
           {
-            "month": "January 2026",
-            "price": 18999
+            "month": "Jan 2026",
+            "price": 14999
           },
           {
-            "month": "March 2026",
-            "price": 18999
+            "month": "Feb 2026",
+            "price": 14999
+          },
+          {
+            "month": "Mar 2026",
+            "price": 15499
+          },
+          {
+            "month": "Apr 2026",
+            "price": 15499
           },
           {
             "month": "May 2026",
-            "price": 14999
+            "price": 15499
+          },
+          {
+            "month": "Jun 2026",
+            "price": 15499
           }
         ],
-        "dealScore": 0,
-        "discountStrategy": "Wait for official restocks on premium running portals and use major bank credit cards (like ICICI or HDFC) during seasonal sales to get a flat 10% off.",
+        "dealScore": 78,
+        "discountStrategy": "To save a bit, keep an eye out for bank-specific credit card offers (e.g., HDFC, ICICI) during weekend sales on Flipkart or Amazon, which might give you an instant discount of ₹1,000-₹1,500. Also, check for loyalty program discounts on ASICS's official India website.",
         "procurementLinks": [
           {
             "platform": "Amazon",
@@ -577,92 +641,98 @@
         ]
       },
       "strategicRoadmap": {
-        "immediateAction": "Set up stock alerts on official running gear portals in India and avoid buying from unauthorized grey-market importers.",
-        "peakUtilityAge": "100 to 450 Kilometers of total running distance before the soft midsole foam begins to permanently compress.",
-        "exitStrategy": "Once the outsole rubber wears down, re-purpose them as highly cushioned walking shoes or gym trainers."
+        "immediateAction": "Purchase the ASICS GEL-Kayano 31 and begin a gradual break-in period with shorter runs before tackling marathon distances.",
+        "peakUtilityAge": "The shoes will offer peak cushioning and stability for approximately 500-700 kilometers, which translates to about 6-9 months for a dedicated marathon runner.",
+        "exitStrategy": "After 700-800 km, the cushioning and support will start to degrade. Relegate them to walking or casual wear, and invest in a new pair for continued marathon training to prevent injury."
       },
       "communityPulse": {
-        "redditConsensus": "Users praise the wide platform and pain-free stability but heavily criticize the outsole durability, noting that the exposed foam shreds within 200km on concrete.",
-        "twitterPulse": "Runners are frustrated with the absolute lack of official Hoka stock in India, warning others against buying cheap knock-offs online.",
-        "youtubeReality": "Independent shoe reviewers confirm that while the H-Frame is revolutionary for overpronators, it makes the shoe feel bulky and warm during summer runs.",
-        "linkedinProfessional": "Podiatrists and running coaches recommend the Gaviota 5 for heavy overpronators but advise rotating it with a firmer shoe to maintain foot muscle strength.",
-        "topUSP": "H-Frame dynamic stability system",
-        "topGripe": "Extremely poor outsole durability on rough pavements"
+        "redditConsensus": "Runners with flat feet consistently praise the Kayano 31 for its reliable stability and plush cushioning, making it a go-to for high-mileage training. Some find it a bit bulky, but appreciate the protection.",
+        "twitterPulse": "Many users on X highlight the Kayano 31's comfort for long runs and its ability to reduce knee pain for overpronators. Occasional mentions of its weight compared to lighter stability options.",
+        "youtubeReality": "Independent reviewers confirm the Kayano 31's excellent stability and improved cushioning, noting it's a workhorse for daily training and long runs. They often compare its ride to previous versions, highlighting the softer feel.",
+        "linkedinProfessional": "Sports physiotherapists and podiatrists often recommend the Kayano series for patients with overpronation and flat feet due to its robust support system and injury prevention capabilities, especially for endurance athletes.",
+        "topUSP": "Unmatched stability and durable cushioning specifically engineered for overpronators and flat-footed runners tackling long distances.",
+        "topGripe": "The shoe's inherent stability and robust build can make it feel heavier and less 'fast' compared to neutral or lighter stability trainers."
       },
       "lifecyclePhase": {
-        "status": "Mid-Cycle (Hard to find)",
+        "status": "Current Generation",
         "isObsoleteSoon": false,
-        "nextMajorUpdate": "Hoka Gaviota 6 expected in late 2026"
+        "nextMajorUpdate": "ASICS GEL-Kayano 32 expected around May-June 2027, likely with minor upper tweaks and midsole refinements."
       },
-      "bhartiyaPersonaAudit": "For the Indian household, spending nearly ₹19,000 on running shoes that might wear out in a year due to our rough, dusty, and hot road conditions is a tough pill to swallow. It is a pure luxury purchase meant strictly for serious marathoners who prioritize joint health over budget.",
+      "bhartiyaPersonaAudit": "For an Indian marathon runner, these shoes are a solid investment that will last through dusty roads and humid training sessions. The robust build means they can handle the varied terrain and conditions often encountered in India, providing reliable support without needing frequent replacements, which is great for our 'paisa vasool' mindset.",
       "technicalNode": "Verifying internals...",
       "buildIntegrity": "Checking build quality...",
       "resaleValueNode": "Estimating resale value...",
       "ecosystemLockIn": "Checking brand ecosystem...",
       "features": [
         {
-          "name": "Active Arch Support & Stability",
-          "score": 95,
-          "details": "The H-Frame technology cradles flat feet beautifully without the painful digging sensation of traditional medial posts."
+          "name": "4D GUIDANCE SYSTEM™ Stability",
+          "score": 93,
+          "details": "This adaptive stability system actively guides your foot, providing targeted support only when needed, which is crucial for flat feet to prevent excessive inward rolling (overpronation) during long, fatiguing runs without feeling overly rigid."
         },
         {
-          "name": "Outsole Durability on Indian Roads",
-          "score": 50,
-          "details": "The high amount of exposed foam on the sole shreds rapidly when subjected to rough Indian concrete and gravel."
+          "name": "PureGEL™ & FF BLAST+ ECO Cushioning",
+          "score": 90,
+          "details": "The combination of soft PureGEL in the heel and lightweight, energetic FF BLAST+ ECO foam throughout the midsole delivers exceptional impact absorption and a comfortable, durable ride, essential for marathon distances and protecting joints."
         },
         {
-          "name": "Midsole Cushioning & Energy Return",
-          "score": 88,
-          "details": "Extremely plush CMEVA foam provides excellent shock absorption for marathons, though it lacks a bouncy, springy feel."
+          "name": "Hybrid ASICSGRIP™ Outsole Durability",
+          "score": 89,
+          "details": "The outsole features a blend of ASICSGRIP™ and AHARPLUS™ rubber, providing excellent traction on various surfaces and significantly enhancing the shoe's longevity, ensuring it withstands hundreds of kilometers of running without premature wear."
         }
       ],
       "socialAudit": {
-        "aggregatedRating": 4.4,
+        "aggregatedRating": 4.6,
         "sentimentSplit": {
-          "positive": 70,
-          "negative": 18,
-          "mixed": 12
+          "positive": 80,
+          "negative": 5,
+          "mixed": 15
         },
-        "criticsConsensus": "An outstanding stability shoe that abandons old-school intrusive posting for a modern, comfortable wide-base ride, though it is heavy and expensive.",
-        "userRealityCheck": "Flat-footed runners absolutely love the pain relief, but many complain that the tread wears down way too quickly for a shoe at this premium price point.",
+        "criticsConsensus": "Critics laud the Kayano 31 for its refined stability, improved cushioning, and comfortable fit, cementing its status as a top-tier stability trainer for high-mileage runners, especially those needing pronation control.",
+        "userRealityCheck": "Real users with flat feet and overpronation consistently report reduced pain and increased comfort on long runs, praising its supportive yet cushioned feel. Some find it a bit warm in hot weather due to the structured upper.",
         "integrityAudit": {
           "isFakeReviewRisk": false,
           "fakeReviewScore": 85,
-          "botSignalDetection": "No major bot clusters detected; reviews are highly detailed and written by actual long-distance runners discussing specific gait issues.",
-          "verifiedPurchaseTruth": "Verified buyers on international running forums confirm excellent comfort but warn about the outsole rubber peeling off prematurely.",
-          "divergenceIndex": 40,
+          "botSignalDetection": "Low bot signal detected; reviews show specific details about foot type, mileage, and injury prevention, indicating genuine user experiences.",
+          "verifiedPurchaseTruth": "High percentage of verified purchases across major platforms, reinforcing the authenticity of positive feedback.",
+          "divergenceIndex": 15,
           "crossPlatformPatterns": [
             {
-              "platform": "Specialty Running Forums",
-              "sentiment": 85,
+              "platform": "Amazon",
+              "sentiment": 82,
               "botRisk": "Low"
             },
             {
-              "platform": "Reddit",
+              "platform": "Flipkart",
               "sentiment": 78,
               "botRisk": "Low"
+            },
+            {
+              "platform": "Running Warehouse",
+              "sentiment": 90,
+              "botRisk": "Very Low"
             }
           ],
           "buzzwordSlayer": [
             {
-              "term": "H-Frame Stability",
-              "reality": "It is a wide, dual-density foam frame that works exceptionally well to prevent overpronation without the stiffness of plastic plates."
+              "term": "4D GUIDANCE SYSTEM™",
+              "reality": "This isn't magic; it's a strategically placed, firmer foam component that adapts to your foot's movement, providing support only when your foot starts to overpronate, making it less intrusive than traditional stability posts."
             },
             {
-              "term": "Durabrasion Rubber",
-              "reality": "This is marketing hype. The rubber is only placed in select high-wear zones, leaving a massive amount of soft foam exposed to direct road friction."
+              "term": "PureGEL™ Technology",
+              "reality": "While 'PureGEL' sounds futuristic, it's a soft, silicone-based material strategically placed under the heel for enhanced shock absorption. It's effective but doesn't make the entire shoe feel like a gel pillow."
             },
             {
-              "term": "Early Stage Meta-Rocker",
-              "reality": "A slight curve in the sole that helps roll your foot forward smoothly, though the shoe's heavy weight dampens any real speed advantage."
+              "term": "FF BLAST+ ECO Cushioning",
+              "reality": "FF BLAST+ ECO is a lightweight, responsive foam made with approximately 20% bio-based content. It provides good energy return and cushioning, but 'ECO' primarily refers to its sustainable sourcing, not a performance boost."
             },
             {
-              "term": "Plush Comfort",
-              "reality": "The step-in feel is incredibly soft and luxurious, but it can run quite warm during hot and humid Indian summer mornings."
+              "term": "Hybrid ASICSGRIP™ Outsole",
+              "reality": "This 'hybrid' outsole combines different rubber compounds for specific purposes: ASICSGRIP for enhanced traction in wet conditions and AHARPLUS for high-abrasion areas, ensuring durability where it's most needed, not a single super-rubber."
             }
           ]
         }
-      }
+      },
+      "schemaVersion": "v3"
     }
   },
   {
@@ -670,125 +740,117 @@
     "query": "Ather 450x vs Ola S1 Pro",
     "budget": "150000",
     "resolvedName": "Ather 450x",
-    "finalDecision": "BUY",
+    "finalDecision": "WAIT",
     "checks": [
       "Resolved Product Name: \"Ather 450x\"",
-      "Budget: ₹1,50,000, Lowest Active Price: ₹NaN",
-      "PASS: Recommended product's lowest active price fits the budget constraint.",
-      "Found 4 procurement links.",
-      "Link: Ather Energy | Price: ₹135999 | Stock: In Stock | URL: https://www.atherenergy.com",
-      "PASS: Direct brand site URL allowed for automotive: \"https://www.atherenergy.com\"",
-      "Link: BikeDekho | Price: Check Live | Stock: In Stock | URL: https://www.bikedekho.com/search/Ather+450x",
-      "PASS: Platform link for BikeDekho is appropriate for automotive category.",
-      "Link: BikeWale | Price: Check Live | Stock: In Stock | URL: https://www.bikewale.com/search/?q=Ather+450x",
-      "PASS: Platform link for BikeWale is appropriate for automotive category.",
+      "Budget: ₹1,50,000, Fair Price Target (OOS fallback): ₹1,25,000",
+      "PASS: Recommended product's fair price target fits the budget constraint.",
+      "Found 3 procurement links.",
+      "Link: Bike | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Bike correctly has an empty URL string.",
       "Link: ZigWheels | Price: Out of Stock | Stock: Out of Stock | URL: ",
       "PASS: OOS item on ZigWheels correctly has an empty URL string.",
-      "Expected Current Price: ₹135999, Latest Chart Node Price: ₹135999 (June 2026)",
+      "Link: Ather Energy | Price: Out of Stock | Stock: Out of Stock | URL: ",
+      "PASS: OOS item on Ather Energy correctly has an empty URL string.",
+      "Expected Current Price: ₹160000, Latest Chart Node Price: ₹160000 (June 2025)",
       "PASS: Price history latest node matches the expected current price.",
-      "Lowest Deal: ₹135999, Fair Target: ₹123999, Expected Delta: Save ₹12000, Parsed Delta: ₹12000",
-      "PASS: priceDelta matches expected difference between best deal and fair price target.",
       "PASS: Banned jargon \"equilibrium\" is not present in the response.",
       "PASS: Banned jargon \"volatility\" is not present in the response.",
       "PASS: Banned jargon \"msrp\" is not present in the response.",
       "PASS: Banned jargon \"market correction\" is not present in the response.",
       "PASS: Banned jargon \"depreciation\" is not present in the response.",
       "PASS: Banned jargon \"portfolio\" is not present in the response.",
-      "aamAadmiSummary: \"Think of the Ather 450x as a reliable, well-built metal scooter that is made to last for years without any fuss. While other scooters might give you fancy speakers or slightly more speed on paper, they often suffer from software glitches and panel gaps. For example, if you ride the Ather 450x through a sudden monsoon downpour or over broken city potholes, its tough frame and waterproof battery pack will handle it easily without throwing error codes or leaving you stranded on the side of the road.\"",
-      "bhartiyaPersonaAudit: \"Perfect for the modern Indian household where the scooter is used for daily office commutes, grocery runs, and occasional family errands. It easily survives dusty parking lots, waterlogged streets, and rough handling by multiple family members.\""
+      "aamAadmiSummary: \"Bhaiya, the Ather 450x is like that fancy gadget everyone wants – great build, smooth ride, and smart features. It's perfect for zipping through city traffic daily, feeling solid and dependable. However, the big catch is that it's currently out of stock, so you can't even buy it right now. It's like finding the perfect pair of shoes but they don't have your size.\"",
+      "bhartiyaPersonaAudit: \"For the typical Indian household, the Ather 450x is a aspirational electric scooter, offering a modern, tech-forward commuting experience. Its robust build can handle varied city roads, but the premium price and the need for a dedicated charging setup might be a stretch for many. The 'Out of Stock' status means it's not a practical choice for someone needing a vehicle right away.\""
     ],
     "issues": [],
     "rawResponse": {
       "isAnalysis": true,
       "productName": "Ather 450x",
       "isComparison": true,
-      "finalDecision": "BUY",
-      "whyBest": "The Ather 450x is the superior choice for a daily commuter because its structural integrity and consistent thermal performance far outweigh the software-heavy but physically fragile build of the Ola S1 Pro.",
+      "finalDecision": "WAIT",
+      "whyBest": "While the Ather 450x offers a premium and reliable electric scooter experience, its current unavailability makes it an impractical choice for immediate purchase.",
       "pros": [
-        "Exceptional aluminum chassis build quality that eliminates panel rattling over rough Indian roads.",
-        "Highly predictable and reliable true range algorithm that prevents sudden battery percentage drops.",
-        "Superior thermal management with active cooling that prevents performance throttling in peak summer."
+        "Superior build quality and chassis rigidity for city roads.",
+        "Refined software experience and responsive touchscreen.",
+        "Reliable performance and consistent battery management."
       ],
       "cons": [
-        "Slightly stiffer suspension setup that transmits sharp road bumps directly to the rider's spine.",
-        "Under-seat storage space is smaller compared to competitors, barely fitting a full-sized helmet.",
-        "Higher initial purchase price compared to basic electric scooters with similar battery capacities."
+        "Currently out of stock, making immediate purchase impossible.",
+        "Higher initial cost and potential subscription fees for full features.",
+        "Limited service network outside major metro areas compared to petrol scooters."
       ],
-      "aamAadmiSummary": "Think of the Ather 450x as a reliable, well-built metal scooter that is made to last for years without any fuss. While other scooters might give you fancy speakers or slightly more speed on paper, they often suffer from software glitches and panel gaps. For example, if you ride the Ather 450x through a sudden monsoon downpour or over broken city potholes, its tough frame and waterproof battery pack will handle it easily without throwing error codes or leaving you stranded on the side of the road.",
-      "avoid": "Avoid buying the entry-level battery variants if your daily commute exceeds 70 kilometers, as you will constantly suffer from range anxiety.",
-      "regretWarning": "You might regret this purchase if you are looking for a soft, pillowy ride over broken roads, as the suspension is tuned to be sporty and stiff.",
-      "confidenceScore": 95,
-      "regretRisk": "Low",
-      "whyRegret": "The stiff suspension setup can cause mild lower back discomfort during long, bumpy commutes on poorly maintained municipal roads.",
+      "aamAadmiSummary": "Bhaiya, the Ather 450x is like that fancy gadget everyone wants – great build, smooth ride, and smart features. It's perfect for zipping through city traffic daily, feeling solid and dependable. However, the big catch is that it's currently out of stock, so you can't even buy it right now. It's like finding the perfect pair of shoes but they don't have your size.",
+      "avoid": "Avoid waiting indefinitely for the Ather 450x if you need a scooter urgently, as its availability is uncertain. Also, be mindful of the additional cost for the 'Connect Pro' subscription if you want all smart features.",
+      "regretWarning": "You might regret waiting too long for an unavailable product when there are good, reliable alternatives on the market that fit your budget and needs right now.",
+      "confidenceScore": 90,
+      "regretRisk": "Medium",
+      "whyRegret": "The primary regret would stem from the inability to purchase the product due to its 'Out of Stock' status, forcing you to either wait indefinitely or compromise on your immediate commuting needs.",
       "saferChoice": "TVS iQube S",
-      "marketTiming": "BUY",
-      "marketReasoning": "The current price of ₹1,35,999 directly from Ather is highly competitive and fits perfectly within your ₹1,50,000 budget, making it the ideal time to purchase before any subsidy rollbacks.",
-      "specLongevity": "5 Years",
-      "personalizedInsight": "Since your priority is low maintenance and high build quality, the Ather 450x is the safest bet in the Indian EV market today. Its physical switchgear and aluminum frame will easily outlast the plastic panels and touch-only controls of its competitors.",
-      "socialHook": "Why the Ather 450x is the ultimate 'Paisa Vasool' electric scooter for smart Indian commuters who value engineering over marketing gimmicks!",
-      "postOutputHook": "Always check if your local state government is still offering active EV subsidies before making the final payment at the dealership.",
-      "paisaVasoolIndex": 88,
-      "statusTax": 8000,
-      "utilityScore": 92,
-      "hiddenCosts": "Mandatory portable charger cost if not bundled, and the annual Ather Connect subscription fee for navigation and smart features.",
+      "marketTiming": "WAIT",
+      "marketReasoning": "The Ather 450x is currently out of stock, making it impossible to purchase. Waiting for its replenishment or considering alternatives is the only viable option.",
+      "specLongevity": "3-4 years",
+      "personalizedInsight": "For your daily city commute and focus on low maintenance with good build quality, the Ather 450x is a strong contender on paper. However, its current unavailability means you should seriously consider reliable alternatives like the TVS iQube S, which offers similar core benefits within your budget and is readily available.",
+      "socialHook": "Ather 450x vs Ola S1 Pro: Is the 'premium' electric scooter worth the wait, or are you paying a 'status tax' for an unavailable ride?",
+      "postOutputHook": "Always verify current stock and pricing directly with dealerships or official websites before making any purchase decisions, especially for high-demand electric vehicles.",
+      "paisaVasoolIndex": 45,
+      "statusTax": 20000,
+      "utilityScore": 75,
+      "hiddenCosts": "The Ather Connect Pro subscription for advanced smart features (₹700/month or ₹7,200/year) is an ongoing hidden cost. Additionally, a fast charger for home might be an extra purchase.",
       "platformWarShield": {
         "hasMarketingSilos": true,
-        "siloExposure": "Competitors heavily advertise massive boot spaces and touchscreens while hiding frequent software lockups and suspension failures.",
-        "truthResilienceScore": 90,
-        "bypassStrategyUsed": "Analyzed real-world owner complaints on Reddit and local EV forums to bypass paid influencer reviews."
+        "siloExposure": "Ather's marketing emphasizes 'premium experience' and 'performance', often downplaying the higher cost and the necessity of subscription for full smart features.",
+        "truthResilienceScore": 70,
+        "bypassStrategyUsed": "Focused on real-world ownership costs, long-term reliability reports, and actual feature availability beyond initial purchase price."
       },
       "vettoContrast": {
         "alternativeName": "TVS iQube S",
-        "whyContrast": "Offers a much softer, family-friendly ride quality and a larger service network across tier-2 and tier-3 Indian cities.",
-        "pviBoost": 5,
-        "priceDelta": "Save ₹12,000",
-        "fairPriceTarget": "₹1,23,999",
-        "procurementGuidance": "Visit a local TVS dealership to negotiate free insurance or helmet bundles during festive periods.",
-        "strategicAdvantage": "Excellent comfort for family members of all age groups and a highly predictable, conventional scooter-like riding experience."
+        "whyContrast": "The TVS iQube S offers a highly reliable, well-built, and low-maintenance electric scooter experience that is readily available and fits comfortably within your ₹1,50,000 budget. It provides practical city commuting without the premium price tag or the current unavailability issues of the Ather 450x.",
+        "pviBoost": 25,
+        "priceDelta": "Save ₹35,000",
+        "fairPriceTarget": "₹1,25,000",
+        "procurementGuidance": "Check with your nearest TVS dealership for current offers and test rides. They often have good financing options and are usually in stock.",
+        "strategicAdvantage": "Immediate availability, lower upfront cost, and a robust service network across India make the iQube S a more practical and less stressful purchase for a daily commuter."
       },
       "priceIntegrity": {
-        "currentPriceAudit": "₹1,35,999 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
-        "historicalContext": "Ather prices have stabilized after the FAME-II subsidy revisions, making direct brand purchases the most transparent way to buy.",
+        "currentPriceAudit": "₹1,60,000 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "Historically, the Ather 450x has maintained a premium price point, typically ranging from ₹1,55,000 to ₹1,65,000 for its top variants, with minor fluctuations during festive sales or subsidy changes. It rarely sees deep discounts.",
         "priceHistory": [
           {
-            "month": "January 2026",
-            "price": 139999
+            "month": "January 2025",
+            "price": 165000
           },
           {
-            "month": "March 2026",
-            "price": 137500
+            "month": "February 2025",
+            "price": 165000
           },
           {
-            "month": "June 2026",
-            "price": 135999
+            "month": "March 2025",
+            "price": 162000
+          },
+          {
+            "month": "April 2025",
+            "price": 162000
+          },
+          {
+            "month": "May 2025",
+            "price": 160000
+          },
+          {
+            "month": "June 2025",
+            "price": 160000
           }
         ],
-        "dealScore": 85,
-        "discountStrategy": "Look for corporate discounts or exchange bonuses for your old petrol scooter at the physical experience centers.",
+        "dealScore": 0,
+        "discountStrategy": "Since the product is out of stock, there are no active discount strategies. When available, look for potential exchange bonuses or bank credit card offers during major festive sales like Diwali or New Year.",
         "procurementLinks": [
           {
-            "platform": "Ather Energy",
-            "label": "Buy on Ather Energy",
-            "price": "₹135999",
-            "isBestDeal": true,
-            "url": "https://www.atherenergy.com",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "BikeDekho",
-            "label": "Buy on BikeDekho",
-            "price": "Check Live",
+            "platform": "Bike",
+            "label": "Buy on Bike",
+            "price": "Out of Stock",
             "isBestDeal": false,
-            "url": "https://www.bikedekho.com/search/Ather+450x",
-            "stockStatus": "In Stock"
-          },
-          {
-            "platform": "BikeWale",
-            "label": "Buy on BikeWale",
-            "price": "Check Live",
-            "isBestDeal": false,
-            "url": "https://www.bikewale.com/search/?q=Ather+450x",
-            "stockStatus": "In Stock"
+            "url": "",
+            "stockStatus": "Out of Stock"
           },
           {
             "platform": "ZigWheels",
@@ -797,96 +859,110 @@
             "isBestDeal": false,
             "url": "",
             "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Ather Energy",
+            "label": "Official Ather Energy Site",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
           }
         ]
       },
       "strategicRoadmap": {
-        "immediateAction": "Book a test ride specifically on a rough patch of road to evaluate if the stiff suspension is acceptable for your daily route.",
-        "peakUtilityAge": "3 to 4 Years",
-        "exitStrategy": "Sell before the 5-year battery warranty expires to retain maximum resale value in the used EV market."
+        "immediateAction": "Explore readily available alternatives like the TVS iQube S or Bajaj Chetak that meet your budget and requirements for a daily city commuter.",
+        "peakUtilityAge": "The Ather 450x would offer peak utility for the first 2-3 years, after which battery degradation and newer models might make it feel less cutting-edge.",
+        "exitStrategy": "Resale value for premium electric scooters like Ather is still evolving in India. Expect moderate price drop over time over 3-5 years, with upgrades to newer models being a common path."
       },
       "communityPulse": {
-        "redditConsensus": "Users consistently praise the predictable range estimation and the robust aluminum frame, but complain about the subscription paywall for basic navigation.",
-        "twitterPulse": "Real-time owners report excellent customer service response times when dealing with minor software updates or charger issues.",
-        "youtubeReality": "Independent reviewers confirm that while the top speed is slightly lower than the Ola S1 Pro, the Ather maintains its performance without overheating.",
-        "linkedinProfessional": "Industry experts highlight Ather's superior battery packaging and BMS engineering as the benchmark for safety in the Indian two-wheeler market.",
-        "topUSP": "Predictable TrueRange Algorithm",
-        "topGripe": "Stiff rear suspension setup"
+        "redditConsensus": "Reddit users praise Ather's build quality, riding dynamics, and consistent software updates, but frequently discuss the high cost of ownership, including subscription fees, and the limited service reach in smaller towns.",
+        "twitterPulse": "Twitter often highlights Ather's quick acceleration and premium feel, but also features complaints about range anxiety on longer rides and the occasional software bug after updates. Availability issues are also a recurring topic.",
+        "youtubeReality": "Independent YouTube reviews confirm Ather's strong performance and build, often comparing it favorably to petrol scooters in terms of ride quality. However, many also point out the premium pricing and the necessity of the 'Connect Pro' subscription for the full smart experience.",
+        "linkedinProfessional": "Industry professionals acknowledge Ather's pioneering role in the Indian EV market, commending its engineering and user experience. However, they also note the challenges of scaling infrastructure and making premium EVs accessible to a broader market segment.",
+        "topUSP": "The Ather 450x's top USP is its superior build quality, refined riding dynamics, and integrated smart features, offering a premium and reliable electric scooter experience.",
+        "topGripe": "The most significant gripe is the high initial cost combined with mandatory subscription fees for advanced features, and currently, its unavailability."
       },
       "lifecyclePhase": {
-        "status": "Mature Mid-Lifecycle",
+        "status": "Mature Product (Currently Unavailable)",
         "isObsoleteSoon": false,
-        "nextMajorUpdate": "Minor cosmetic changes and software OTA updates expected in late 2026."
+        "nextMajorUpdate": "Ather is expected to launch new models or significant updates to its existing lineup in late 2026 or early 2027, potentially with improved battery tech and range."
       },
-      "bhartiyaPersonaAudit": "Perfect for the modern Indian household where the scooter is used for daily office commutes, grocery runs, and occasional family errands. It easily survives dusty parking lots, waterlogged streets, and rough handling by multiple family members.",
+      "bhartiyaPersonaAudit": "For the typical Indian household, the Ather 450x is a aspirational electric scooter, offering a modern, tech-forward commuting experience. Its robust build can handle varied city roads, but the premium price and the need for a dedicated charging setup might be a stretch for many. The 'Out of Stock' status means it's not a practical choice for someone needing a vehicle right away.",
       "technicalNode": "Verifying internals...",
       "buildIntegrity": "Checking build quality...",
       "resaleValueNode": "Estimating resale value...",
       "ecosystemLockIn": "Checking brand ecosystem...",
       "features": [
         {
-          "name": "Chassis & Build Integrity",
-          "score": 95,
-          "details": "Precision-engineered all-aluminum frame that completely eliminates body rattles and panel gaps over years of usage."
+          "name": "Build Quality & Chassis Integrity",
+          "score": 85,
+          "details": "The cast aluminum frame provides excellent rigidity and handling, making the scooter feel premium and stable on diverse Indian city roads, though some plastic body panels are prone to minor scratches."
         },
         {
-          "name": "Battery Thermal Management",
-          "score": 92,
-          "details": "Advanced active cooling system ensures the battery remains safe and performs consistently even in 45-degree Indian summers."
+          "name": "Battery Management System (BMS) Reliability",
+          "score": 80,
+          "details": "Ather's BMS is generally robust, offering consistent performance and decent battery longevity over time, ensuring predictable range and charging cycles for daily commutes."
         },
         {
-          "name": "Suspension & Ride Comfort",
-          "score": 74,
-          "details": "Sporty, stiff suspension setup that offers great high-speed stability but feels harsh over sharp potholes and speed breakers."
+          "name": "Software & UI Responsiveness",
+          "score": 78,
+          "details": "The touchscreen interface is intuitive and fluid, providing a good user experience, but occasional software glitches and slower updates compared to some competitors can be a minor annoyance."
         }
       ],
       "socialAudit": {
-        "aggregatedRating": 4.5,
+        "aggregatedRating": 4.1,
         "sentimentSplit": {
-          "positive": 80,
-          "negative": 12,
-          "mixed": 8
+          "positive": 65,
+          "negative": 20,
+          "mixed": 15
         },
-        "criticsConsensus": "The gold standard for electric scooter engineering in India, offering unmatched reliability and handling at the cost of a slightly firm ride.",
-        "userRealityCheck": "Owners love the hassle-free ownership experience and honest range display, though some express frustration over the subscription costs for smart features.",
+        "criticsConsensus": "Critics generally laud the Ather 450x for its superior build quality, engaging performance, and advanced features, positioning it as a premium electric scooter. However, the high price point and the subscription model for full smart features are often highlighted as drawbacks.",
+        "userRealityCheck": "Users appreciate the Ather 450x's smooth ride, quick acceleration, and reliable performance for city commuting. Common complaints revolve around the actual range being less than claimed, the cost of the 'Connect Pro' subscription, and the current unavailability of the product.",
         "integrityAudit": {
           "isFakeReviewRisk": false,
-          "fakeReviewScore": 92,
-          "botSignalDetection": "Highly organic review patterns with detailed, long-term ownership feedback across major automotive forums.",
-          "verifiedPurchaseTruth": "Verified buyers consistently report that the scooter delivers exactly what is promised on the spec sheet without hidden surprises.",
-          "divergenceIndex": 15,
+          "fakeReviewScore": 85,
+          "botSignalDetection": "Minimal bot activity detected; reviews generally appear authentic with specific user experiences and varied sentiment.",
+          "verifiedPurchaseTruth": "A high percentage of reviews are from verified purchasers, indicating genuine feedback from actual owners.",
+          "divergenceIndex": 35,
           "crossPlatformPatterns": [
             {
-              "platform": "Team-BHP",
-              "sentiment": 90,
+              "platform": "Reddit",
+              "sentiment": 70,
               "botRisk": "Low"
             },
             {
+              "platform": "X/Twitter",
+              "sentiment": 60,
+              "botRisk": "Medium"
+            },
+            {
               "platform": "YouTube",
-              "sentiment": 85,
+              "sentiment": 75,
               "botRisk": "Low"
             }
           ],
           "buzzwordSlayer": [
             {
               "term": "Warp Mode",
-              "reality": "Warp Mode provides thrilling acceleration but drains the battery extremely fast; use it only for quick overtaking maneuvers in city traffic."
+              "reality": "While it provides a quick burst of acceleration, sustained use drains the battery rapidly and can lead to thermal throttling, reducing overall range and performance in real-world city traffic conditions."
             },
             {
-              "term": "Google Maps Navigation",
-              "reality": "The onboard navigation works beautifully but requires an active monthly subscription plan after the initial trial period ends."
+              "term": "Connected Scooter",
+              "reality": "Many advanced features like remote diagnostics, theft detection, and ride statistics are locked behind a paid subscription (Ather Connect Pro), making the 'smart' experience an ongoing expense rather than a one-time purchase benefit."
             },
             {
-              "term": "IP67 Water Resistance",
-              "reality": "The battery and motor can easily handle deep water puddles, but avoid high-pressure washing near the dashboard console area."
+              "term": "Aluminium Frame",
+              "reality": "While the chassis is robust and provides excellent structural integrity, many visible body panels are still made of plastic, which can be prone to scratches and minor damage in typical Indian city parking conditions, impacting long-term aesthetics."
             },
             {
-              "term": "Regenerative Braking",
-              "reality": "Regen braking helps recover energy smoothly, but do not rely on it entirely to stop the vehicle; use physical brakes for sudden stops."
+              "term": "Fast Charging",
+              "reality": "The Ather Grid public charging network is not as widespread or consistently available as petrol pumps, and home fast charging requires an additional expensive accessory, limiting its practical utility for quick top-ups during daily use."
             }
           ]
         }
-      }
+      },
+      "schemaVersion": "v3"
     }
   }
 ]
