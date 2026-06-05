@@ -1153,7 +1153,8 @@ function cleanAndResolveUrl(url: string, platform: string, productName: string):
   // Identify placeholder/hallucinated links to trigger high-fidelity search URL fallback
   const isPlaceholderUrl = targetUrl.includes("B0CXXYZ") || 
                            targetUrl.includes("12345") || 
-                           targetUrl.includes("example.com");
+                           targetUrl.includes("example.com") ||
+                           /(?:itm|dp\/|p\/|buy\/|product\/)(?:[a-zA-Z0-9]*?(?:0{5,}|9{5,}|1{5,}|2{5,}|3{5,}|4{5,}|5{5,}|6{5,}|7{5,}|8{5,})[a-zA-Z0-9]*)/i.test(targetUrl);
   
   if (isPlaceholderUrl) {
     isGenericOrMismatched = true;
@@ -1780,7 +1781,11 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
                 const urlLower = url.toLowerCase();
                 isVerifiedLLMUrl = chunks.some((chunk: any) => {
                   const uri = chunk?.web?.uri || chunk?.web?.url;
-                  return uri && typeof uri === 'string' && uri.toLowerCase() === urlLower;
+                  if (!uri || typeof uri !== 'string') return false;
+                  if (uri.toLowerCase() === urlLower) return true;
+                  const cleanUri = uri.split(/[?#]/)[0].replace(/\/+$/, "").toLowerCase();
+                  const cleanUrl = url.split(/[?#]/)[0].replace(/\/+$/, "").toLowerCase();
+                  return cleanUri === cleanUrl && cleanUri.length > 15;
                 });
               }
 
@@ -1793,7 +1798,20 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
                 url.includes("/buy/")
               ) && url.length >= 30;
 
-              if (isGenericModelUrl) {
+              // Detect placeholder or fake hallucinated URL patterns (e.g. itm1000000000000)
+              const isHallucinatedId = !!(url && (
+                /(?:itm|dp\/|p\/|buy\/|product\/)(?:[a-zA-Z0-9]*?(?:0{5,}|9{5,}|1{5,}|2{5,}|3{5,}|4{5,}|5{5,}|6{5,}|7{5,}|8{5,})[a-zA-Z0-9]*)/i.test(url) ||
+                url.includes("12345") ||
+                url.includes("xyz") ||
+                url.includes("abc") ||
+                url.includes("example.com")
+              ));
+
+              // We want to verify and override the URL if:
+              // 1. It is a generic model URL, OR
+              // 2. It is not verified by grounding chunks, OR
+              // 3. It contains a hallucinated ID pattern.
+              if (isGenericModelUrl || !isVerifiedLLMUrl || isHallucinatedId) {
                 const groundingUrl = extractGroundingUrlForPlatform(response, platform, cleanQuery);
                 if (groundingUrl && groundingUrl.length > 25) {
                   const gLower = groundingUrl.toLowerCase();
@@ -1806,9 +1824,11 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
                                            gLower.includes("/about") ||
                                            gLower.includes("/terms");
                   if (!isLowQualityLink) {
-                    console.log(`[Grounding URL Override] Overriding generic LLM URL with verified crawl URL for ${platform}: ${groundingUrl}`);
+                    console.log(`[Grounding URL Override] Overriding unverified/hallucinated LLM URL with verified crawl URL for ${platform}: ${groundingUrl}`);
                     url = groundingUrl;
                     hasGroundedOverride = true;
+                    // Re-evaluate if this overridden URL is verified
+                    isVerifiedLLMUrl = true; 
                   }
                 }
               }
@@ -1829,10 +1849,10 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
                 redirectUrl = "";
               } else {
                 // If it is NOT verified via grounding chunks AND NOT a specific product page,
-                // and it's a generic link, then we force fallback to a search URL
-                const isAcceptableUrl = isVerifiedLLMUrl || hasGroundedOverride || isSpecificProductPage;
+                // or if it contains a hallucinated ID, we force fallback to a search URL
+                const isAcceptableUrl = (isVerifiedLLMUrl || hasGroundedOverride || isSpecificProductPage) && !isHallucinatedId;
                 if (!isAcceptableUrl) {
-                  console.log(`[Anti-Hallucination] LLM generated an unverified generic product link: ${url}. Forcing fallback.`);
+                  console.log(`[Anti-Hallucination] LLM generated an unverified generic or hallucinated product link: ${url}. Forcing fallback.`);
                   redirectUrl = `https://www.${platformLower.replace(/[^a-z0-9]/g, "")}.com`;
                 }
               }
@@ -2787,7 +2807,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     try {
       preFetchResult = await withTimeout(
         preFetchLivePricesAndLinks(resolvedProduct, queryType, parsedQuery, parsedBudget, useCase, 2, requestAi),
-        9500,
+        25000,
         "PREFETCH_TIMEOUT"
       );
     } catch (e: any) {
