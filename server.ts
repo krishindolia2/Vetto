@@ -188,16 +188,18 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay 
     
     try {
       const callParams = { ...params, model: currentModel };
+      const newConfig = { ...callParams.config };
       
-      // Clean up config for models that do not support thinking (only Gemini 3 series does)
-      if (!currentModel.includes("gemini-3")) {
-        const newConfig = { ...callParams.config };
-        // Optimize token limits to enforce ultra-low latency for pre-fetch logic
-        if (!newConfig.maxOutputTokens) newConfig.maxOutputTokens = 800;
-        console.log(`[Resiliency Engine] Stripping thinkingConfig for non-Gemini-3 model: ${currentModel}`);
+      // Optimize token limits to enforce ultra-low latency for pre-fetch logic
+      if (!newConfig.maxOutputTokens) newConfig.maxOutputTokens = 800;
+      
+      const supportsThinking = currentModel.includes("2.5") || currentModel.includes("2.0") || currentModel.includes("gemini-3") || currentModel.includes("thinking");
+      if (supportsThinking) {
+        newConfig.thinkingConfig = { thinkingBudget: 0 };
+      } else {
         delete newConfig.thinkingConfig;
-        callParams.config = newConfig;
       }
+      callParams.config = newConfig;
 
       return await activeAi.models.generateContent(callParams);
     } catch (error: any) {
@@ -456,20 +458,15 @@ function saveCacheToDisk() {
 const auditResponseSchema = {
   type: Type.OBJECT,
   properties: {
-    isAnalysis: { type: Type.BOOLEAN, description: "Is analysis" },
     productName: { type: Type.STRING, description: "Product formal name" },
-    isComparison: { type: Type.BOOLEAN, description: "Is comparison" },
     finalDecision: { type: Type.STRING, description: "Verdict: BUY, WAIT, or RUN" },
     pros: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Advantages (max 3, brief)" },
     cons: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Dealbreakers (max 3, brief)" },
     whyBest: { type: Type.STRING, description: "Logic behind decision (1 sentence)" },
     aamAadmiSummary: { type: Type.STRING, description: "Simple, easy English summary with a short real-world example" },
-    avoid: { type: Type.STRING, description: "What to avoid" },
     regretWarning: { type: Type.STRING, description: "Regret warning" },
     confidenceScore: { type: Type.INTEGER, description: "Confidence 0-100" },
     regretRisk: { type: Type.STRING, description: "Risk: Low, Medium, High" },
-    whyRegret: { type: Type.STRING, description: "Trigger for regret" },
-    saferChoice: { type: Type.STRING, description: "Standard alternative" },
     personalizedInsight: { type: Type.STRING, description: "Actionable insight" },
     socialHook: { type: Type.STRING, description: "Social headline" },
     postOutputHook: { type: Type.STRING, description: "Post-conclusion warning" },
@@ -518,20 +515,16 @@ const auditResponseSchema = {
         redditConsensus: { type: Type.STRING, description: "Reddit consensus" },
         twitterPulse: { type: Type.STRING, description: "X sentiment" },
         youtubeReality: { type: Type.STRING, description: "YouTube reality" },
-        linkedinProfessional: { type: Type.STRING, description: "Expert view" },
-        topUSP: { type: Type.STRING, description: "Top USP" },
-        topGripe: { type: Type.STRING, description: "Top user complaint" }
+        linkedinProfessional: { type: Type.STRING, description: "Expert view" }
       },
-      required: ["redditConsensus", "twitterPulse", "youtubeReality", "linkedinProfessional", "topUSP", "topGripe"]
+      required: ["redditConsensus", "twitterPulse", "youtubeReality", "linkedinProfessional"]
     },
     lifecyclePhase: {
       type: Type.OBJECT,
       properties: {
-        status: { type: Type.STRING, description: "Lifecycle stage" },
-        isObsoleteSoon: { type: Type.BOOLEAN, description: "Obsolete within 3 months" },
-        nextMajorUpdate: { type: Type.STRING, description: "Next launch details" }
+        status: { type: Type.STRING, description: "Lifecycle stage" }
       },
-      required: ["status", "isObsoleteSoon", "nextMajorUpdate"]
+      required: ["status"]
     },
     priceIntegrity: {
       type: Type.OBJECT,
@@ -588,37 +581,12 @@ const auditResponseSchema = {
     socialAudit: {
       type: Type.OBJECT,
       properties: {
-        aggregatedRating: { type: Type.NUMBER, description: "Rating 0-5" },
-        sentimentSplit: {
-          type: Type.OBJECT,
-          properties: {
-            positive: { type: Type.INTEGER, description: "Positive %" },
-            negative: { type: Type.INTEGER, description: "Negative %" },
-            mixed: { type: Type.INTEGER, description: "Mixed %" }
-          },
-          required: ["positive", "negative", "mixed"]
-        },
-        criticsConsensus: { type: Type.STRING, description: "Critics bottomline" },
         userRealityCheck: { type: Type.STRING, description: "User consensus" },
         integrityAudit: {
           type: Type.OBJECT,
           properties: {
             isFakeReviewRisk: { type: Type.BOOLEAN, description: "Paid reviews risk" },
             fakeReviewScore: { type: Type.INTEGER, description: "Score 0-100" },
-            botSignalDetection: { type: Type.STRING, description: "Bot statement" },
-            verifiedPurchaseTruth: { type: Type.STRING, description: "Verified buyers check" },
-            crossPlatformPatterns: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  platform: { type: Type.STRING, description: "Platform" },
-                  sentiment: { type: Type.INTEGER, description: "Sentiment" },
-                  botRisk: { type: Type.STRING, description: "Risk" }
-                },
-                required: ["platform", "sentiment", "botRisk"]
-              }
-            },
             divergenceIndex: { type: Type.INTEGER, description: "Hype gap 0-100" },
             buzzwordSlayer: {
               type: Type.ARRAY,
@@ -632,16 +600,16 @@ const auditResponseSchema = {
               }
             }
           },
-          required: ["isFakeReviewRisk", "fakeReviewScore", "botSignalDetection", "verifiedPurchaseTruth", "crossPlatformPatterns", "divergenceIndex", "buzzwordSlayer"]
+          required: ["isFakeReviewRisk", "fakeReviewScore", "divergenceIndex", "buzzwordSlayer"]
         }
       },
-      required: ["aggregatedRating", "sentimentSplit", "criticsConsensus", "userRealityCheck", "integrityAudit"]
+      required: ["userRealityCheck", "integrityAudit"]
     }
   },
   required: [
-    "isAnalysis", "productName", "isComparison", "finalDecision", "pros", "cons", "whyBest",
-    "aamAadmiSummary", "avoid", "regretWarning", "confidenceScore", "regretRisk", "whyRegret",
-    "saferChoice", "personalizedInsight", "socialHook", "postOutputHook", "marketTiming",
+    "productName", "finalDecision", "pros", "cons", "whyBest",
+    "aamAadmiSummary", "regretWarning", "confidenceScore", "regretRisk",
+    "personalizedInsight", "socialHook", "postOutputHook", "marketTiming",
     "marketReasoning", "specLongevity", "paisaVasoolIndex", "statusTax", "utilityScore", "hiddenCosts",
     "platformWarShield", "vettoContrast", "strategicRoadmap", "communityPulse", "lifecyclePhase",
     "priceIntegrity", "bhartiyaPersonaAudit", "features", "socialAudit"
@@ -2931,39 +2899,45 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       console.warn(`[Semantic Resolver] Stage 1 failed. Fallback to raw query.`);
     }
 
-    // Step 2: Stage 2 targeted price scrape (Grounding active on resolved specifications)
-    let preFetchResult = null;
-    try {
-      preFetchResult = await withTimeout(
-        preFetchLivePricesAndLinks(resolvedProduct, queryType, parsedQuery, parsedBudget, useCase, 2, requestAi),
-        25000,
-        "PREFETCH_TIMEOUT"
-      );
-    } catch (e: any) {
-      console.warn(`[Launch Guard] Pre-fetch failed or timed out (${e.message}). Grounding recovered gracefully.`);
-    }
-    
-    let preFetchedPrices = preFetchResult?.prices || null;
-    if (!preFetchedPrices) {
-      // Create a fallback price list with search-grounded URL and marked as "Out of Stock" so the model is forced to use the search URL and cannot hallucinate the price!
-      const platforms = ["Amazon", "Flipkart", "Croma"];
-      preFetchedPrices = platforms.map(platform => {
-        let url = "";
-        const encoded = encodeURIComponent(resolvedProduct);
-        if (platform === "Amazon") url = `https://www.amazon.in/s?k=${encoded}`;
-        else if (platform === "Flipkart") url = `https://www.flipkart.com/search?q=${encoded}`;
-        else if (platform === "Croma") url = `https://www.croma.com/search?q=${encoded}`;
-        
-        return {
-          platform,
-          price: "Out of Stock",
-          url,
-          exactVariantMatch: false,
-          isBestDeal: false
-        };
-      });
-      console.log(`[Launch Guard] Pre-fetch returned no prices. Injected safe search fallbacks to prevent LLM pricing hallucination.`);
-    }
+    // Helper to format/resolve prices with fallbacks
+    const getResolvedPrices = (preFetchResult: any) => {
+      let prices = preFetchResult?.prices || null;
+      if (!prices) {
+        const platforms = ["Amazon", "Flipkart", "Croma"];
+        prices = platforms.map(platform => {
+          let url = "";
+          const encoded = encodeURIComponent(resolvedProduct);
+          if (platform === "Amazon") url = `https://www.amazon.in/s?k=${encoded}`;
+          else if (platform === "Flipkart") url = `https://www.flipkart.com/search?q=${encoded}`;
+          else if (platform === "Croma") url = `https://www.croma.com/search?q=${encoded}`;
+          
+          return {
+            platform,
+            price: "Out of Stock",
+            url,
+            exactVariantMatch: false,
+            isBestDeal: false
+          };
+        });
+        console.log(`[Launch Guard] Pre-fetch returned no prices. Injected safe search fallbacks.`);
+      }
+      return prices;
+    };
+
+    // Step 2: Stage 2 targeted price scrape (Grounding active on resolved specifications) - RUN CONCURRENTLY
+    const preFetchPromise = (async () => {
+      try {
+        const preFetchResult = await withTimeout(
+          preFetchLivePricesAndLinks(resolvedProduct, queryType, parsedQuery, parsedBudget, useCase, 2, requestAi),
+          25000,
+          "PREFETCH_TIMEOUT"
+        );
+        return preFetchResult;
+      } catch (e: any) {
+        console.warn(`[Launch Guard] Pre-fetch failed or timed out (${e.message}). Grounding recovered gracefully.`);
+        return null;
+      }
+    })();
     
     isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
 
@@ -2973,12 +2947,6 @@ Resolved Specific Target Product: ${resolvedProduct || "Analyzed Visual Evidence
 Query Type: ${queryType}
 Target Capital: ${parsedBudget || 'Unlimited'}
 Strategic Context: ${useCase || 'General Deployment'}${historyText}`;
-
-    if (preFetchedPrices && preFetchedPrices.length > 0) {
-      promptText += `\n\nVERIFIED CURRENT LIVE PRICES ON MAJOR PLATFORMS IN INDIA:\n` +
-        preFetchedPrices.map((p: any) => `- ${p.platform}: ${p.price} (Verified Purchase/Search Link: ${p.url || 'None - Out of Stock'})`).join('\n') +
-        `\nUse these exact verified live prices and direct URLs for your "priceIntegrity.procurementLinks" structure. Ensure exact congruency. If the price is "Out of Stock" or the link says "None", you MUST NOT provide a URL for that platform (leave the url field empty string "").`;
-    }
 
     if (images && images.length > 0) {
       promptText += `\n\nIMPORTANT: Analyze the attached screenshots meticulously. Look for technical specifications, material quality indicators, marketing traps, and real-world durability markers.`;
@@ -3173,25 +3141,13 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       "\n\nCRITICAL SUMMARY REQUIREMENT:\n" +
       "The 'aamAadmiSummary' field MUST be written in simple, clear, and easy English (NOT Hinglish). It must be highly specific and non-generic. You MUST include a brief, practical real-world example so the user can easily understand (for example: instead of saying 'has fast charging', say 'it charges from 0 to 50% in just 15 minutes, which is enough to last your entire morning commute'). Keep it short, direct, and incredibly easy to understand.";
 
-    if (preFetchedPrices && preFetchedPrices.length > 0) {
-      finalSystemPrompt += `\n\nCRITICAL REAL-TIME CURRENT PRICING DATAFEED:\nYou MUST use the following exact prices and URLs for the platforms in your JSON's "priceIntegrity.procurementLinks" array. Do NOT make up other prices or change these fields. Use exactly these values:\n${JSON.stringify(preFetchedPrices.map(p => ({ platform: p.platform, price: p.price, url: p.url, isBestDeal: p.isBestDeal })), null, 2)}`;
-    }
-
     const genConfig: any = {
       systemInstruction: finalSystemPrompt,
-      ...(useSearchGrounding ? { tools: [{ googleSearch: {} }] } : {}),
       temperature: 0.0,
       maxOutputTokens: 8192,
-      thinkingConfig: {
-        thinkingLevel: ThinkingLevel.MINIMAL
-      }
+      responseMimeType: "application/json",
+      responseSchema: auditResponseSchema
     };
-
-    // Fully eliminate the error combination: Tool use with responseMimeType "application/json" is unsupported
-    if (!useSearchGrounding) {
-      genConfig.responseMimeType = "application/json";
-      genConfig.responseSchema = auditResponseSchema;
-    }
 
     let isAborted = false;
     req.on("close", () => {
@@ -3200,6 +3156,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     });
 
     let text = "";
+    let auditData: any = null;
     
     if (isSSE) {
       if (!res.headersSent) {
@@ -3211,9 +3168,39 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         res.flushHeaders();
       }
       
-      // Send initial metadata with preFetchedPrices
-      res.write(`data: ${JSON.stringify({ type: "metadata", preFetchedPrices })}\n\n`);
+      // Send initial progress message so proxies know the connection is active
+      res.write(`data: ${JSON.stringify({ type: "progress", message: "Launching Vetto Strategic Price Scanners..." })}\n\n`);
       if (typeof (res as any).flush === "function") (res as any).flush();
+
+      // Listen to the preFetchPromise to write the metadata as soon as it resolves
+      preFetchPromise.then(preFetchResult => {
+        if (!isAborted && !res.writableEnded) {
+          const preFetchedPrices = getResolvedPrices(preFetchResult);
+          res.write(`data: ${JSON.stringify({ type: "metadata", preFetchedPrices })}\n\n`);
+          if (typeof (res as any).flush === "function") (res as any).flush();
+        }
+      });
+
+      // Set up active background keep-alive ping loop to keep Render warm
+      heartbeatTimer = setInterval(() => {
+        if (!res.writableEnded && !req.destroyed) {
+          res.write(`data: ${JSON.stringify({ type: "ping" })}\n\n`);
+          if (typeof (res as any).flush === "function") (res as any).flush();
+        } else {
+          if (heartbeatTimer) {
+            clearInterval(heartbeatTimer);
+            heartbeatTimer = null;
+          }
+        }
+      }, 15000);
+
+      // Stop timer and cleanup if the client terminates the connection
+      req.on("close", () => {
+        if (heartbeatTimer) {
+          clearInterval(heartbeatTimer);
+          heartbeatTimer = null;
+        }
+      });
 
       try {
         let stream: any;
@@ -3233,7 +3220,10 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             }
             
             const activeConfig = { ...genConfig };
-            if (!activeStreamModel.includes("gemini-3")) {
+            const supportsThinking = activeStreamModel.includes("2.5") || activeStreamModel.includes("2.0") || activeStreamModel.includes("gemini-3") || activeStreamModel.includes("thinking");
+            if (supportsThinking) {
+              activeConfig.thinkingConfig = { thinkingBudget: 0 };
+            } else {
               delete activeConfig.thinkingConfig;
             }
             stream = await requestAi.models.generateContentStream({
@@ -3244,8 +3234,6 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             break;
           } catch (e: any) {
             lastErr = e;
-            
-            // If the error is a 503, 429, or 500, we should backoff and try the fallback model next loop
             console.warn(`[Launch Guard] Gemini transient failure on ${activeStreamModel} (Code: ${e?.status || e?.code}). Retrying... (Attempt ${attempt + 1}/4)`);
             if (attempt < 3) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
           }
@@ -3268,6 +3256,35 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
           res.end();
           return;
         }
+
+        // Await the preFetchPromise to ensure prices are fully available before healing final JSON
+        const preFetchResult = await preFetchPromise;
+        const preFetchedPrices = getResolvedPrices(preFetchResult);
+
+        // Robust parsing with JSON repair and deep merge fallback
+        const jsonStart = text.search(/[{[]/);
+        const jsonEnd = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+        let rawJson = text;
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+          rawJson = text.substring(jsonStart, jsonEnd + 1);
+        }
+        
+        const repairedJsonString = repairJson(rawJson);
+        const parsed = JSON.parse(repairedJsonString);
+        auditData = deepMerge(defaultAuditData, parsed);
+
+        // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
+        auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
+        // Apply recursive jargon shield sanitization (Jargon Shield)
+        auditData = sanitizeObjectJargon(auditData);
+
+        console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
+
+        if (heartbeatTimer) clearInterval(heartbeatTimer);
+        res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
+        res.write("data: [DONE]\n\n");
+        if (typeof (res as any).flush === "function") (res as any).flush();
+        res.end();
       } catch (err: any) {
         console.error("Stream generation failed:", err);
         if (heartbeatTimer) clearInterval(heartbeatTimer);
@@ -3277,11 +3294,15 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         return;
       }
     } else {
-      const genResponse = await callGeminiWithRetry({
+      // Non-SSE traditional call: execute both promises concurrently
+      const contentPromise = callGeminiWithRetry({
         model: modelToUse,
         contents: [{ role: "user", parts }],
         config: genConfig,
       });
+
+      const [genResponse, preFetchResult] = await Promise.all([contentPromise, preFetchPromise]);
+      const preFetchedPrices = getResolvedPrices(preFetchResult);
 
       const duration = Date.now() - startTime;
       console.log(`[Audit Req] Model finished in ${duration}ms`);
@@ -3302,52 +3323,35 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
       if (!text) {
         throw new Error("Model returned an empty response.");
       }
-    }
-    
-    // Robust parsing with JSON repair and deep merge fallback
-    let auditData: any;
-    try {
-      const jsonStart = text.search(/[{[]/);
-      const jsonEnd = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
-      let rawJson = text;
-      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
-        rawJson = text.substring(jsonStart, jsonEnd + 1);
-      }
-      
-      const repairedJsonString = repairJson(rawJson);
-      const parsed = JSON.parse(repairedJsonString);
-      auditData = deepMerge(defaultAuditData, parsed);
 
-      // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
-      auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
-      // Apply recursive jargon shield sanitization (Jargon Shield)
-      auditData = sanitizeObjectJargon(auditData);
-
-      console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
-      
-        if (isSSE) {
-          if (heartbeatTimer) clearInterval(heartbeatTimer);
-          res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
-          res.write("data: [DONE]\n\n");
-          if (typeof (res as any).flush === "function") (res as any).flush();
-          res.end();
-        } else {
-          res.status(200).json(auditData);
+      // Robust parsing with JSON repair and deep merge fallback
+      try {
+        const jsonStart = text.search(/[{[]/);
+        const jsonEnd = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+        let rawJson = text;
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+          rawJson = text.substring(jsonStart, jsonEnd + 1);
         }
+        
+        const repairedJsonString = repairJson(rawJson);
+        const parsed = JSON.parse(repairedJsonString);
+        auditData = deepMerge(defaultAuditData, parsed);
+
+        // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
+        auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
+        // Apply recursive jargon shield sanitization (Jargon Shield)
+        auditData = sanitizeObjectJargon(auditData);
+
+        console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
+        res.status(200).json(auditData);
       } catch (parseError) {
         console.error("JSON Parse Error:", parseError, "Raw Text:", text);
-        if (isSSE) {
-          if (heartbeatTimer) clearInterval(heartbeatTimer);
-          res.write(`data: ${JSON.stringify({ type: "error", message: "Engine failed to format results cleanly." })}\n\n`);
-          if (typeof (res as any).flush === "function") (res as any).flush();
-          res.end();
-        } else {
-          res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
-        }
+        res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
       }
+    }
 
     // Live Real-Time Grounding: Persisting versioned cache for sub-second repeat responses
-    if (cacheKey) {
+    if (cacheKey && auditData) {
       // 1. Save to global persistent Firestore Cache
       if (backendDb) {
         const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
