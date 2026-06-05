@@ -1435,6 +1435,9 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
        - "specific": User is asking about a single specific product model (e.g. "iQOO Neo 9 Pro", "Royal Enfield Himalayan").
     2. Resolve this to exactly ONE highly specific product model name ("productName").
        - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "Realme Buds Air 6 Pro 50dB ANC" or "OnePlus Buds 3" for earbuds under 5k - NOT "boat earbuds" or "OnePlus Buds Nord").
+       - CURRENT & ACTIVE SKU RULE: You MUST resolve category queries to CURRENT (2025/2026), active, and widely available product models in India today. Do NOT select obsolete or discontinued models (e.g., do not recommend GTX 1650 or Ryzen 5500H laptops if RTX 3050 / Ryzen 5600H or newer laptops are widely available within budget).
+       - IN-STOCK VERIFICATION: Use the search grounding results to verify that the product is actually active and in stock on major Indian retail platforms (like Amazon India or Flipkart) today. Do NOT select discontinued or out-of-stock models.
+       - CONCISE CANONICAL FORMAT: The "productName" MUST be clean, concise, and optimized for search engine queries. It should contain the brand, model series, processor, and GPU, but do NOT include verbose specifications like dimensions, display refresh rate, exact port lists, year, or release tags (e.g. return "Lenovo IdeaPad Gaming 3 Ryzen 5 6600H RTX 3050" or "HP Victus 15 Ryzen 5 5600H RTX 3050" - NOT "Lenovo IdeaPad Gaming 3 15.6 inch FHD 120Hz (AMD Ryzen 5 6600H, NVIDIA GeForce RTX 3050 4GB, 8GB DDR5, 512GB SSD, Windows 11)"). A clean name is critical for accurate price scraping.
        - BUDGET CEILING ALIGNMENT RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k", "under 30k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility. Select a superior, spec-dominating product that lands strictly between 80% to 100% of the budget range (e.g., if the budget is 5k, select a superior ₹4,000-₹4,900 option like "Realme Buds Air 6 Pro" or "OnePlus Buds 3", rather than aggressively downgrading the user to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
        - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
        - If "comparison", return the primary or first product name.
@@ -1450,17 +1453,9 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
+        tools: [{ googleSearch: {} }],
         temperature: 0.0,
-        maxOutputTokens: 150,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            productName: { type: Type.STRING },
-            queryType: { type: Type.STRING, enum: ["category", "specific", "comparison"] }
-          },
-          required: ["productName", "queryType"]
-        }
+        maxOutputTokens: 4000
       }
     }, 3, 1000, customAi);
 
@@ -1473,7 +1468,71 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
         .join("")
         .trim();
     }
-    const parsed = JSON.parse(text);
+    
+    let parsed: any = null;
+    const jsonStart = text.indexOf('{');
+    const jsonEnd = text.lastIndexOf('}');
+    if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+      const sliced = text.substring(jsonStart, jsonEnd + 1);
+      try {
+        const repaired = repairJson(sliced);
+        parsed = JSON.parse(repaired);
+      } catch (e) {
+        console.warn("[Semantic Resolver] Failed to parse sliced JSON from grounded search response:", e);
+      }
+    }
+
+    if (!parsed) {
+      // Grounded search response did not contain valid JSON, let's format it using a fallback call.
+      // Call gemini-2.5-flash without search grounding (which allows responseMimeType: "application/json").
+      console.log(`[Semantic Resolver] Grounded search response did not contain valid JSON. Invoking fast JSON formatting fallback.`);
+      const fallbackPrompt = `You are a precision JSON formatting helper.
+      The user queried: "${query}"
+      Budget: ${budget ? `₹${budget}` : "Unlimited"}
+      UseCase: "${useCase || "General Use"}"
+      
+      Here is the conversational recommendation or search result text from a search engine query:
+      "${text}"
+      
+      Task:
+      Extract or resolve the absolute best specific product model name (e.g. "HP Victus 15 Ryzen 5 5600H / RTX 3050" or "Lenovo IdeaPad Gaming 3 Ryzen 5 6600H / RTX 3050") from the text that fits the user's budget and query. If the text does not contain a specific product name, resolve the user's original query directly to a specific mainstream product available in India.
+      
+      Return strictly a JSON object conforming to this schema:
+      {
+        "productName": "Resolved full specific product name with specifications",
+        "queryType": "category" | "specific" | "comparison"
+      }`;
+
+      const fallbackResponse = await callGeminiWithRetry({
+        model: "gemini-2.5-flash",
+        contents: [{ role: "user", parts: [{ text: fallbackPrompt }] }],
+        config: {
+          responseMimeType: "application/json",
+          temperature: 0.0,
+          maxOutputTokens: 250
+        }
+      }, 2, 500, customAi);
+
+      let fallbackText = "";
+      if (fallbackResponse && typeof fallbackResponse.text === 'string') {
+        fallbackText = fallbackResponse.text.trim();
+      } else if (fallbackResponse?.candidates?.[0]?.content?.parts) {
+        fallbackText = fallbackResponse.candidates[0].content.parts
+          .map((p: any) => p.text || "")
+          .join("")
+          .trim();
+      }
+
+      const fJsonStart = fallbackText.indexOf('{');
+      const fJsonEnd = fallbackText.lastIndexOf('}');
+      if (fJsonStart !== -1 && fJsonEnd !== -1 && fJsonEnd > fJsonStart) {
+        fallbackText = fallbackText.substring(fJsonStart, fJsonEnd + 1);
+      }
+      
+      const repaired = repairJson(fallbackText);
+      parsed = JSON.parse(repaired);
+    }
+
     let productName = parsed.productName || query;
     let queryType = parsed.queryType || "specific";
 
