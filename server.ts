@@ -149,8 +149,9 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, errorName 
 }
 
 // Retry helper for transient failures and access blocks with automatic stable model fallback
-async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay = 1000) {
-  if (!ai) throw new Error("AI not initialized");
+async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay = 1000, customAi?: GoogleGenAI | null) {
+  const activeAi = customAi || ai;
+  if (!activeAi) throw new Error("AI not initialized");
   
   // Standard production stable models to maximize availability and optimize cost billing
   const fallbackModels = [
@@ -198,7 +199,7 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay 
         callParams.config = newConfig;
       }
 
-      return await ai.models.generateContent(callParams);
+      return await activeAi.models.generateContent(callParams);
     } catch (error: any) {
       const errorMsg = error.message?.toLowerCase() || "";
       const status = error.status || error.code || 0;
@@ -824,6 +825,12 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
     'scooter', 'inflator', 'car wash', 'lubricant', 'engine oil', 'ev', 'electric vehicle', 'mg comet', 'byd', 'mg motor',
     'suv', 'sedan', 'hatchback', 'nexon', 'punch', 'thar', 'creta', 'seltos', 'xuv700', 'scorpio', 'fortuner'
   ];
+
+  const accessoryKeywords = [
+    'helmet', 'dashcam', 'gps tracker', 'tyre', 'tire', 'inflator', 'lubricant', 
+    'engine oil', 'cleaner', 'perfume', 'wax', 'polish', 'mat', 'cover', 'holder', 
+    'mount', 'gloves', 'jacket', 'accessories', 'accessory', 'light', 'horn'
+  ];
   
   const matchKeyword = (kw: string) => {
     if (kw.length <= 3) {
@@ -837,13 +844,16 @@ function detectProductCategory(prodName: string, query: string): 'electronics' |
   const hasFashion = fashionKeywords.some(matchKeyword);
   const hasElectronics = electronicsKeywords.some(matchKeyword);
   const hasAutomotive = automotiveKeywords.some(matchKeyword);
+  const hasAccessory = accessoryKeywords.some(matchKeyword);
   
-  if (hasAutomotive) {
+  if (hasAutomotive && !hasAccessory) {
     return 'automotive';
   } else if (hasFashion && !hasElectronics) {
     return 'fashion';
-  } else if (hasElectronics) {
+  } else if (hasElectronics || (hasAccessory && (combined.includes('dashcam') || combined.includes('gps') || combined.includes('inflator') || combined.includes('light')))) {
     return 'electronics';
+  } else if (hasAccessory) {
+    return 'general';
   }
   return 'general';
 }
@@ -1409,8 +1419,9 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
 }
 
 // Ultra-fast pure semantic resolver (Stage 1) to determine exact product specifications without search latency
-async function resolveSpecificProductName(query: string, budget = "", useCase = ""): Promise<{ productName: string, queryType: "category" | "specific" | "comparison" }> {
-  if (!ai) return { productName: query, queryType: "specific" };
+async function resolveSpecificProductName(query: string, budget = "", useCase = "", customAi?: GoogleGenAI | null): Promise<{ productName: string, queryType: "category" | "specific" | "comparison" }> {
+  const activeAi = customAi || ai;
+  if (!activeAi) return { productName: query, queryType: "specific" };
   try {
     const prompt = `You are a precision product semantic resolver. 
     Analyze the user's query: "${query}"
@@ -1451,7 +1462,7 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
           required: ["productName", "queryType"]
         }
       }
-    });
+    }, 3, 1000, customAi);
 
     let text = "";
     if (response && typeof response.text === 'string') {
@@ -1463,9 +1474,19 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
         .trim();
     }
     const parsed = JSON.parse(text);
+    let productName = parsed.productName || query;
+    let queryType = parsed.queryType || "specific";
+
+    if (queryType === "comparison" || productName.toLowerCase().includes(" vs ") || productName.toLowerCase().includes(" vs. ")) {
+      const parts = productName.split(/\s+vs\.?\s+/i);
+      if (parts.length > 0) {
+        productName = parts[0].trim();
+      }
+    }
+
     return {
-      productName: parsed.productName || query,
-      queryType: parsed.queryType || "specific"
+      productName,
+      queryType
     };
   } catch (e) {
     console.error("[Semantic Resolver] Error resolving query:", e);
@@ -1474,8 +1495,9 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
 }
 
 // Perform internet search grounding to retrieve actual live pricing and platform links for a resolved specific product (Stage 2)
-async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQueryType: string, originalQuery: string, budgetLimit = "", useCase = "", retries = 2): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
-  if (!ai) return null;
+async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQueryType: string, originalQuery: string, budgetLimit = "", useCase = "", retries = 2, customAi?: GoogleGenAI | null): Promise<{ resolvedProductName: string, queryType: string, prices: any[] } | null> {
+  const activeAi = customAi || ai;
+  if (!activeAi) return null;
   
   const cleanQuery = originalQuery.trim();
   if (!resolvedProductName) return null;
@@ -1545,7 +1567,7 @@ async function preFetchLivePricesAndLinks(resolvedProductName: string, resolvedQ
             thinkingLevel: ThinkingLevel.MINIMAL
           }
         }
-      });
+      }, 3, 1000, customAi);
 
       let jsonText = "";
       if (typeof response.text === 'string') {
@@ -2045,9 +2067,8 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       const linkNumValue = parseInt(priceStr.replace(/[^\d]/g, ''));
       let isAccessoryOutlier = false;
       if (!isNaN(linkNumValue)) {
-        const isLowOutlier = refPrice > 3000 && linkNumValue < refPrice * 0.25;
-        const isFlatOutlier = refPrice > 10000 && linkNumValue < 2500;
-        if (isLowOutlier || isFlatOutlier) {
+        const isLowOutlier = refPrice > 3000 && linkNumValue < refPrice * 0.20;
+        if (isLowOutlier) {
           console.log(`[Safety Guard] Replaced accessory/low-outlier placeholder price "${priceStr}" for platform "${platform}" based on reference price ₹${refPrice.toLocaleString('en-IN')}`);
           priceStr = "Out of Stock"; // This forces self-healing and sets stockStatus correctly!
           isAccessoryOutlier = true;
@@ -2386,7 +2407,26 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
 
 app.post("/api/audit", securityGuard, async (req, res) => {
   console.log("-> Hit /api/audit endpoint");
-  if (!ai) {
+  
+  const requestApiKey = req.headers['x-gemini-api-key'] as string;
+  let requestAi = ai;
+  if (requestApiKey) {
+    try {
+      requestAi = new GoogleGenAI({ 
+        apiKey: requestApiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build-custom',
+          }
+        }
+      });
+      console.log("[Auth Engine] Using custom client-provided Gemini API Key for audit request.");
+    } catch (apiErr) {
+      console.error("[Auth Engine] Failed to initialize custom client API Key:", apiErr);
+    }
+  }
+
+  if (!requestAi) {
     return res.status(401).json({ 
       error: "Vetto Engine Core not initialized. Please ensure GEMINI_API_KEY is set." 
     });
@@ -2675,7 +2715,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     let resolvedProduct = parsedQuery;
     let queryType = "specific";
     try {
-      const resolved = await resolveSpecificProductName(parsedQuery, parsedBudget, useCase);
+      const resolved = await resolveSpecificProductName(parsedQuery, parsedBudget, useCase, requestAi);
       resolvedProduct = resolved.productName;
       queryType = resolved.queryType;
       console.log(`[Semantic Resolver] Resolved query "${parsedQuery}" to specific product: "${resolvedProduct}" (Type: ${queryType})`);
@@ -2687,14 +2727,35 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     let preFetchResult = null;
     try {
       preFetchResult = await withTimeout(
-        preFetchLivePricesAndLinks(resolvedProduct, queryType, parsedQuery, parsedBudget, useCase),
+        preFetchLivePricesAndLinks(resolvedProduct, queryType, parsedQuery, parsedBudget, useCase, 2, requestAi),
         9500,
         "PREFETCH_TIMEOUT"
       );
     } catch (e: any) {
       console.warn(`[Launch Guard] Pre-fetch failed or timed out (${e.message}). Grounding recovered gracefully.`);
     }
-    const preFetchedPrices = preFetchResult?.prices || null;
+    
+    let preFetchedPrices = preFetchResult?.prices || null;
+    if (!preFetchedPrices) {
+      // Create a fallback price list with search-grounded URL and marked as "Out of Stock" so the model is forced to use the search URL and cannot hallucinate the price!
+      const platforms = ["Amazon", "Flipkart", "Croma"];
+      preFetchedPrices = platforms.map(platform => {
+        let url = "";
+        const encoded = encodeURIComponent(resolvedProduct);
+        if (platform === "Amazon") url = `https://www.amazon.in/s?k=${encoded}`;
+        else if (platform === "Flipkart") url = `https://www.flipkart.com/search?q=${encoded}`;
+        else if (platform === "Croma") url = `https://www.croma.com/search?q=${encoded}`;
+        
+        return {
+          platform,
+          price: "Out of Stock",
+          url,
+          exactVariantMatch: false,
+          isBestDeal: false
+        };
+      });
+      console.log(`[Launch Guard] Pre-fetch returned no prices. Injected safe search fallbacks to prevent LLM pricing hallucination.`);
+    }
     
     isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
 
@@ -2808,7 +2869,7 @@ STRICT PRICING & SCORING PROTOCOLS:
 
 2. THE ELDER BROTHER PERSONA & TONE DIRECTIVES:
     You are the user's street-smart, caring elder brother ("bhaiya") who wants to save them from being scammed by glossy ads and hype. 
-    Use a warm, natural, simple, and protective voice. Use everyday Indian/Hinglish/English terms where appropriate.
+    Use a warm, natural, simple, and protective voice. Use everyday Indian/English terms where appropriate. Strictly keep the final summaries in clear and simple English, not Hinglish.
     
     A. VALUE INDEXES (Paisa Vasool Index & Utility Score):
        - Explain value practically. "Every single rupee works hard for you" vs "It's like paying for a premium thali but only getting rice and dal."
@@ -2969,7 +3030,7 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
             if (!activeStreamModel.includes("gemini-3")) {
               delete activeConfig.thinkingConfig;
             }
-            stream = await ai.models.generateContentStream({
+            stream = await requestAi.models.generateContentStream({
               model: activeStreamModel,
               contents: [{ role: "user", parts }],
               config: activeConfig,

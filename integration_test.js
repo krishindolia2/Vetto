@@ -49,16 +49,32 @@ function auditCategory(category, query, budget, data) {
   
   if (budget) {
     const budgetNum = parseInt(budget.replace(/[^\d]/g, ''), 10);
-    if (lowestDeal && lowestDeal.price && lowestDeal.price !== 'Out of Stock') {
-      const dealPriceNum = parseInt(lowestDeal.price.replace(/[^\d]/g, ''), 10);
-      checks.push(`Budget: ₹${budgetNum.toLocaleString('en-IN')}, Deal Price: ₹${dealPriceNum.toLocaleString('en-IN')}`);
-      if (dealPriceNum > budgetNum) {
-        issues.push(`FAIL: Recommended product's deal price (₹${dealPriceNum}) exceeds budget constraint (₹${budgetNum})!`);
+    const activePrices = procurementLinks
+      .map(link => link.price && link.price !== 'Out of Stock' ? parseInt(link.price.replace(/[^\d]/g, ''), 10) : null)
+      .filter(x => x !== null);
+      
+    if (activePrices.length > 0) {
+      const lowestActive = Math.min(...activePrices);
+      checks.push(`Budget: ₹${budgetNum.toLocaleString('en-IN')}, Lowest Active Price: ₹${lowestActive.toLocaleString('en-IN')}`);
+      if (lowestActive > budgetNum) {
+        issues.push(`FAIL: Recommended product's lowest active price (₹${lowestActive}) exceeds budget constraint (₹${budgetNum})!`);
       } else {
-        checks.push(`PASS: Recommended product's deal price fits the budget constraint.`);
+        checks.push(`PASS: Recommended product's lowest active price fits the budget constraint.`);
       }
     } else {
-      checks.push(`Budget check skipped: No active deal price found (Out of Stock).`);
+      // If everything is Out of Stock, check the fair price target
+      const fairPrice = data.vettoContrast?.fairPriceTarget || '';
+      if (fairPrice && fairPrice !== 'Out of Stock') {
+        const fairPriceNum = parseInt(fairPrice.replace(/[^\d]/g, ''), 10);
+        checks.push(`Budget: ₹${budgetNum.toLocaleString('en-IN')}, Fair Price Target (OOS fallback): ₹${fairPriceNum.toLocaleString('en-IN')}`);
+        if (fairPriceNum > budgetNum) {
+          issues.push(`FAIL: Recommended product's fair price target (₹${fairPriceNum}) exceeds budget constraint (₹${budgetNum})!`);
+        } else {
+          checks.push(`PASS: Recommended product's fair price target fits the budget constraint.`);
+        }
+      } else {
+        checks.push(`Budget check skipped: No active deal price or fair target price found (Out of Stock).`);
+      }
     }
   }
 
@@ -98,6 +114,17 @@ function auditCategory(category, query, budget, data) {
         issues.push(`FAIL: In-stock item on ${link.platform} has an empty URL!`);
       }
       
+      // Search parameters check
+      if (url.includes('amazon.in/s?') && !url.includes('k=')) {
+        issues.push(`FAIL: Amazon search URL missing 'k=' query parameter: "${link.url}"`);
+      }
+      if (url.includes('flipkart.com/search?') && !url.includes('q=')) {
+        issues.push(`FAIL: Flipkart search URL missing 'q=' query parameter: "${link.url}"`);
+      }
+      if (url.includes('croma.com/search') && !url.includes('text=')) {
+        issues.push(`FAIL: Croma search URL missing 'text=' query parameter: "${link.url}"`);
+      }
+      
       // Category platform matching
       const allowed = allowedDomains[category] || [];
       const disallowed = disallowedDomains[category] || [];
@@ -125,23 +152,53 @@ function auditCategory(category, query, budget, data) {
     }
   });
 
-  // Check 4: Price history congruency & chart nodes
+  // Check 4: Price history congruency & chart nodes (Truth History check even for OOS)
   const priceHistory = priceIntegrity.priceHistory || [];
-  if (lowestDeal && lowestDeal.price && lowestDeal.price !== 'Out of Stock') {
+  let expectedLatestPrice = 0;
+  const currentPriceAudit = priceIntegrity.currentPriceAudit || '';
+  if (currentPriceAudit) {
+    const match = currentPriceAudit.match(/₹\s*(\d+[\d,]*)/);
+    if (match) {
+      expectedLatestPrice = parseInt(match[1].replace(/[^\d]/g, ''), 10);
+    }
+  }
+
+  if (priceHistory.length > 0 && expectedLatestPrice > 0) {
+    const latestNode = priceHistory[priceHistory.length - 1];
+    const latestNodePrice = latestNode.price;
+    checks.push(`Expected Current Price: ₹${expectedLatestPrice}, Latest Chart Node Price: ₹${latestNodePrice} (${latestNode.month})`);
+    if (expectedLatestPrice !== latestNodePrice) {
+      issues.push(`FAIL: Price level discrepancy! Expected current price is ₹${expectedLatestPrice} but the current chart node price is ₹${latestNodePrice}. Every price field must be numerically congruent!`);
+    } else {
+      checks.push(`PASS: Price history latest node matches the expected current price.`);
+    }
+  } else if (priceHistory.length === 0) {
+    issues.push(`FAIL: priceHistory array is empty!`);
+  }
+
+  // Check 6: priceDelta mathematical check
+  const vettoContrast = data.vettoContrast || {};
+  const fairPriceTarget = vettoContrast.fairPriceTarget || '';
+  const priceDelta = vettoContrast.priceDelta || '';
+  if (lowestDeal && lowestDeal.price && lowestDeal.price !== 'Out of Stock' && fairPriceTarget && fairPriceTarget !== 'Out of Stock' && priceDelta) {
     const lowestDealNum = parseInt(lowestDeal.price.replace(/[^\d]/g, ''), 10);
+    const fairPriceNum = parseInt(fairPriceTarget.replace(/[^\d]/g, ''), 10);
+    const expectedDelta = lowestDealNum - fairPriceNum;
     
-    // Check if the latest chart node in priceHistory matches the lowest deal price
-    if (priceHistory.length > 0) {
-      const latestNode = priceHistory[priceHistory.length - 1];
-      const latestNodePrice = latestNode.price;
-      checks.push(`Lowest Deal Price: ₹${lowestDealNum}, Latest Chart Node Price: ₹${latestNodePrice} (${latestNode.month})`);
-      if (lowestDealNum !== latestNodePrice) {
-        issues.push(`FAIL: Price level discrepancy! Lowest deal price is ₹${lowestDealNum} but the current chart node price is ₹${latestNodePrice}. Every price field must be numerically congruent with the best deal!`);
+    const parsedDeltaNum = parseInt(priceDelta.replace(/[^\d]/g, ''), 10);
+    if (priceDelta === 'Same Price') {
+      if (expectedDelta !== 0) {
+        issues.push(`FAIL: priceDelta math mismatch! Expected delta is ${expectedDelta} but priceDelta is "Same Price"`);
       } else {
-        checks.push(`PASS: Price history latest node matches the lowest deal price.`);
+        checks.push(`PASS: priceDelta is correctly "Same Price".`);
       }
     } else {
-      issues.push(`FAIL: priceHistory array is empty!`);
+      checks.push(`Lowest Deal: ₹${lowestDealNum}, Fair Target: ₹${fairPriceNum}, Expected Delta: ${expectedDelta > 0 ? 'Save' : ''} ₹${Math.abs(expectedDelta)}, Parsed Delta: ₹${parsedDeltaNum}`);
+      if (Math.abs(expectedDelta) !== parsedDeltaNum) {
+        issues.push(`FAIL: priceDelta math mismatch! Expected ${Math.abs(expectedDelta)} but parsed ${parsedDeltaNum} from "${priceDelta}"`);
+      } else {
+        checks.push(`PASS: priceDelta matches expected difference between best deal and fair price target.`);
+      }
     }
   }
 

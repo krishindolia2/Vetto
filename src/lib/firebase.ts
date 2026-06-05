@@ -3,7 +3,10 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User 
 import { initializeFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+  ...firebaseConfig,
+  measurementId: firebaseConfig.measurementId || "G-XL2WCXDQ6L"
+});
 export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 }, firebaseConfig.firestoreDatabaseId);

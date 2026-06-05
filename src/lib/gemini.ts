@@ -130,12 +130,18 @@ export async function getRecommendation(
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "Accept": "text/event-stream"
+      };
+      const customKey = typeof window !== 'undefined' ? localStorage.getItem("vetto_gemini_api_key") : null;
+      if (customKey) {
+        headers["X-Gemini-API-Key"] = customKey.trim();
+      }
+
       const response = await fetch("/api/audit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "text/event-stream"
-        },
+        headers,
         body: JSON.stringify({
           query,
           budget,

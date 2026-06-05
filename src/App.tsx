@@ -85,7 +85,7 @@ import {
   type User as FirebaseUser,
 } from "./lib/firebase";
 import { trackVisit } from "./lib/analytics";
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   query as firestoreQuery,
@@ -365,6 +365,17 @@ function deepMerge(target: any, source: any): any {
   return output;
 }
 
+function safeBtoa(str: string): string {
+  try {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+      return String.fromCharCode(parseInt(p1, 16));
+    }));
+  } catch (e) {
+    const asciiStr = str.replace(/[^\x00-\x7F]/g, "");
+    return btoa(asciiStr);
+  }
+}
+
 export default function App() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [garageAssets, setGarageAssets] = useState<any[]>([]);
@@ -431,7 +442,7 @@ export default function App() {
     // Sync waitlist rank if missing
     if (onWaitlist && !waitlistRank && savedEmail) {
       const sanitizedEmail = savedEmail.toLowerCase().trim();
-      const entryId = btoa(sanitizedEmail).replace(/[/+=]/g, "_");
+      const entryId = safeBtoa(sanitizedEmail).replace(/[/+=]/g, "_");
       getDoc(doc(db, "waitlist", entryId))
         .then((snap) => {
           if (snap.exists()) {
@@ -462,9 +473,11 @@ export default function App() {
   const [adminTab, setAdminTab] = useState<
     "hotline" | "feedback" | "analytics"
   >("hotline");
-  const [isFounder, setIsFounder] = useState(true); // Now live for everyone
+  const [isFounder, setIsFounder] = useState(() => localStorage.getItem("vetto_founder") === "true"); // Load from local storage
   const [founderKey, setFounderKey] = useState("");
   const [showFounderAuth, setShowFounderAuth] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [customApiKey, setCustomApiKey] = useState(() => localStorage.getItem("vetto_gemini_api_key") || "");
   const [lastAuditTime, setLastAuditTime] = useState<number>(0);
   const AUDIT_COOLDOWN = 10000; // 10 seconds between audits
   const [hotlineMessage, setHotlineMessage] = useState("");
@@ -862,11 +875,18 @@ export default function App() {
           "Authorized Domain mismatch! Let's add vetto.in to Authorized Domains in the Firebase Console.",
           "error",
         );
-      } else if (errCode === "auth/popup-blocked") {
-        showToast(
-          "Sign-in popup blocked by browser. Please allow popups for this site.",
-          "error",
-        );
+      } else if (
+        errCode === "auth/popup-blocked" || 
+        errCode === "auth/popup-closed-by-user" || 
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      ) {
+        try {
+          showToast("Popup blocked or mobile device detected. Redirecting to sign in...", "info");
+          await signInWithRedirect(auth, googleProvider);
+        } catch (redirectErr: any) {
+          console.error("Redirect auth failed:", redirectErr);
+          showToast("Sign-in redirect failed. Please check browser settings.", "error");
+        }
       } else if (errCode === "auth/cancelled-popup-request") {
         // Safe to ignore or show subtle info
         showToast("Sign-in flow cancelled.", "info");
@@ -1244,7 +1264,7 @@ export default function App() {
         );
         // Try to recover rank if possible
         try {
-          const entryId = btoa(sanitizedEmail).replace(/[/+=]/g, "_");
+          const entryId = safeBtoa(sanitizedEmail).replace(/[/+=]/g, "_");
           const { getDoc } = await import("firebase/firestore");
           const existing = await getDoc(doc(db, "waitlist", entryId));
           if (existing.exists()) {
@@ -1413,6 +1433,16 @@ export default function App() {
                 How it Works
               </span>
             </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex items-center gap-2 px-4 py-2 text-zinc-400 hover:text-accent transition-all duration-300 cursor-pointer"
+              title="Settings"
+            >
+              <Settings className="w-4 h-4" />
+              <span className="font-bold text-[10px] uppercase tracking-widest hidden sm:inline">
+                Settings
+              </span>
+            </button>
             {user ? (
               <div className="flex items-center gap-4">
                 {isAdmin && (
@@ -1463,7 +1493,7 @@ export default function App() {
         </header>
 
         {/* Core Search & Audit Centerpiece */}
-        {!result && !loading && (
+        {!result && !loading && (isFounder || !onWaitlist) && (
           <div className="max-w-4xl mx-auto w-full mb-16 space-y-12">
             <div className="glass-panel p-8 md:p-12 space-y-10 relative">
               <div className="absolute -top-12 -left-12 w-48 h-48 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
@@ -2442,7 +2472,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Dashboard Grid - Strictly Founder Managed */}
-        {false && (
+        {!isFounder && onWaitlist && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -2529,6 +2559,77 @@ export default function App() {
         )}
 
         <AnimatePresence>
+          {showSettings && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] bg-bg/95 backdrop-blur-3xl flex items-center justify-center p-6"
+            >
+              <div className="w-full max-w-md glass-panel p-12 space-y-10 border-accent/20 relative">
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="absolute top-6 right-6 text-white/20 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="text-center space-y-4">
+                  <span className="text-[10px] font-mono text-accent uppercase tracking-[0.5em]">
+                    Engine Settings
+                  </span>
+                  <p className="text-sm font-serif italic text-white/40">
+                    Configure your personal keys and custom parameters.
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">
+                      Gemini API Key
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Enter API Key (starts with AIzaSy...)"
+                      value={customApiKey}
+                      onChange={(e) => setCustomApiKey(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 font-mono text-xs text-white focus:outline-none focus:border-accent transition-colors"
+                    />
+                    <p className="text-[9px] text-zinc-400 leading-normal">
+                      Your key is saved locally in your browser and used directly for all verification scans to bypass public high-priority queue saturation.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      onClick={() => {
+                        localStorage.setItem("vetto_gemini_api_key", customApiKey);
+                        showToast("Settings saved successfully!", "success");
+                        setShowSettings(false);
+                      }}
+                      className="flex-grow bg-accent text-bg py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white transition-all"
+                    >
+                      Save Settings
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCustomApiKey("");
+                        localStorage.removeItem("vetto_gemini_api_key");
+                        showToast("Custom API key cleared.", "info");
+                        setShowSettings(false);
+                      }}
+                      className="px-6 py-4 border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/5 hover:text-white transition-all"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
           {showFounderAuth && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -2572,7 +2673,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Secondary layout components (Bento grid on landing, result layout on audit complete) */}
-        {!result ? (
+        {(isFounder || !onWaitlist) && (!result ? (
           <div className="max-w-5xl mx-auto w-full mt-4 mb-20 space-y-12">
             {/* Elegant Bento Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -2773,10 +2874,11 @@ export default function App() {
               </div>
             </form>
           </div>
-        )}
+        ))}
 
         {/* Results / Empty / Loading State */}
-        <AnimatePresence mode="wait">
+        {(isFounder || !onWaitlist) && (
+          <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
               key="loading"
@@ -5118,6 +5220,7 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
+        )}
 
         <footer className="bg-white border-t border-black/5 py-32 mt-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-30" />
