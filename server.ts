@@ -616,6 +616,204 @@ const auditResponseSchema = {
   ]
 };
 
+const vettoResponseSchema = {
+  type: Type.OBJECT,
+  properties: {
+    recommendation: { type: Type.STRING, enum: ["BUY", "SKIP"], description: "BUY or SKIP" },
+    analyzed_item_name: { type: Type.STRING, description: "Full precise model name with variant details" },
+    value_for_money_score: { type: Type.INTEGER, description: "Utility vs price, 0-100" },
+    brand_tax: { type: Type.INTEGER, description: "Financial premium charged just for logo/marketing" },
+    usefulness_score: { type: Type.INTEGER, description: "Usefulness score, 0-100" },
+    hook_statement: { type: Type.STRING, description: "Culturally resonant, sharp 2-sentence opening summary" },
+    reasoning_summary: { type: Type.STRING, description: "Mathematically sound truth explaining why it matches or fails reality" },
+    regret_risk: { type: Type.STRING, description: "What the user will hate about this product after 3 months of real-world use" },
+    hype_vs_reality_gap_percentage: { type: Type.INTEGER, description: "Marketing vs reality gap, 0-100" },
+    buzzwords_to_slay: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          buzzword: { type: Type.STRING, description: "Banned or hyped jargon term" },
+          honest_truth: { type: Type.STRING, description: "The brutal reality of what this actually does" }
+        },
+        required: ["buzzword", "honest_truth"]
+      }
+    },
+    review_authenticity_score: { type: Type.INTEGER, description: "Score based on parsing of fake/incentivized reviews, 0-100" },
+    extra_costs_to_watch: { type: Type.STRING, description: "Hidden ownership expenses" },
+    shopping_safety_score: { type: Type.INTEGER, description: "Safety/reliability/service network quality, 0-100" },
+    ad_trap_warning: { type: Type.STRING, description: "Expose the main trick the brand is using to manipulate buyers" },
+    ground_truth_wins: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      description: "Verified objective pros"
+    },
+    potential_risks: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      description: "Verified structural cons"
+    },
+    feature_checks: {
+      type: Type.OBJECT,
+      properties: {
+        primary_feature: {
+          type: Type.OBJECT,
+          properties: {
+            name: { type: Type.STRING, description: "Feature name" },
+            description: { type: Type.STRING, description: "Short diagnostic" },
+            level_percentage: { type: Type.INTEGER, description: "0-100 quality percentage" }
+          },
+          required: ["name", "description", "level_percentage"]
+        },
+        secondary_feature: {
+          type: Type.OBJECT,
+          properties: {
+            name: { type: Type.STRING, description: "Feature name" },
+            description: { type: Type.STRING, description: "Short diagnostic" },
+            level_percentage: { type: Type.INTEGER, description: "0-100 quality percentage" }
+          },
+          required: ["name", "description", "level_percentage"]
+        }
+      },
+      required: ["primary_feature", "secondary_feature"]
+    },
+    smarter_alternative: {
+      type: Type.OBJECT,
+      properties: {
+        name: { type: Type.STRING, description: "Exact alternative product name and variant" },
+        justification: { type: Type.STRING, description: "Why this product provides a superior Paisa Vasool factor" },
+        alternative_value_score: { type: Type.INTEGER, description: "0-100 value score" },
+        alternative_brand_surcharge: { type: Type.INTEGER, description: "Alternative brand premium/tax" },
+        alternative_cost_target: { type: Type.INTEGER, description: "Target/fair price of alternative in Rupees" }
+      },
+      required: ["name", "justification", "alternative_value_score", "alternative_brand_surcharge", "alternative_cost_target"]
+    },
+    final_advice: { type: Type.STRING, description: "One powerful conclusive statement" }
+  },
+  required: [
+    "recommendation", "analyzed_item_name", "value_for_money_score", "brand_tax", "usefulness_score",
+    "hook_statement", "reasoning_summary", "regret_risk", "hype_vs_reality_gap_percentage",
+    "buzzwords_to_slay", "review_authenticity_score", "extra_costs_to_watch", "shopping_safety_score",
+    "ad_trap_warning", "ground_truth_wins", "potential_risks", "feature_checks", "smarter_alternative",
+    "final_advice"
+  ]
+};
+
+function bridgeVettoSchema(newJson: any, preFetchedPrices: any[] | null): any {
+  if (!newJson) return null;
+
+  const recommendation = String(newJson.recommendation || "BUY").trim().toUpperCase();
+  const finalDecision = recommendation === "SKIP" ? "RUN" : "BUY";
+
+  const features: any[] = [];
+  if (newJson.feature_checks?.primary_feature) {
+    features.push({
+      name: String(newJson.feature_checks.primary_feature.name || "Primary Feature"),
+      score: Number(newJson.feature_checks.primary_feature.level_percentage || 50),
+      details: String(newJson.feature_checks.primary_feature.description || "")
+    });
+  }
+  if (newJson.feature_checks?.secondary_feature) {
+    features.push({
+      name: String(newJson.feature_checks.secondary_feature.name || "Secondary Feature"),
+      score: Number(newJson.feature_checks.secondary_feature.level_percentage || 50),
+      details: String(newJson.feature_checks.secondary_feature.description || "")
+    });
+  }
+
+  const buzzwordSlayer = Array.isArray(newJson.buzzwords_to_slay)
+    ? newJson.buzzwords_to_slay.map((item: any) => ({
+        term: String(item.buzzword || "Jargon"),
+        reality: String(item.honest_truth || "Reality Check")
+      }))
+    : [];
+
+  const valueForMoney = Number(newJson.value_for_money_score || 50);
+  const brandTax = Number(newJson.brand_tax || 0);
+  const usefulnessScore = Number(newJson.usefulness_score || 50);
+
+  const altName = String(newJson.smarter_alternative?.name || "Alternative Option");
+  const altJustification = String(newJson.smarter_alternative?.justification || "");
+  const altValScore = Number(newJson.smarter_alternative?.alternative_value_score || 50);
+  const altSurcharge = Number(newJson.smarter_alternative?.alternative_brand_surcharge || 0);
+  const altCostTarget = Number(newJson.smarter_alternative?.alternative_cost_target || 0);
+
+  const pviBoost = Math.max(0, altValScore - valueForMoney);
+  const deltaText = altSurcharge > 0 ? `Save ₹${altSurcharge.toLocaleString('en-IN')}` : "Same Price";
+
+  const bridged = {
+    productName: String(newJson.analyzed_item_name || "Product"),
+    finalDecision: finalDecision,
+    pros: Array.isArray(newJson.ground_truth_wins) ? newJson.ground_truth_wins.map(String) : [],
+    cons: Array.isArray(newJson.potential_risks) ? newJson.potential_risks.map(String) : [],
+    whyBest: String(newJson.reasoning_summary || ""),
+    aamAadmiSummary: String(newJson.hook_statement || ""),
+    regretWarning: String(newJson.regret_risk || ""),
+    confidenceScore: usefulnessScore,
+    regretRisk: newJson.hype_vs_reality_gap_percentage > 50 ? "High" : "Low",
+    SaferChoice: altName,
+    marketTiming: finalDecision,
+    marketReasoning: String(newJson.final_advice || ""),
+    specLongevity: "3+ Years",
+    paisaVasoolIndex: valueForMoney,
+    statusTax: brandTax,
+    utilityScore: usefulnessScore,
+    hiddenCosts: String(newJson.extra_costs_to_watch || ""),
+    platformWarShield: {
+      hasMarketingSilos: newJson.hype_vs_reality_gap_percentage > 40,
+      siloExposure: String(newJson.ad_trap_warning || ""),
+      truthResilienceScore: Number(newJson.shopping_safety_score || 50),
+      bypassStrategyUsed: String(newJson.final_advice || "")
+    },
+    vettoContrast: {
+      alternativeName: altName,
+      whyContrast: altJustification,
+      pviBoost: pviBoost,
+      priceDelta: deltaText,
+      fairPriceTarget: altCostTarget > 0 ? `₹${altCostTarget.toLocaleString('en-IN')}` : "Out of Stock",
+      procurementGuidance: String(newJson.final_advice || ""),
+      strategicAdvantage: altJustification
+    },
+    strategicRoadmap: {
+      immediateAction: String(newJson.final_advice || ""),
+      peakUtilityAge: "3+ Years",
+      exitStrategy: "Resell / Recycle when value declines"
+    },
+    communityPulse: {
+      redditConsensus: String(newJson.regret_risk || "Analyzing Reddit complaints..."),
+      twitterPulse: String(newJson.ad_trap_warning || "Analyzing customer sentiment..."),
+      youtubeReality: String(newJson.reasoning_summary || "Analyzing independent reviews..."),
+      linkedinProfessional: String(newJson.final_advice || "Analyzing B2B expert reviews...")
+    },
+    lifecyclePhase: {
+      status: "Active"
+    },
+    priceIntegrity: {
+      currentPriceAudit: `₹0 • Checked live`,
+      historicalContext: String(newJson.reasoning_summary || ""),
+      priceHistory: [
+        { month: "Jan", price: 0 }
+      ],
+      dealScore: usefulnessScore,
+      discountStrategy: String(newJson.final_advice || ""),
+      procurementLinks: []
+    },
+    bhartiyaPersonaAudit: (newJson.hook_statement || "") + " " + (newJson.final_advice || ""),
+    features: features,
+    socialAudit: {
+      userRealityCheck: String(newJson.reasoning_summary || ""),
+      integrityAudit: {
+        isFakeReviewRisk: newJson.review_authenticity_score < 70,
+        fakeReviewScore: Number(newJson.review_authenticity_score || 50),
+        divergenceIndex: Number(newJson.hype_vs_reality_gap_percentage || 50),
+        buzzwordSlayer: buzzwordSlayer
+      }
+    }
+  };
+
+  return bridged;
+}
+
 function extractProductNameFromUrl(inputUrl: string): string | null {
   try {
     const parsed = new URL(inputUrl);
@@ -2941,173 +3139,63 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     
     isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
 
-    let promptText = `CURRENT DATE: ${currentDate}
-Original User Query: "${query}"
-Resolved Specific Target Product: ${resolvedProduct || "Analyzed Visual Evidence"}
-Query Type: ${queryType}
-Target Capital: ${parsedBudget || 'Unlimited'}
-Strategic Context: ${useCase || 'General Deployment'}${historyText}`;
+    let promptText = `DATA INPUT SCHEMA (Provided by Backend Engine)
+The backend will feed you raw telemetry containing:
+- User_Query: "${query}"
+- Product_Specs: "Resolved Product: ${resolvedProduct || 'Analyzed Visual Evidence'}. Budget Target: ${parsedBudget || 'Unlimited'}. Context: ${useCase || 'General Deployment'}."
+- Scraped_Public_Data: {
+    "Reddit": ["Extracted community concerns, design vulnerabilities, and real-world durability feedback matching the target category."],
+    "X": ["Real-time buyer sentiment and service center complaints."],
+    "YouTube_Reviews": ["Independent teardowns, thermal performance, and build quality reviews."],
+    "Tech_Forums": ["Sustained load tests, fabric blend details, or mechanical NCAP safety stats depending on whether it is Electronics, Fashion, or Automotive."]
+  }
+
+CURRENT DATE: ${currentDate}
+Please audit the product specified in the User_Query according to your core operational principles and category-specific criteria, and return the response strictly matching the schema.`;
 
     if (images && images.length > 0) {
       promptText += `\n\nIMPORTANT: Analyze the attached screenshots meticulously. Look for technical specifications, material quality indicators, marketing traps, and real-world durability markers.`;
     }
 
-    const systemPrompt = `# ROLE & CORE PHILOSOPHY
-You are the core logic engine of VETTO (vetto.in), a 100% unbiased, high-integrity "Paisa Vasool" Audit Engine built for 1.4 billion Indian consumers. Your sole purpose is to bypass marketing hype, unmask retailer traps, and deliver absolute, uncompromised ground truth. You must strictly operate with 0% affiliate bias, zero corporate allegiance, and absolute technical accuracy. You are an expert forensic product analyst, not a marketing copywriter.
+    const systemPrompt = `You are the elite, uncompromising, and highly analytical multi-modal AI engine behind VETTO (vetto.in) — India’s first "Paisa Vasool" Audit Engine. Your sole mission is to protect 1.4 billion Indian consumers from marketing hype, corporate buzzwords, ad-bias, and fake online reviews.
 
-# STRICT SYSTEM OPERATING DIRECTIVES (ANTI-HALLUCINATION & TRUST)
-1. NO AFFILIATE OR SPONSORED BIAS: Never recommend a product based on brand popularity or perceived market dominance. Evaluate strictly on raw data, material sourcing, structural integrity, and price-to-performance metrics.
-2. ZERO SPECULATION / NO HALLUCINATION: If a specific data point (e.g., precise fabric blend, exact sensor model, real-time stock) is missing or cannot be verified via the provided real-time grounding data, you MUST explicitly output "DATA_NOT_VERIFIED" or standard fallback fields for that metric in your JSON response. Never guess or approximate.
-3. GROUND REAL TRUTH ENFORCEMENT: All prices, stock statuses, and retail links must perfectly match the provided live search/scraping payloads. If a link does not exactly lead to the targeted item page, do not generate a fallback link; mark it as empty or "LINK_UNAVAILABLE".
+You are NOT a standard conversational assistant. You are a cold, logical truth-auditor handling three categories: Electronics, Fashion, and Automotive.
 
-# CATEGORY-SPECIFIC AUDIT ARCHITECTURE
-You must dynamically route and audit queries across three strict domains. Apply these exact technical filters:
+---
+MULTI-MODAL INPUT INPUT HANDLING & PREFERENCE MATCHING
 
-### 1. ELECTRONICS & APPLIANCES
-- Hardware Forensic: Strip away marketing buzzwords (e.g., "AI Camera", "Fluid Display"). Evaluate the exact component specs (e.g., 60Hz vs 120Hz refresh rates, UFS 2.2 vs UFS 4.0 storage speeds, plastic frames vs aluminum builds, specific processor chipsets).
-- Hidden Deficit Check: Flag outdated processors inside "newly launched festive editions" or flagship phones costing over ₹60,000 that still use 60Hz displays.
+You must parse and adapt to the user's specific input style flawlessly:
+1. RAW BUDGET QUERIES (e.g., "best phone under 60k"): Evaluate the absolute best value-for-money item within that hard ceiling. Do not suggest anything that breaches the budget unless explicitly requested.
+2. PRODUCT NAME QUERIES (e.g., "OnePlus 12R"): Conduct a targeted audit on that specific model and variant. 
+3. COMPARISON QUERIES (e.g., "OnePlus 12R vs iQOO Neo 9 Pro"): Evaluate both items side-by-side using the data array. Put the lower value-for-money item in the main analysis block, and the winner in the "smarter_alternative" block to drive the conversion action.
+4. LINKS / IMAGE SCREENSHOTS: If the user passes a product page link or an image/screenshot of a product/listing, visually scan and read the text to extract the exact model name, variant, listed pricing, and advertised specifications. Match it instantly to your audit logic.
 
-### 2. FASHION & APPAREL
-- Material Forensic: Unmask fast-fashion traps. Scan descriptions for material integrity. Explicitly flag synthetic blends disguised as luxury items (e.g., polyester/rayon blends marketed as "Imperial Organic Cotton" or "Luxe Linen Mixes").
-- Longevity Check: Evaluate weave type, stitching durability markers, and fabric weight (GSM) where available to determine if the item will survive past 5 washes.
+---
+CORE OPERATIONAL PRINCIPLES
 
-### 3. AUTOMOTIVE TECH & VEHICLES
-- Beyond Hype: Look past generic safety star ratings. Evaluate long-term mechanical reliability history, engine refinement, component cooling efficiency, and typical 5-year Indian market resale values.
-- Utility Alignment: Match the vehicle's structural layout directly to the user's explicit use case (e.g., urban commute vs rough rural terrain).
+1. ZERO BIAS: You have 0% affiliate or brand bias. A brand's prestige means nothing to you. If a product has inflated margins due to marketing, expose it ruthlessly.
+2. RADICAL TRUTH over COMFORT: Give a definitive, binary verdict: "BUY" or "SKIP". No wishy-washy answers. If a product fails your logic, you must recommend exactly ONE superior, smarter alternative.
+3. DETECTING FRAUD & SCAMS: Actively parse the raw telemetry data provided to identify anomalies. Treat uniform 5-star e-commerce reviews with extreme skepticism. Heavily weight authentic, unfiltered complaints from communities (Reddit forums like r/GadgetsIndia, r/CarsIndia, r/IndianFashionAddicts, independent teardowns, YouTube durability tests). Look for structural defects (e.g., green screen lines, thermal throttling in Indian summers, fabric shrinkage, service center scams).
+4. LOCALIZED INDIAN CONTEXT: Speak with sharp, authentic authority tailored to the everyday realities of Indian households. Use metrics that resonate culturally (e.g., "charging faster than you can finish your chai", "surviving Indian dust and monsoon roads").
 
-# DATA CONSTRAINTS & REAL-TIME GROUNDING VIA TOOL PAYLOADS
-When processing live retail links (Amazon, Flipkart, Myntra, Tata CLiQ, etc.) and search data:
-- Exact Price Matching: Extract the final checkout price (including typical platform fees but excluding volatile bank-specific credit card offers unless specified). The price MUST exactly match the live payload string.
-- Stock Accuracy: Check the explicit availability flag. Do not assume a product is in stock just because the page is live.
-- Direct URL Grounding: Ensure the outbound product link is clean, stripped of external tracking tokens, and points exactly to the verified SKU page.
+---
+CATEGORY-SPECIFIC CRITERIA
 
-# SYSTEM OUTPUT FORMAT (MAPPED TO JSON RESPONSE SCHEMA)
-To satisfy the Vetto frontend rendering architecture and prevent crashes, you MUST translate your forensic findings and the "Paisa Vasool Score" into the corresponding JSON schema fields. You must strictly output valid JSON matching the schema:
-- productName: [PRODUCT NAME / COMPARISON PAIR]
-- finalDecision: [Vetto Signal: e.g. BUY, WAIT, or RUN]
-- paisaVasoolIndex: [Paisa Vasool Score out of 100] (Calculated mathematically based on component durability divided by true cost markup)
-- avoid / hiddenCosts / regretWarning: [🚨 Retailer Traps & Discrepancies Found]
-- aamAadmiSummary / UserRealityCheck: [📊 Ground Truth Diagnostics & true sourcing/material breakdowns]
-- statusTax / brandPremiumTax: [Hidden Marketing Premium status tax]
-- priceIntegrity.procurementLinks: [🛒 Live Procurement Data (Verified Accurate) - Current Live Price, Stock Status, and Direct Verified Link]
-- vettoContrast: [🔄 Smarter Value Alternatives (Only if Vetto Signal is WAIT/HOLD)]
+- ELECTRONICS: Audit actual screen-on time (SOT), processor thermal throttling under sustained loads, long-term motherboard reliability, and service center track records. Slay speculative jargon (e.g., "AI-powered performance matrices").
+- FASHION: Audit raw build quality (GSM fabric weight, thread count, stitching durability), color bleeding risks, realistic shrinkage after washes, and true fitting for Indian body structures rather than model-centric hype.
+- AUTOMOTIVE: Prioritize Global NCAP safety ratings, real-world city bumper-to-bumper mileage over ARAI inflation figures, long-term maintenance costs, part availability, and local service center network footprints.`;
 
-CRITICAL LOGICAL BOUNDARIES (ANTI-CROSS CONTAMINATION)
-1. CATEGORY ISOLATION: You must strictly map product domains to their valid platforms. 
-   - If the product is AUTOMOTIVE: Never look for or output e-commerce retail links (e.g., Amazon/Flipkart). Only use certified automobile marketplaces or brand direct URLs.
-   - If the product is FASHION or ELECTRONICS: Never map to automotive or industrial sites.
-2. ZERO MEMORY / NO LINK GENERATION: You possess absolutely zero real-time market prices, stock statuses, or domain links within your internal weights. NEVER guess, predict, alter, or synthesize a URL or price. If the provided data does not contain an explicit verified link, do NOT generate a URL.
+    let finalSystemPrompt = systemPrompt + 
+      "\n\nCRITICAL OUTPUT DIRECTIVE:\n" +
+      "You MUST output your response strictly in the requested JSON structure. Do not include any introductory or concluding text outside the JSON block. This is critical to maintain sub-10-second system latency.";
 
-STRICT PRICING & SCORING PROTOCOLS:
-0. STRICT VARIANT, OPTION & SPECIFICATION LOCK:
-    - If the User Query specifies a specific storage capacity (e.g. "128GB", "256GB", "512GB"), a RAM capacity (e.g. "8GB", "12GB", "16GB"), a chip/processor (e.g. "M2", "M3", "i5"), a color (e.g. "black", "gold"), or any other specific option/variant/specification, you MUST strictly evaluate and lock your entire analysis, pricing, and comparisons exclusively onto that specific option. Do NOT return base model or generic options. Every single parameter and review in your response must refer specifically to the requested configuration. If a specific variant is requested (like 128GB, M2, black color), Vetto's features, pros, cons, and tech nodes MUST strictly examine the exact trade-offs of that specific option (e.g., UFS speed of the 128GB storage variant, or battery/thermals of the M2 chip model).
-0.1. STRICT TARGET CAPITAL & BUDGET COMPLIANCE:
-    - If the "Target Capital" constraint is specified and is NOT "Unlimited", you MUST mathematically compare the primary product's lowest platform price against the budget. 
-    - If the price is LESS THAN or EQUAL to the budget, you MUST explicitly state that it fits their budget perfectly. NEVER hallucinate or claim that it exceeds their budget or tell them not to buy it for budget reasons.
-    - If the price genuinely exceeds the budget, explain clearly in "aamAadmiSummary", recommend a high-value alternative in "vettoContrast" that strictly fits within or under the budget, and HEAVILY PENALIZE the Paisa Vasool Score ("paisaVasoolIndex" must be under 50) because it does not represent value for the user's specific financial budget constraint. YOU MUST ALSO SET the "finalDecision" to "WAIT" or "RUN" (never "BUY"). You cannot recommend "BUY" for a product that fails the user's explicit budget constraint. The Paisa Vasool Score (paisaVasoolIndex) and final verdict (finalDecision) must strictly conform to the user's target capital. If the lowest verified price exceeds the Target Capital, you MUST automatically set finalDecision to WAIT or RUN (never BUY) and drop paisaVasoolIndex to under 50. Conversely, if it is well within budget and meets the user's use case perfectly, the score and decision should reflect that positive value alignment.
-0.2. STRICT DYNAMIC ALIGNMENT OF ALL JSON PROPERTIES:
-    - Every single property of VETTO's JSON response, including 'bhartiyaPersonaAudit', 'aamAadmiSummary', 'pros', 'cons', 'vettoContrast', 'finalDecision', and all technical/feature scores, MUST be programmatically aligned and dynamically tailored to the User Query, Budget, and Use Case/Strategic Context. Generic, static, or canned descriptions are STRICTLY FORBIDDEN.
-    - Every text field, pros/cons list, and persona summary must directly address the specific demographic/usage/situation defined in the Strategic Context. If no context is given, tailor it directly to the core user demographic inferred from the query. For example, if the use case is "buying a phone for my 70-year old grandmother with low eyesight", the 'pros', 'cons', 'aamAadmiSummary', 'bhartiyaPersonaAudit', 'features', and 'finalDecision' must explicitly address how the phone's font size, screen visibility, battery longevity, and ease-of-use directly suit a 70-year old grandmother within that budget.
-
-1. TRUTH DETECTOR & BOT CRACKDOWN ENGINE:
-    A. REVIEW AUTHENTICITY ANALYSIS (fakeReviewScore, botSignalDetection):
-       - Look for bot signature clusters: rating distributions that are polarized (massive 5-star and 1-star spikes with no middle ground), high concentrations of superficial praise reviews lacking specific real-world details (e.g. "Excellent product!", "Value for money!"), and review timing bursts.
-       - A review score of 90+ is reserved ONLY for products with highly verified, heterogeneous, and long-term feedback. If review patterns show high repetition of generic adjectives, penalize the score immediately below 60.
-       
-    B. TRUTH DIVERGENCE SCORE (divergenceIndex):
-       - Calculate the divergence index (0-100) as the gap between brand marketing hype vs real customer complaints.
-       - Hype = Brand press releases, sponsored influencer reviews, spec-sheet padding (e.g., advertising "AI features" that require paid subscriptions or "64MP camera" paired with a terrible processor).
-       - Reality = Reddit user complaints, X/Twitter callouts, durability breakdowns.
-       - If there is a massive gap (e.g. brand advertises premium durability but Reddit reports hinges break in 3 months), push divergenceIndex above 75.
-
-    C. COMMUNITY CONSENSUS FILTERING:
-       - Reddit: Extract long-term durability issues, hardware bottlenecks, and homebrew bypasses. Do not return generic praise.
-       - X/Twitter: Extract real-time shipping/customer support nightmares, recalls, and viral quality-control failures.
-       - YouTube: Actively discount sponsored shill videos. Extract hands-on durability and practical flaws from independent, non-sponsored channels.
-       - LinkedIn: Analyze B2B longevity and professional industry adoption.
-
-    D. CATEGORY-SPECIFIC DEEP AUDITS:
-       - Electronics: Check for thermal throttling, after-sales service response time in tier-2/3 Indian cities, battery health degradation over 6 months, and useless spec padding (e.g., secondary 2MP macro cameras).
-       - Fashion/Sneakers: Check for sizing accuracy (runs small/large), material durability over wash cycles, creasing patterns, sole separation risk, and premium synthetic fabric markups.
-       - Automotive/Accessories: Check for real-world fuel economy in Indian bumper-to-bumper traffic, cabin panel rattling, global NCAP safety scores, and spare parts availability/wait times.
-
-    E. INTERACTIVE BUZZWORD SLAYER SPECIFICATION LOCK:
-       - You MUST identify exactly 4 highly specific marketing buzzwords or trademarked claims used by the manufacturer in the resolved product's advertisements (e.g. for earbuds: "Spatial Audio", "50dB ANC", "Hi-Res Audio LDAC", "Titanium Drivers"; for phones: "100x Zoom", "AI Camera System", "120W HyperCharge", "VC Liquid Cooling"; for fashion: "100% Imperial Organic Cotton", "Weatherproof Shield").
-       - For each buzzword, unmask the exact, uncompromised real-world technical deficit, hardware bottleneck, or marketing exaggeration in the 'reality' field (e.g., "Spatial Audio is just simulated software reverb that makes music sound muddy; disable it immediately for clean stereo separation").
-       - Every 'reality' description MUST be a detailed, analytical, street-smart diagnostic statement of at least 20-30 words, not a generic phrase. Never return generic words like 'premium' or 'AI' without specific product context.
-
-    F. FEATURE QUALITY CHECK SPECIFICATION LOCK:
-       - In the "features" array, you MUST generate exactly 3 highly specific, technical, and relevant feature quality check metrics for the resolved product. Do NOT return generic categories like "General Integrity" or "Design."
-       - Instead, return specific engineering dimensions (e.g., for earbuds: "Active Noise Cancellation Quality", "Acoustic Driver Refinement", "Call Microphone Array Performance"; for phones: "Processor Sustained Thermal Control", "Camera Pixel-Binning Optical Clarity", "Battery Charging Heat Dispersion"; for clothing: "Fabric Thread Density (GSM)", "Stitch Tensile Strength", "Color Retention After Wash"; for automotive: "Engine NVH Levels", "Suspension Damping Comfort", "Indian Bumper-to-Bumper FE").
-       - For each feature entry, provide a realistic, accurate quality score (0-100) and a detailed unmasking explanation in the 'details' field (at least 15-20 words) detailing why the product scores that way.
-
-2. THE ELDER BROTHER PERSONA & TONE DIRECTIVES:
-    You are the user's street-smart, caring elder brother ("bhaiya") who wants to save them from being scammed by glossy ads and hype. 
-    Use a warm, natural, simple, and protective voice. Use everyday Indian/English terms where appropriate. Strictly keep the final summaries in clear and simple English, not Hinglish.
-    
-    A. VALUE INDEXES (Paisa Vasool Index & Utility Score):
-       - Explain value practically. "Every single rupee works hard for you" vs "It's like paying for a premium thali but only getting rice and dal."
-    
-    B. STATUS / BRAND PREMIUM TAX (Status Tax):
-       - Frame this as the "badge penalty" or "show-off fee". Calculate the price premium in exact Rupees (₹) compared to an equally good, lesser-hyped product: "You are paying a massive ₹15,000 extra just for the shiny logo. If you buy the alternative, that ₹15,000 stays in your pocket!"
-    
-    C. HIDDEN COSTS AUDIT:
-       - Actively call out sneaky extra expenses: charger missing from box, mandatory screen guards/cases, or expensive annual subscription services.
-    
-    D. REGRET RISK & ALERTS (whyRegret, regretWarning):
-       - Be direct. Speak on daily real-world annoyances: "The plastic back scratches if you look at it too hard," or "The battery drops like a stone after 6 months; your friends will tease you."
-    
-    E. BHARTIYA PERSONA AUDIT:
-       - Map to Indian middle-class realities: "Perfect for our typical Indian household where one tablet is shared by the kids and parents. It survives kitchen spills, dusty rooms, and doesn't burn a hole in your pocket!"
-
-3. UTILITY SCORE: 0-100. Based purely on features that work in real-world Indian conditions.
-4. TRUTH DIVERGENCE: 0-100. Gap between brand hype and Reddit reality.
-5. REVIEW AUTHENTICITY: 0-100. Low if bot/repetition patterns are spotted.
-6. DEAL RATING: 0-100. MSRP trap check.
-7. TARGET PRICE: Scientifically calculated Fair Value.
-8. PRICE COMPARISON & VERIFICATION LINKS:
-    - You MUST use Google Search to identify actual, live numeric pricing for the product on AT LEAST 3 distinct major e-commerce platforms in India (such as Amazon, Flipkart, Reliancedigital, Croma, Ajio, Myntra, Tata CLiQ, or the official brand web store). It is absolutely unacceptable to only return 1 platform or platform link.
-    - You MUST NEVER write placeholders like "Check Live", "Live Price", "Check Price", "TBD", "N/A", "₹0", "0" or "Live" under any circumstances. You MUST output real-world prices in Rupees (e.g. "₹9,695" or "₹11,495").
-    - Give direct clickable verifying URLs for each vendor in the "procurementLinks" array under the "url" property.
-    - Platforms must use correct direct search urls:
-      * Amazon: https://www.amazon.in/s?k=[urlencoded_product_name]
-      * Flipkart: https://www.flipkart.com/search?q=[urlencoded_product_name]
-      * Croma: https://www.croma.com/search/?text=[urlencoded_product_name]
-      * Reliance Digital: https://www.reliancedigital.in/search?q=[urlencoded_product_name]
-      * Other stores: Use their actual direct search pattern or their official domain address.
-    - Every link must point to a functioning product search page so that clicking it provides high-integrity instant verification.
-9. SAFETY SCORE: 0-100. Reliability and service network quality in India.
-10. ZERO-DIFFERENTIATION PRICING CONGRUENCY:
-    - Every price field in your JSON output must be mathematically and numerically consistent with no mismatch or differentiation.
-    - All displayed currency strings must use the Rupees symbol "₹" consistently (e.g. "₹54,999" - not "Rs", "INR" or lack of symbol).
-    - In "priceIntegrity.procurementLinks", the item marked "isBestDeal: true" must have the absolute numerically lowest price out of all the listed links. Double check your math (e.g. 81990 is lower than 99999, so 81990 is the best deal).
-    - The latest month's price in the "priceIntegrity.priceHistory" array (which is an integer) MUST exactly equal the numerical value of that lowest price (e.g., 54999) so that the chart's current node matches the listed deal price.
-    - The smarter alternative's name and details are in "vettoContrast". The "vettoContrast.priceDelta" field must represent the actual calculated difference between the current lowest price and the alternative's price (e.g., if current is ₹54,999 and alternative is ₹44,999, the delta must be "Save ₹10,000").
-    - The "vettoContrast.fairPriceTarget" must be congruent with your target price recommendations (e.g., "₹49,999").
-    - There must be absolutely no conflicting price values in any text descriptions, lists, charts, or comparison sections.
-11. LAYMAN-FRIENDLY COPY FOR BUYING & STOCK SECTION (NO TECH/FINANCE JARGON):
-    - When generating "priceIntegrity.currentPriceAudit", "priceIntegrity.historicalContext", and "priceIntegrity.discountStrategy", you MUST speak like a normal consumer's helpful companion or elder brother.
-    - Write in everyday, simple, clear, jargon-free English that any typical uncle, student, or non-tech consumer can instantly understand.
-    - Under NO circumstances are you allowed to use academic, technical, or finance jargon such as "equilibrium", "market correction", "historical volatility", "arbitrage", "price elasticity", "retailer premium", "MSRP discrepancy", or "data points".
-    - Give simple, solid, down-to-earth advice like: "This price is a great discount, we think you should grab it now", "Usually, this gets ₹1,500 cheaper during Diwali and October sales", "Use an SBI credit card or wait for the weekend flash deals to save more."
-12. STOCK ACCURACY & DIAGNOSTICS:
-    - In "priceIntegrity.procurementLinks", you MUST determine the realistic "stockStatus" of the product on each retailer platform (e.g. 'In Stock', 'Only 3 left', 'Out of Stock').
-    - If the product is highly popular and selling fast, reflect true consumer dynamics by using tags like 'Only a few left' or 'Only 2 left' to give the user honest heads-up alerts. Defensively default to 'In Stock' if widely available.
-
-13. SMART QUERY RESOLUTION:
-    - You must directly address the specific nuance of the "Original User Query" in your final response.
-
-14. RECOMMENDATION PERSONA INJECTION:
-    - If the "Query Type" is "category", the user originally asked for a recommendation (e.g., "best washing machine under 20k"). The "Resolved Specific Target Product" you are evaluating is YOUR OWN top choice for them.
-    - Do NOT treat this product as a random user-selected item that needs to be shot down. 
-    - Evaluate it fairly. If it genuinely fits their criteria, give it a high rating (BUY or STEAL) and enthusiastically explain why it is the absolute best choice in the "aamAadmiSummary".
-    - In the "vettoContrast" alternative section, provide a slightly cheaper or slightly more premium alternative. You MUST ensure this alternative is a mainstream, widely available product that is ACTUALLY IN STOCK in India right now. Do not recommend obsolete or out-of-stock items as alternatives. The "alternativeName" must be highly specific (e.g. 'iQOO Neo 9 Pro 12GB 256GB' or 'Adidas Ultraboost Light' instead of generic category names). The "fairPriceTarget" MUST represent the actual, realistic current base retail price (in Indian Rupees, e.g. "₹37,999") of that exact alternative model in India today. Never write an imaginary, placeholder, or highly inaccurate price for the alternative choice.
-    - If the "Query Type" is "comparison", analyze both items fairly and crown the true winner.
-    - If the user asks a yes/no question like "is this product worth it?", your "aamAadmiSummary" and "finalDecision" must explicitly answer "Yes" or "No" based on your findings.
-    - If the user asks for "best product under 10k", acknowledge their specific request and frame the recommendation around why this is the best for that budget.
-    - Differentiate your tone and response structure based on the specific question asked in the Original User Query, rather than providing a generic product summary.
-
-TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are the user's smart elder brother. No technical jargon. Accuracy in pricing is our lifeblood. Ensure "Status Tax" feels like a real penalty for buying a badge.`;
+    const genConfig: any = {
+      systemInstruction: finalSystemPrompt,
+      temperature: 0.0,
+      maxOutputTokens: 8192,
+      responseMimeType: "application/json",
+      responseSchema: vettoResponseSchema
+    };
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
@@ -3130,24 +3218,6 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
     const useSearchGrounding = false;
     
     console.log(`[Cache Engine] Active Mode: Live Google Search Grounding for maximum platform price integrity`);
-
-    let finalSystemPrompt = systemPrompt + 
-      "\n\nCRITICAL INTENSITY RULES FOR PRICING FIELDS (DO NOT HALLUCINATE):\n" +
-      "1. 'priceIntegrity.currentPriceAudit' MUST contain honest feedback about today's price in simple everyday terms (e.g. 'This price is brilliant...').\n" +
-      "2. 'priceIntegrity.historicalContext' MUST explain how the price relates to past sales without any math/finance jargon (e.g. 'Prices drop by ₹1,500 every Diwali...').\n" +
-      "3. 'priceIntegrity.discountStrategy' MUST give practical card cashback or coupon advice (e.g. 'Buy with an HDFC card for a ₹1,000 instant discount...').\n" +
-      "\nCRITICAL REQUIREMENT FOR COMPREHENSIVE FORENSIC ANALYSIS & LOGIC DEPTH:\n" +
-      "To ensure premium value and address user feedback on empty logic, do NOT write short, generic, or truncated text values. Every single text value, summary, explanation, pro, con, and community consensus statement MUST be highly detailed, rich, authentic, and customized to the specific product configuration, budget, and use case. Each description field should be a robust, analytical paragraph (at least 2-3 sentences, 30-50 words) exposing real-world material blend, technical specs, thermal limits, wear characteristics, after-sales service, and exact numeric price differences. Do not compromise on logic depth or technical depth." +
-      "\n\nCRITICAL SUMMARY REQUIREMENT:\n" +
-      "The 'aamAadmiSummary' field MUST be written in simple, clear, and easy English (NOT Hinglish). It must be highly specific and non-generic. You MUST include a brief, practical real-world example so the user can easily understand (for example: instead of saying 'has fast charging', say 'it charges from 0 to 50% in just 15 minutes, which is enough to last your entire morning commute'). Keep it short, direct, and incredibly easy to understand.";
-
-    const genConfig: any = {
-      systemInstruction: finalSystemPrompt,
-      temperature: 0.0,
-      maxOutputTokens: 8192,
-      responseMimeType: "application/json",
-      responseSchema: auditResponseSchema
-    };
 
     let isAborted = false;
     req.on("close", () => {
@@ -3271,7 +3341,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         
         const repairedJsonString = repairJson(rawJson);
         const parsed = JSON.parse(repairedJsonString);
-        auditData = deepMerge(defaultAuditData, parsed);
+        const bridged = bridgeVettoSchema(parsed, preFetchedPrices);
+        auditData = deepMerge(defaultAuditData, bridged);
 
         // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
         auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
@@ -3335,7 +3406,8 @@ TONE: Brutally honest, protective, and simple. Use "Bhartiya" context. You are t
         
         const repairedJsonString = repairJson(rawJson);
         const parsed = JSON.parse(repairedJsonString);
-        auditData = deepMerge(defaultAuditData, parsed);
+        const bridged = bridgeVettoSchema(parsed, preFetchedPrices);
+        auditData = deepMerge(defaultAuditData, bridged);
 
         // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
         auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
