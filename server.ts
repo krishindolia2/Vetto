@@ -893,8 +893,8 @@ function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
   // Self-Healing Cache Versioning Gate
-  if (data.schemaVersion !== "v3") {
-    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v3", found: "${data.schemaVersion || "none"}").`);
+  if (data.schemaVersion !== "v4") {
+    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v4", found: "${data.schemaVersion || "none"}").`);
     return false;
   }
   
@@ -3170,7 +3170,7 @@ You must calculate scores dynamically based on the specific core use case reques
           try {
             await withTimeout(
               setDoc(cacheDocRef, {
-                data: { ...auditData, schemaVersion: "v3" },
+                data: { ...auditData, schemaVersion: "v4" },
                 timestamp: Date.now(),
                 query: parsedQuery,
                 createdAt: serverTimestamp()
@@ -3186,7 +3186,7 @@ You must calculate scores dynamically based on the specific core use case reques
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v3" }, timestamp: Date.now() });
+      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v4" }, timestamp: Date.now() });
       saveCacheToDisk();
     }
   } catch (error: any) {
