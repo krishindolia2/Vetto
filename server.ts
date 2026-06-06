@@ -988,7 +988,13 @@ function isValidCachedData(data: any): boolean {
 }
 
 // Extract reference numerics to format comparative listings
-function getReferencePrice(auditData: any, parsedQuery: string, budget: string): number {
+function getReferencePrice(auditData: any, parsedQuery: string, budget: string, isBudgetCategoryQuery: boolean = false): number {
+  if (isBudgetCategoryQuery && budget) {
+    const parsedBudget = parseInt(budget.replace(/[^\d]/g, ''), 10);
+    if (!isNaN(parsedBudget) && parsedBudget > 100) {
+      return parsedBudget;
+    }
+  }
   const history = auditData?.priceIntegrity?.priceHistory;
   if (Array.isArray(history) && history.length > 0) {
     const lastPrice = history[history.length - 1]?.price;
@@ -2254,7 +2260,7 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       links = [];
     }
     
-    let refPrice = getReferencePrice(data, parsedQuery, parsedBudget);
+    let refPrice = getReferencePrice(data, parsedQuery, parsedBudget, isBudgetCategoryQuery);
     if (preFetchedPrices && preFetchedPrices.length > 0) {
       const validPrices = preFetchedPrices
         .map(p => parseInt(String(p.price || "").replace(/[^\d]/g, '')))
@@ -2787,21 +2793,22 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
       }
     }
 
+    // Programmatic Out-of-Stock (OOS) Demotion Fallback Guard
+    const allPlatformsOos = healedLinks.every((link: any) => link.stockStatus === "Out of Stock" || link.price === "Out of Stock");
+
     // Programmatic Target Capital & Budget Compliance Guard
     let parsedBudgetNum = 0;
     if (parsedBudget) {
       parsedBudgetNum = parseInt(parsedBudget.replace(/[^\d]/g, ''), 10);
     }
-    if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum) {
+    if (parsedBudgetNum > 0 && lowestPrice > parsedBudgetNum && !allPlatformsOos) {
       console.log(`[Budget Guard] Programmatically forcing verdict to WAIT because lowest deal price (₹${lowestPrice}) exceeds budget constraint (₹${parsedBudgetNum})`);
       stableVerdict = "WAIT";
       console.log(`[Budget Guard] Programmatically penalizing Paisa Vasool Index down under 50 because price exceeds budget limit.`);
       data.paisaVasoolIndex = Math.min(49, data.paisaVasoolIndex || 45);
     }
 
-    // Programmatic Out-of-Stock (OOS) Demotion Fallback Guard
-    const allPlatformsOos = healedLinks.every((link: any) => link.stockStatus === "Out of Stock" || link.price === "Out of Stock");
-    if (allPlatformsOos) {
+    if (allPlatformsOos && !isBudgetCategoryQuery) {
       console.log(`[OOS Guard] Programmatically forcing verdict to WAIT because all online platforms are Out of Stock.`);
       stableVerdict = "WAIT";
     }
@@ -3037,7 +3044,10 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           const cached = cacheSnap.data();
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
-            const isCategoryQueryForHeal = isGenericCategoryQuery || parsedQuery.toLowerCase().includes("best") || parsedQuery.toLowerCase().includes("under");
+            const isCategoryQueryForHeal = isGenericCategoryQuery || 
+                                           parsedQuery.toLowerCase().includes("best") || 
+                                           parsedQuery.toLowerCase().includes("under") ||
+                                           (cached.data && cached.data.productName && parsedQuery.toLowerCase().trim() !== cached.data.productName.toLowerCase().trim());
             const healedCachedData = healsAndSynchronizeAuditData(cached.data, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
             if (req.headers.accept === "text/event-stream") {
               res.setHeader("Content-Type", "text/event-stream");
@@ -3066,7 +3076,10 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       const cached = auditCache.get(cacheKey)!;
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
-        const isCategoryQueryForHeal = isGenericCategoryQuery || parsedQuery.toLowerCase().includes("best") || parsedQuery.toLowerCase().includes("under");
+        const isCategoryQueryForHeal = isGenericCategoryQuery || 
+                                       parsedQuery.toLowerCase().includes("best") || 
+                                       parsedQuery.toLowerCase().includes("under") ||
+                                       (cached.data && cached.data.productName && parsedQuery.toLowerCase().trim() !== cached.data.productName.toLowerCase().trim());
         const healedCachedData = healsAndSynchronizeAuditData(cached.data, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
         if (req.headers.accept === "text/event-stream") {
           res.setHeader("Content-Type", "text/event-stream");
