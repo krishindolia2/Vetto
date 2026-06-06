@@ -893,8 +893,8 @@ function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
   // Self-Healing Cache Versioning Gate
-  if (data.schemaVersion !== "v6") {
-    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v6", found: "${data.schemaVersion || "none"}").`);
+  if (data.schemaVersion !== "v7") {
+    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v7", found: "${data.schemaVersion || "none"}").`);
     return false;
   }
   
@@ -1658,11 +1658,11 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
 }
 
 // Ultra-fast pure semantic resolver (Stage 1) to determine exact product specifications without search latency
-async function resolveSpecificProductName(query: string, budget = "", useCase = "", customAi?: GoogleGenAI | null): Promise<{ productName: string, queryType: "category" | "specific" | "comparison" }> {
+async function resolveSpecificProductName(query: string, budget = "", useCase = "", customAi?: GoogleGenAI | null): Promise<{ productName: string, queryType: "category" | "specific" | "comparison", specsSummary?: string, communityGripes?: string }> {
   const activeAi = customAi || ai;
-  if (!activeAi) return { productName: query, queryType: "specific" };
+  if (!activeAi) return { productName: query, queryType: "specific", specsSummary: "", communityGripes: "" };
   try {
-    const prompt = `You are a precision product semantic resolver. 
+    const prompt = `You are a precision product semantic resolver and fact-finder. 
     Analyze the user's query: "${query}"
     Budget Limit: ${budget ? `₹${budget}` : "Unlimited"}
     Specific Need/Context: "${useCase || "General Use"}"
@@ -1681,11 +1681,14 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
        - BUDGET CEILING ALIGNMENT RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k", "under 30k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility. Select a superior, spec-dominating product that lands strictly between 80% to 100% of the budget range (e.g., if the budget is 5k, select a superior ₹4,000-₹4,900 option like "Realme Buds Air 6 Pro" for earbuds, or "Sony WH-CH520" for headphones, rather than aggressively downgrading the user to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
        - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
        - If "comparison", return the primary or first product name.
+    3. Use Google Search Grounding to search the web for the actual specifications and real-world user reviews on forums (such as Reddit, Twitter, and TechForums) for the resolved product. Summarize these in the fields below.
 
     Return strictly a JSON object conforming to this schema:
     {
       "productName": "Resolved full specific product name with specifications",
-      "queryType": "category" | "specific" | "comparison"
+      "queryType": "category" | "specific" | "comparison",
+      "specsSummary": "Concise summary of actual specifications, key hardware details, battery life, design features, fabric GSM, safety ratings, or mechanical features of the resolved product.",
+      "communityGripes": "Concise summary of top complaints, real-world user gripes, software bugs, thermal issues, or durability issues from Reddit, YouTube comments, and tech forums."
     }
     No explanation, no markdown.`;
 
@@ -1694,7 +1697,8 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
         temperature: 0.0,
-        maxOutputTokens: 4000
+        maxOutputTokens: 4000,
+        tools: [{ googleSearch: {} }]
       }
     }, 3, 1000, customAi);
 
@@ -1735,11 +1739,14 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       
       Task:
       Extract or resolve the absolute best specific product model name (e.g. "HP Victus 15 Ryzen 5 5600H / RTX 3050" or "Lenovo IdeaPad Gaming 3 Ryzen 5 6600H / RTX 3050") from the text that fits the user's budget and query. If the text does not contain a specific product name, resolve the user's original query directly to a specific mainstream product available in India.
+      Also extract or summarize any specifications and community complaints mentioned in the text.
       
       Return strictly a JSON object conforming to this schema:
       {
         "productName": "Resolved full specific product name with specifications",
-        "queryType": "category" | "specific" | "comparison"
+        "queryType": "category" | "specific" | "comparison",
+        "specsSummary": "Concise summary of specifications extracted from the text, or general specs of the resolved product.",
+        "communityGripes": "Concise summary of user complaints or flaws extracted from the text, or general issues of the resolved product."
       }`;
 
       const fallbackResponse = await callGeminiWithRetry({
@@ -1748,7 +1755,7 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
         config: {
           responseMimeType: "application/json",
           temperature: 0.0,
-          maxOutputTokens: 250
+          maxOutputTokens: 1000
         }
       }, 2, 500, customAi);
 
@@ -1774,6 +1781,8 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
 
     let productName = parsed.productName || query;
     let queryType = parsed.queryType || "specific";
+    let specsSummary = parsed.specsSummary || "";
+    let communityGripes = parsed.communityGripes || "";
 
     if (queryType === "comparison" || productName.toLowerCase().includes(" vs ") || productName.toLowerCase().includes(" vs. ")) {
       const parts = productName.split(/\s+vs\.?\s+/i);
@@ -1784,11 +1793,13 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
 
     return {
       productName,
-      queryType
+      queryType,
+      specsSummary,
+      communityGripes
     };
   } catch (e) {
     console.error("[Semantic Resolver] Error resolving query:", e);
-    return { productName: query, queryType: "specific" };
+    return { productName: query, queryType: "specific", specsSummary: "", communityGripes: "" };
   }
 }
 
@@ -2786,10 +2797,14 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     // Step 1: Stage 1 Semantic Resolution (Ultra-fast ~800ms) - ALWAYS succeeds & secures exact variant naming
     let resolvedProduct = parsedQuery;
     let queryType = "specific";
+    let specsSummary = "";
+    let communityGripes = "";
     try {
       const resolved = await resolveSpecificProductName(parsedQuery, parsedBudget, useCase, requestAi);
       resolvedProduct = resolved.productName;
       queryType = resolved.queryType;
+      specsSummary = resolved.specsSummary || "";
+      communityGripes = resolved.communityGripes || "";
       console.log(`[Semantic Resolver] Resolved query "${parsedQuery}" to specific product: "${resolvedProduct}" (Type: ${queryType})`);
     } catch (e) {
       console.warn(`[Semantic Resolver] Stage 1 failed. Fallback to raw query.`);
@@ -2835,14 +2850,14 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       }
     })();
     
-    isBudgetCategoryQuery = queryType === "category" || (parsedQuery.toLowerCase().trim() !== resolvedProduct.toLowerCase().trim());
+    isBudgetCategoryQuery = queryType === 'category';
 
     let promptText = `DATA INPUT SCHEMA (Provided by Backend Engine)
 The backend will feed you raw telemetry containing:
 - User_Query: "${query}"
-- Product_Specs: "Resolved Product: ${resolvedProduct || 'Analyzed Visual Evidence'}. Budget Target: ${parsedBudget || 'Unlimited'}. Context: ${useCase || 'General Deployment'}."
+- Product_Specs: "Resolved Product: ${resolvedProduct || 'Analyzed Visual Evidence'}. Budget Target: ${parsedBudget || 'Unlimited'}. Context: ${useCase || 'General Deployment'}. Verified Specifications: ${specsSummary || 'N/A'}."
 - Scraped_Public_Data: {
-    "Reddit": ["Extracted community concerns, design vulnerabilities, and real-world durability feedback matching the target category."],
+    "Reddit": [${JSON.stringify(communityGripes || "Reddit users complain about typical build and software bugs.")}],
     "X": ["Real-time buyer sentiment and service center complaints."],
     "YouTube_Reviews": ["Independent teardowns, thermal performance, and build quality reviews."],
     "Tech_Forums": ["Sustained load tests, fabric blend details, or mechanical NCAP safety stats depending on whether it is Electronics, Fashion, or Automotive."]
@@ -3174,7 +3189,7 @@ You must calculate scores dynamically based on the specific core use case reques
           try {
             await withTimeout(
               setDoc(cacheDocRef, {
-                data: { ...auditData, schemaVersion: "v6" },
+                data: { ...auditData, schemaVersion: "v7" },
                 timestamp: Date.now(),
                 query: parsedQuery,
                 createdAt: serverTimestamp()
@@ -3190,7 +3205,7 @@ You must calculate scores dynamically based on the specific core use case reques
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v6" }, timestamp: Date.now() });
+      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v7" }, timestamp: Date.now() });
       saveCacheToDisk();
     }
   } catch (error: any) {
