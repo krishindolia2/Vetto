@@ -261,49 +261,73 @@
     ],
     "issues": [],
     "rawResponse": {
-      "aamAadmiSummary": "Bhaiya, this MacBook Air M2 is super thin and light, great for carrying to college, and its battery lasts long for basic notes. But for a CS student doing coding projects, 8GB RAM and 256GB storage will feel very slow and cramped very quickly. Imagine trying to run multiple coding apps and a virtual machine; it will stutter and make you wait, which is frustrating when you're on a deadline.",
-      "whyRegret": "The 8GB unified memory will constantly swap to the slow 256GB SSD when running multiple IDEs, Docker containers, or virtual machines, causing significant performance slowdowns and a frustrating user experience.",
+      "utilityScore": 55,
       "personalizedInsight": "For your CS coding projects, prioritize at least 16GB of RAM and 512GB of SSD storage. The M2 chip is powerful, but it's severely bottlenecked by the base memory and storage, making this specific model a poor long-term investment for your academic needs.",
-      "regretRisk": "High",
-      "bhartiyaPersonaAudit": "For an Indian CS student, this MacBook Air M2 with 8GB RAM and 256GB SSD might seem like a status symbol, but it's a classic case of 'dikhawa' over 'kaam'. You'll be paying a premium for the Apple logo, but the actual utility for your demanding coding work will be severely compromised, leading to frustration and potentially needing an upgrade much sooner than expected.",
-      "vettoContrast": {
-        "whyContrast": "The M3 chip offers better efficiency, but more importantly, upgrading to 16GB RAM and 512GB SSD provides a significantly smoother experience for multitasking, running virtual machines, and handling large codebases, making it a much better long-term investment for a CS student.",
-        "priceDelta": "₹25,000 more",
-        "fairPriceTarget": "₹1,06,990",
-        "strategicAdvantage": "Future-proofs your setup for more demanding projects, reduces frustration, and improves overall productivity throughout your college years.",
-        "pviBoost": 30,
-        "alternativeName": "MacBook Air M3 (16GB RAM, 512GB SSD)",
-        "procurementGuidance": "Look for student discounts directly from Apple or during major sales events on Amazon/Flipkart for the upgraded M3 model."
-      },
-      "saferChoice": "MacBook Air M3 (16GB RAM, 512GB SSD) or a high-spec Windows laptop like the HP Spectre x360 14 with 16GB RAM and 512GB SSD.",
-      "confidenceScore": 92,
-      "finalDecision": "WAIT",
-      "postOutputHook": "Always prioritize RAM and storage for coding, not just the brand name or thinness. Your productivity depends on it!",
-      "whyBest": "While highly portable, this specific configuration is not the best value or performance choice for a CS student's demanding coding projects.",
-      "strategicRoadmap": {
-        "peakUtilityAge": "The 8GB/256GB M2 Air will likely hit its performance ceiling for a CS student within 1-2 years, especially as projects become more complex and software demands increase.",
-        "exitStrategy": "Apple products generally hold good resale value, but the limited RAM and storage might make it harder to sell to another developer or power user in the future.",
-        "immediateAction": "Re-evaluate your budget to accommodate at least 16GB RAM and 512GB SSD, either in an M2 or M3 MacBook Air, or consider a powerful Windows alternative."
-      },
-      "hiddenCosts": "You'll likely need to invest in an external SSD for project storage and potentially cloud computing services to compensate for the limited RAM, adding to your overall expenses.",
-      "regretWarning": "You will regret buying this configuration when your coding projects start getting complex, and your laptop struggles to keep up, leading to frustration and wasted time.",
-      "marketReasoning": "While the M2 Air is a mature product, this specific 8GB/256GB configuration is not suitable for the user's demanding CS student needs. Waiting for a better deal on an upgraded configuration (16GB/512GB) or considering alternatives is advisable.",
-      "isComparison": false,
-      "paisaVasoolIndex": 45,
-      "pros": [
-        "Extremely portable and lightweight, perfect for carrying around campus.",
-        "Excellent battery life for light tasks, reducing charger dependency.",
-        "Premium build quality and silent fanless operation."
-      ],
-      "statusTax": 15000,
-      "platformWarShield": {
-        "bypassStrategyUsed": "Forensic analysis of real-world developer benchmarks and community feedback on memory pressure and SSD performance for base models.",
-        "truthResilienceScore": 70,
-        "siloExposure": "Apple's marketing heavily emphasizes the M2 chip's power and the laptop's thinness, often downplaying the critical role of sufficient RAM and SSD speed for professional workloads.",
-        "hasMarketingSilos": true
-      },
       "buildIntegrity": "Checking build quality...",
+      "platformWarShield": {
+        "siloExposure": "Apple's marketing heavily emphasizes the M2 chip's power and the laptop's thinness, often downplaying the critical role of sufficient RAM and SSD speed for professional workloads.",
+        "hasMarketingSilos": true,
+        "truthResilienceScore": 70,
+        "bypassStrategyUsed": "Forensic analysis of real-world developer benchmarks and community feedback on memory pressure and SSD performance for base models."
+      },
+      "confidenceScore": 92,
+      "features": [
+        {
+          "score": 60,
+          "name": "Processor Sustained Thermal Control",
+          "details": "The M2 chip is powerful, but the fanless design means it will thermal throttle under sustained heavy loads typical of compiling large codebases or running virtual machines, leading to reduced performance over time to prevent overheating."
+        },
+        {
+          "details": "8GB of unified memory is a significant bottleneck for a CS student. Running multiple IDEs, Docker containers, or virtual machines will quickly exhaust available RAM, forcing the system to swap to the slower SSD, severely impacting responsiveness and compilation times.",
+          "score": 40,
+          "name": "Unified Memory Performance (8GB)"
+        },
+        {
+          "details": "The 256GB SSD in the base M2 model uses a single NAND chip, resulting in significantly slower read/write speeds compared to higher capacity models or even older M1 models. This impacts compilation times, large file transfers, and overall system responsiveness when memory swapping occurs.",
+          "score": 55,
+          "name": "Base SSD Read/Write Speeds (256GB)"
+        }
+      ],
+      "socialHook": "Don't let the 'Air' fool you, this M2 might leave your coding projects gasping for breath! #VettoTruth #CSStudentLaptop",
+      "regretWarning": "You will regret buying this configuration when your coding projects start getting complex, and your laptop struggles to keep up, leading to frustration and wasted time.",
       "priceIntegrity": {
+        "currentPriceAudit": "₹81,990 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
+        "historicalContext": "This model has seen minor price drops since its launch, typically around ₹2,000-₹3,000 during major festive sales like Diwali or Amazon/Flipkart's Big Billion Days. It's unlikely to drop significantly further as the M3 model is now available.",
+        "dealScore": 50,
+        "procurementLinks": [
+          {
+            "platform": "Amazon",
+            "label": "Buy on Amazon",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Flipkart",
+            "label": "Buy on Flipkart",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Croma",
+            "label": "Buy on Croma",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          },
+          {
+            "platform": "Reliance Digital",
+            "label": "Buy on Reliance Digital",
+            "price": "Out of Stock",
+            "isBestDeal": false,
+            "url": "",
+            "stockStatus": "Out of Stock"
+          }
+        ],
         "priceHistory": [
           {
             "price": 85990,
@@ -358,91 +382,48 @@
             "month": "June 2026"
           }
         ],
-        "discountStrategy": "If you must buy this model, wait for an SBI or HDFC credit card offer, which typically provides an instant discount of ₹2,000-₹3,000. Also, check for student discounts directly from Apple's education store.",
-        "historicalContext": "This model has seen minor price drops since its launch, typically around ₹2,000-₹3,000 during major festive sales like Diwali or Amazon/Flipkart's Big Billion Days. It's unlikely to drop significantly further as the M3 model is now available.",
-        "dealScore": 50,
-        "currentPriceAudit": "₹81,990 • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!",
-        "procurementLinks": [
-          {
-            "platform": "Amazon",
-            "label": "Buy on Amazon",
-            "price": "Out of Stock",
-            "isBestDeal": false,
-            "url": "",
-            "stockStatus": "Out of Stock"
-          },
-          {
-            "platform": "Flipkart",
-            "label": "Buy on Flipkart",
-            "price": "Out of Stock",
-            "isBestDeal": false,
-            "url": "",
-            "stockStatus": "Out of Stock"
-          },
-          {
-            "platform": "Croma",
-            "label": "Buy on Croma",
-            "price": "Out of Stock",
-            "isBestDeal": false,
-            "url": "",
-            "stockStatus": "Out of Stock"
-          },
-          {
-            "platform": "Reliance Digital",
-            "label": "Buy on Reliance Digital",
-            "price": "Out of Stock",
-            "isBestDeal": false,
-            "url": "",
-            "stockStatus": "Out of Stock"
-          }
-        ]
+        "discountStrategy": "If you must buy this model, wait for an SBI or HDFC credit card offer, which typically provides an instant discount of ₹2,000-₹3,000. Also, check for student discounts directly from Apple's education store."
       },
-      "communityPulse": {
-        "topUSP": "Exceptional portability, premium build quality, and silent operation due to its fanless design.",
-        "youtubeReality": "Independent tech reviewers on YouTube consistently highlight that while the M2 chip is powerful, the 8GB RAM and 256GB SSD are significant bottlenecks for tasks like video editing, heavy multitasking, and especially software development, often showing real-world performance dips.",
-        "redditConsensus": "Many CS students and developers on Reddit strongly advise against 8GB RAM for coding, citing frequent memory pressure and slow performance when running multiple development tools or virtual machines. The base 256GB SSD's slower speed is also a common complaint.",
-        "topGripe": "Insufficient 8GB unified memory and the slower 256GB base SSD severely limit its performance for demanding professional or academic workloads.",
-        "twitterPulse": "While general users praise the M2 Air's design and battery, power users and developers often tweet about the limitations of 8GB RAM for serious work, recommending upgrades or alternative machines.",
-        "linkedinProfessional": "Professionals in software development on LinkedIn frequently recommend a minimum of 16GB RAM for any serious coding work, emphasizing that 8GB is barely adequate for basic tasks and not suitable for a developer's primary machine."
-      },
-      "features": [
-        {
-          "details": "The M2 chip is powerful, but the fanless design means it will thermal throttle under sustained heavy loads typical of compiling large codebases or running virtual machines, leading to reduced performance over time to prevent overheating.",
-          "score": 60,
-          "name": "Processor Sustained Thermal Control"
-        },
-        {
-          "details": "8GB of unified memory is a significant bottleneck for a CS student. Running multiple IDEs, Docker containers, or virtual machines will quickly exhaust available RAM, forcing the system to swap to the slower SSD, severely impacting responsiveness and compilation times.",
-          "name": "Unified Memory Performance (8GB)",
-          "score": 40
-        },
-        {
-          "details": "The 256GB SSD in the base M2 model uses a single NAND chip, resulting in significantly slower read/write speeds compared to higher capacity models or even older M1 models. This impacts compilation times, large file transfers, and overall system responsiveness when memory swapping occurs.",
-          "score": 55,
-          "name": "Base SSD Read/Write Speeds (256GB)"
-        }
-      ],
-      "resaleValueNode": "Estimating resale value...",
-      "utilityScore": 55,
-      "marketTiming": "WAIT",
+      "schemaVersion": "v3",
+      "finalDecision": "WAIT",
       "ecosystemLockIn": "Checking brand ecosystem...",
+      "regretRisk": "High",
       "avoid": "Avoid the base 8GB RAM and 256GB SSD configuration if you are a CS student or plan to do any serious development work. It will severely limit your productivity.",
-      "cons": [
-        "8GB RAM is a major bottleneck for serious coding projects and virtual machines.",
-        "256GB SSD is too small for development environments and has slower speeds than higher capacities.",
-        "High status tax for specifications that are insufficient for a CS student's needs."
-      ],
+      "whyBest": "While highly portable, this specific configuration is not the best value or performance choice for a CS student's demanding coding projects.",
+      "statusTax": 15000,
+      "isComparison": false,
       "socialAudit": {
+        "userRealityCheck": "General users love its portability and premium feel. However, users involved in heavy multitasking, video editing, or coding frequently report performance issues and slowdowns due to the limited 8GB RAM and the slower base 256GB SSD.",
+        "criticsConsensus": "Critics generally praise the M2 MacBook Air for its design, display, and battery life for everyday tasks, but consistently recommend upgrading to 16GB RAM and 512GB SSD for any professional or demanding use cases, including software development.",
         "integrityAudit": {
           "divergenceIndex": 70,
+          "verifiedPurchaseTruth": "A high percentage of reviews are from verified purchasers across major platforms, lending credibility to the feedback regarding performance and user experience.",
+          "crossPlatformPatterns": [
+            {
+              "platform": "Amazon",
+              "botRisk": "Low",
+              "sentiment": 70
+            },
+            {
+              "platform": "Flipkart",
+              "botRisk": "Low",
+              "sentiment": 65
+            },
+            {
+              "sentiment": 60,
+              "botRisk": "Low",
+              "platform": "YouTube (Independent)"
+            }
+          ],
+          "botSignalDetection": "Minimal bot activity detected; reviews generally appear authentic, reflecting genuine user experiences with the product's strengths and limitations.",
           "buzzwordSlayer": [
             {
               "reality": "While the M2 chip is efficient, its 'powerhouse' potential is severely limited by the base 8GB unified memory, which can lead to frequent memory swaps to the slower 256GB SSD during heavy coding tasks, causing noticeable slowdowns.",
               "term": "M2 Powerhouse"
             },
             {
-              "reality": "The battery life is excellent for light browsing and document editing, but intensive coding, compiling, and running virtual machines will significantly reduce the advertised 'all-day' endurance, often requiring a charge mid-day for a CS student.",
-              "term": "All-day Battery Life"
+              "term": "All-day Battery Life",
+              "reality": "The battery life is excellent for light browsing and document editing, but intensive coding, compiling, and running virtual machines will significantly reduce the advertised 'all-day' endurance, often requiring a charge mid-day for a CS student."
             },
             {
               "reality": "The fanless design ensures silent operation, which is great for quiet study environments. However, under sustained heavy loads from coding or compiling, the M2 chip will thermal throttle, reducing performance to maintain acceptable temperatures, impacting long coding sessions.",
@@ -453,48 +434,67 @@
               "term": "Liquid Retina Display"
             }
           ],
-          "crossPlatformPatterns": [
-            {
-              "botRisk": "Low",
-              "platform": "Amazon",
-              "sentiment": 70
-            },
-            {
-              "platform": "Flipkart",
-              "sentiment": 65,
-              "botRisk": "Low"
-            },
-            {
-              "sentiment": 60,
-              "platform": "YouTube (Independent)",
-              "botRisk": "Low"
-            }
-          ],
-          "isFakeReviewRisk": false,
-          "verifiedPurchaseTruth": "A high percentage of reviews are from verified purchasers across major platforms, lending credibility to the feedback regarding performance and user experience.",
-          "botSignalDetection": "Minimal bot activity detected; reviews generally appear authentic, reflecting genuine user experiences with the product's strengths and limitations.",
-          "fakeReviewScore": 85
+          "fakeReviewScore": 85,
+          "isFakeReviewRisk": false
         },
-        "userRealityCheck": "General users love its portability and premium feel. However, users involved in heavy multitasking, video editing, or coding frequently report performance issues and slowdowns due to the limited 8GB RAM and the slower base 256GB SSD.",
         "sentimentSplit": {
-          "negative": 20,
           "positive": 65,
-          "mixed": 15
+          "mixed": 15,
+          "negative": 20
         },
-        "aggregatedRating": 4.2,
-        "criticsConsensus": "Critics generally praise the M2 MacBook Air for its design, display, and battery life for everyday tasks, but consistently recommend upgrading to 16GB RAM and 512GB SSD for any professional or demanding use cases, including software development."
+        "aggregatedRating": 4.2
       },
-      "socialHook": "Don't let the 'Air' fool you, this M2 might leave your coding projects gasping for breath! #VettoTruth #CSStudentLaptop",
-      "schemaVersion": "v3",
+      "isAnalysis": true,
+      "postOutputHook": "Always prioritize RAM and storage for coding, not just the brand name or thinness. Your productivity depends on it!",
+      "bhartiyaPersonaAudit": "For an Indian CS student, this MacBook Air M2 with 8GB RAM and 256GB SSD might seem like a status symbol, but it's a classic case of 'dikhawa' over 'kaam'. You'll be paying a premium for the Apple logo, but the actual utility for your demanding coding work will be severely compromised, leading to frustration and potentially needing an upgrade much sooner than expected.",
+      "paisaVasoolIndex": 45,
+      "strategicRoadmap": {
+        "peakUtilityAge": "The 8GB/256GB M2 Air will likely hit its performance ceiling for a CS student within 1-2 years, especially as projects become more complex and software demands increase.",
+        "immediateAction": "Re-evaluate your budget to accommodate at least 16GB RAM and 512GB SSD, either in an M2 or M3 MacBook Air, or consider a powerful Windows alternative.",
+        "exitStrategy": "Apple products generally hold good resale value, but the limited RAM and storage might make it harder to sell to another developer or power user in the future."
+      },
       "specLongevity": "1-2 years for heavy CS coding projects before significant performance bottlenecks become unbearable.",
-      "productName": "Apple MacBook Air M2 8GB RAM 256GB SSD",
-      "technicalNode": "Verifying internals...",
-      "lifecyclePhase": {
-        "isObsoleteSoon": false,
-        "status": "Mature Product",
-        "nextMajorUpdate": "The M3 MacBook Air was released in March 2024, making the M2 a generation older. The M4 chip is expected in future Mac models, but not for the Air line immediately."
+      "resaleValueNode": "Estimating resale value...",
+      "communityPulse": {
+        "twitterPulse": "While general users praise the M2 Air's design and battery, power users and developers often tweet about the limitations of 8GB RAM for serious work, recommending upgrades or alternative machines.",
+        "redditConsensus": "Many CS students and developers on Reddit strongly advise against 8GB RAM for coding, citing frequent memory pressure and slow performance when running multiple development tools or virtual machines. The base 256GB SSD's slower speed is also a common complaint.",
+        "youtubeReality": "Independent tech reviewers on YouTube consistently highlight that while the M2 chip is powerful, the 8GB RAM and 256GB SSD are significant bottlenecks for tasks like video editing, heavy multitasking, and especially software development, often showing real-world performance dips.",
+        "topUSP": "Exceptional portability, premium build quality, and silent operation due to its fanless design.",
+        "linkedinProfessional": "Professionals in software development on LinkedIn frequently recommend a minimum of 16GB RAM for any serious coding work, emphasizing that 8GB is barely adequate for basic tasks and not suitable for a developer's primary machine.",
+        "topGripe": "Insufficient 8GB unified memory and the slower 256GB base SSD severely limit its performance for demanding professional or academic workloads."
       },
-      "isAnalysis": true
+      "productName": "Apple MacBook Air M2 8GB RAM 256GB SSD",
+      "marketTiming": "WAIT",
+      "marketReasoning": "While the M2 Air is a mature product, this specific 8GB/256GB configuration is not suitable for the user's demanding CS student needs. Waiting for a better deal on an upgraded configuration (16GB/512GB) or considering alternatives is advisable.",
+      "saferChoice": "MacBook Air M3 (16GB RAM, 512GB SSD) or a high-spec Windows laptop like the HP Spectre x360 14 with 16GB RAM and 512GB SSD.",
+      "aamAadmiSummary": "Bhaiya, this MacBook Air M2 is super thin and light, great for carrying to college, and its battery lasts long for basic notes. But for a CS student doing coding projects, 8GB RAM and 256GB storage will feel very slow and cramped very quickly. Imagine trying to run multiple coding apps and a virtual machine; it will stutter and make you wait, which is frustrating when you're on a deadline.",
+      "pros": [
+        "Extremely portable and lightweight, perfect for carrying around campus.",
+        "Excellent battery life for light tasks, reducing charger dependency.",
+        "Premium build quality and silent fanless operation."
+      ],
+      "lifecyclePhase": {
+        "status": "Mature Product",
+        "nextMajorUpdate": "The M3 MacBook Air was released in March 2024, making the M2 a generation older. The M4 chip is expected in future Mac models, but not for the Air line immediately.",
+        "isObsoleteSoon": false
+      },
+      "whyRegret": "The 8GB unified memory will constantly swap to the slow 256GB SSD when running multiple IDEs, Docker containers, or virtual machines, causing significant performance slowdowns and a frustrating user experience.",
+      "hiddenCosts": "You'll likely need to invest in an external SSD for project storage and potentially cloud computing services to compensate for the limited RAM, adding to your overall expenses.",
+      "technicalNode": "Verifying internals...",
+      "vettoContrast": {
+        "priceDelta": "₹25,000 more",
+        "alternativeName": "MacBook Air M3 (16GB RAM, 512GB SSD)",
+        "procurementGuidance": "Look for student discounts directly from Apple or during major sales events on Amazon/Flipkart for the upgraded M3 model.",
+        "fairPriceTarget": "₹1,06,990",
+        "whyContrast": "The M3 chip offers better efficiency, but more importantly, upgrading to 16GB RAM and 512GB SSD provides a significantly smoother experience for multitasking, running virtual machines, and handling large codebases, making it a much better long-term investment for a CS student.",
+        "pviBoost": 30,
+        "strategicAdvantage": "Future-proofs your setup for more demanding projects, reduces frustration, and improves overall productivity throughout your college years."
+      },
+      "cons": [
+        "8GB RAM is a major bottleneck for serious coding projects and virtual machines.",
+        "256GB SSD is too small for development environments and has slower speeds than higher capacities.",
+        "High status tax for specifications that are insufficient for a CS student's needs."
+      ]
     }
   },
   {

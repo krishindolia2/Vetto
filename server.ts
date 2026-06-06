@@ -702,7 +702,14 @@ const vettoResponseSchema = {
 function bridgeVettoSchema(newJson: any, preFetchedPrices: any[] | null): any {
   if (!newJson) return null;
 
-  const recommendation = String(newJson.recommendation || "BUY").trim().toUpperCase();
+  const getValue = (obj: any, snakeKey: string, camelKey: string, fallback: any = null): any => {
+    if (!obj) return fallback;
+    if (obj[snakeKey] !== undefined) return obj[snakeKey];
+    if (obj[camelKey] !== undefined) return obj[camelKey];
+    return fallback;
+  };
+
+  const recommendation = String(newJson.recommendation || getValue(newJson, "recommendation", "recommendation", "BUY")).trim().toUpperCase();
   let finalDecision = "BUY";
   if (recommendation.includes("SKIP") || recommendation.includes("RUN")) {
     finalDecision = "RUN";
@@ -710,65 +717,95 @@ function bridgeVettoSchema(newJson: any, preFetchedPrices: any[] | null): any {
     finalDecision = "WAIT";
   }
 
+  const featureChecks = getValue(newJson, "feature_checks", "featureChecks", {});
+  const primaryFeature = getValue(featureChecks, "primary_feature", "primaryFeature", null);
+  const secondaryFeature = getValue(featureChecks, "secondary_feature", "secondaryFeature", null);
+
   const features: any[] = [];
-  if (newJson.feature_checks?.primary_feature) {
+  if (primaryFeature) {
     features.push({
-      name: String(newJson.feature_checks.primary_feature.name || "Primary Feature"),
-      score: Number(newJson.feature_checks.primary_feature.level_percentage || 50),
-      details: String(newJson.feature_checks.primary_feature.description || "")
+      name: String(primaryFeature.name || "Primary Feature"),
+      score: Number(primaryFeature.level_percentage || primaryFeature.levelPercentage || 50),
+      details: String(primaryFeature.description || "")
     });
   }
-  if (newJson.feature_checks?.secondary_feature) {
+  if (secondaryFeature) {
     features.push({
-      name: String(newJson.feature_checks.secondary_feature.name || "Secondary Feature"),
-      score: Number(newJson.feature_checks.secondary_feature.level_percentage || 50),
-      details: String(newJson.feature_checks.secondary_feature.description || "")
+      name: String(secondaryFeature.name || "Secondary Feature"),
+      score: Number(secondaryFeature.level_percentage || secondaryFeature.levelPercentage || 50),
+      details: String(secondaryFeature.description || "")
     });
   }
 
-  const buzzwordSlayer = Array.isArray(newJson.buzzwords_to_slay)
-    ? newJson.buzzwords_to_slay.map((item: any) => ({
+  const buzzwordsToSlay = getValue(newJson, "buzzwords_to_slay", "buzzwordsToSlay", []);
+  const buzzwordSlayer = Array.isArray(buzzwordsToSlay)
+    ? buzzwordsToSlay.map((item: any) => ({
         term: String(item.buzzword || "Jargon"),
-        reality: String(item.honest_truth || "Reality Check")
+        reality: String(item.honest_truth || item.honestTruth || "Reality Check")
       }))
     : [];
 
-  const valueForMoney = Number(newJson.value_for_money_score || 50);
-  const brandTax = Number(newJson.brand_tax || 0);
-  const usefulnessScore = Number(newJson.usefulness_score || 50);
+  const valueForMoney = Number(getValue(newJson, "value_for_money_score", "valueForMoneyScore", 50));
+  const brandTax = Number(getValue(newJson, "brand_tax", "brandTax", 0));
+  const usefulnessScore = Number(getValue(newJson, "usefulness_score", "usefulnessScore", 50));
+  const hookStatement = String(getValue(newJson, "hook_statement", "hookStatement", ""));
+  const reasoningSummary = String(getValue(newJson, "reasoning_summary", "reasoningSummary", ""));
+  const regretRiskStr = String(getValue(newJson, "regret_risk", "regretRisk", ""));
+  const hypeVsRealityGap = Number(getValue(newJson, "hype_vs_reality_gap_percentage", "hypeVsRealityGapPercentage", 50));
+  const reviewAuthenticity = Number(getValue(newJson, "review_authenticity_score", "reviewAuthenticityScore", 50));
+  const extraCosts = String(getValue(newJson, "extra_costs_to_watch", "extraCostsToWatch", ""));
+  const shoppingSafety = Number(getValue(newJson, "shopping_safety_score", "shoppingSafetyScore", 50));
+  const adTrap = String(getValue(newJson, "ad_trap_warning", "adTrapWarning", ""));
+  const wins = getValue(newJson, "ground_truth_wins", "groundTruthWins", []);
+  const risks = getValue(newJson, "potential_risks", "potentialRisks", []);
+  const smarterAlt = getValue(newJson, "smarter_alternative", "smarterAlternative", {});
+  const finalAdvice = String(getValue(newJson, "final_advice", "finalAdvice", ""));
 
-  const altName = String(newJson.smarter_alternative?.name || "Alternative Option");
-  const altJustification = String(newJson.smarter_alternative?.justification || "");
-  const altValScore = Number(newJson.smarter_alternative?.alternative_value_score || 50);
-  const altSurcharge = Number(newJson.smarter_alternative?.alternative_brand_surcharge || 0);
-  const altCostTarget = Number(newJson.smarter_alternative?.alternative_cost_target || 0);
+  const altName = String(smarterAlt.name || "Alternative Option");
+  const altJustification = String(smarterAlt.justification || "");
+  const altValScore = Number(smarterAlt.alternative_value_score || smarterAlt.alternativeValueScore || 50);
+  const altSurcharge = Number(smarterAlt.alternative_brand_surcharge || smarterAlt.alternativeBrandSurcharge || 0);
+  const altCostTarget = Number(smarterAlt.alternative_cost_target || smarterAlt.alternativeCostTarget || 0);
 
   const pviBoost = Math.max(0, altValScore - valueForMoney);
   const deltaText = altSurcharge > 0 ? `Save ₹${altSurcharge.toLocaleString('en-IN')}` : "Same Price";
 
+  // Derive technical and resale value insights dynamically from LLM outputs
+  const primaryFeatureName = primaryFeature?.name || "";
+  const primaryFeatureDesc = primaryFeature?.description || "";
+  const techInsight = primaryFeatureName 
+    ? `${primaryFeatureName}: ${primaryFeatureDesc}`.substring(0, 100) 
+    : "VERIFIED HARDWARE ALIGNMENT";
+
+  const resaleInsight = finalAdvice 
+    ? finalAdvice.substring(0, 100) 
+    : "STABLE VALUE LIFECYCLE";
+
   const bridged = {
-    productName: String(newJson.analyzed_item_name || "Product"),
+    productName: String(getValue(newJson, "analyzed_item_name", "analyzedItemName", "Product")),
     finalDecision: finalDecision,
-    pros: Array.isArray(newJson.ground_truth_wins) ? newJson.ground_truth_wins.map(String) : [],
-    cons: Array.isArray(newJson.potential_risks) ? newJson.potential_risks.map(String) : [],
-    whyBest: String(newJson.reasoning_summary || ""),
-    aamAadmiSummary: String(newJson.hook_statement || ""),
-    regretWarning: String(newJson.regret_risk || ""),
+    pros: Array.isArray(wins) ? wins.map(String) : [],
+    cons: Array.isArray(risks) ? risks.map(String) : [],
+    whyBest: reasoningSummary,
+    aamAadmiSummary: hookStatement || reasoningSummary,
+    regretWarning: regretRiskStr,
     confidenceScore: usefulnessScore,
-    regretRisk: newJson.hype_vs_reality_gap_percentage > 50 ? "High" : "Low",
-    SaferChoice: altName,
+    regretRisk: hypeVsRealityGap > 50 ? "High" : "Low",
+    whyRegret: regretRiskStr,
+    saferChoice: altName,
+    avoid: adTrap || regretRiskStr,
     marketTiming: finalDecision,
-    marketReasoning: String(newJson.final_advice || ""),
+    marketReasoning: finalAdvice || reasoningSummary,
     specLongevity: "3+ Years",
     paisaVasoolIndex: valueForMoney,
     statusTax: brandTax,
     utilityScore: usefulnessScore,
-    hiddenCosts: String(newJson.extra_costs_to_watch || ""),
+    hiddenCosts: extraCosts,
     platformWarShield: {
-      hasMarketingSilos: newJson.hype_vs_reality_gap_percentage > 40,
-      siloExposure: String(newJson.ad_trap_warning || ""),
-      truthResilienceScore: Number(newJson.shopping_safety_score || 50),
-      bypassStrategyUsed: String(newJson.final_advice || "")
+      hasMarketingSilos: hypeVsRealityGap > 40,
+      siloExposure: adTrap,
+      truthResilienceScore: shoppingSafety,
+      bypassStrategyUsed: finalAdvice
     },
     vettoContrast: {
       alternativeName: altName,
@@ -776,41 +813,43 @@ function bridgeVettoSchema(newJson: any, preFetchedPrices: any[] | null): any {
       pviBoost: pviBoost,
       priceDelta: deltaText,
       fairPriceTarget: altCostTarget > 0 ? `₹${altCostTarget.toLocaleString('en-IN')}` : "Out of Stock",
-      procurementGuidance: String(newJson.final_advice || ""),
+      procurementGuidance: finalAdvice,
       strategicAdvantage: altJustification
     },
     strategicRoadmap: {
-      immediateAction: String(newJson.final_advice || ""),
+      immediateAction: finalAdvice,
       peakUtilityAge: "3+ Years",
-      exitStrategy: "Resell / Recycle when value declines"
+      exitStrategy: "Resell / Upgrade when value declines"
     },
     communityPulse: {
-      redditConsensus: String(newJson.regret_risk || "Analyzing Reddit complaints..."),
-      twitterPulse: String(newJson.ad_trap_warning || "Analyzing customer sentiment..."),
-      youtubeReality: String(newJson.reasoning_summary || "Analyzing independent reviews..."),
-      linkedinProfessional: String(newJson.final_advice || "Analyzing B2B expert reviews...")
+      redditConsensus: regretRiskStr || "Analyzing Reddit complaints...",
+      twitterPulse: adTrap || "Analyzing customer sentiment...",
+      youtubeReality: reasoningSummary || "Analyzing independent reviews...",
+      linkedinProfessional: finalAdvice || "Analyzing B2B expert reviews..."
     },
     lifecyclePhase: {
       status: "Active"
     },
     priceIntegrity: {
       currentPriceAudit: `₹0 • Checked live`,
-      historicalContext: String(newJson.reasoning_summary || ""),
+      historicalContext: reasoningSummary,
       priceHistory: [
         { month: "Jan", price: 0 }
       ],
       dealScore: usefulnessScore,
-      discountStrategy: String(newJson.final_advice || ""),
+      discountStrategy: finalAdvice,
       procurementLinks: []
     },
-    bhartiyaPersonaAudit: (newJson.hook_statement || "") + " " + (newJson.final_advice || ""),
+    bhartiyaPersonaAudit: hookStatement + " " + finalAdvice,
     features: features,
+    technicalNode: techInsight,
+    resaleValueNode: resaleInsight,
     socialAudit: {
-      userRealityCheck: String(newJson.reasoning_summary || ""),
+      userRealityCheck: reasoningSummary,
       integrityAudit: {
-        isFakeReviewRisk: newJson.review_authenticity_score < 70,
-        fakeReviewScore: Number(newJson.review_authenticity_score || 50),
-        divergenceIndex: Number(newJson.hype_vs_reality_gap_percentage || 50),
+        isFakeReviewRisk: reviewAuthenticity < 70,
+        fakeReviewScore: reviewAuthenticity,
+        divergenceIndex: hypeVsRealityGap,
         buzzwordSlayer: buzzwordSlayer
       }
     }
