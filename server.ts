@@ -893,8 +893,8 @@ function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
   // Self-Healing Cache Versioning Gate
-  if (data.schemaVersion !== "v4") {
-    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v4", found: "${data.schemaVersion || "none"}").`);
+  if (data.schemaVersion !== "v5") {
+    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v5", found: "${data.schemaVersion || "none"}").`);
     return false;
   }
   
@@ -1673,11 +1673,12 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
        - "comparison": User is comparing two or more products (e.g. "iPhone 15 vs S24").
        - "specific": User is asking about a single specific product model (e.g. "iQOO Neo 9 Pro", "Royal Enfield Himalayan").
     2. Resolve this to exactly ONE highly specific product model name ("productName").
-       - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "Realme Buds Air 6 Pro 50dB ANC" or "OnePlus Buds 3" for earbuds under 5k - NOT "boat earbuds" or "OnePlus Buds Nord").
+       - If "category", pick the absolute best value-for-money product that fits strictly within the budget and matches their context. Make sure it is an exact, specific product variant available in India (e.g. "Realme Buds Air 6 Pro 50dB ANC" for earbuds under 5k, or "Sony WH-CH520" for headphones under 5k - NOT "boat earbuds" or "OnePlus Buds Nord").
+       - STRICT AUDIO FORM FACTOR SEPARATION: You MUST strictly distinguish between "earbuds" (in-ear/TWS) and "headphones" (over-ear or on-ear headphones). If the user query specifies "headphone" or "headphones", you are STRICTLY FORBIDDEN from resolving to in-ear earbuds/TWS (like OnePlus Buds, Realme Buds, etc.). Recommending earbuds when the user asked for headphones is a critical error.
        - CURRENT & ACTIVE SKU RULE: You MUST resolve category queries to CURRENT (2025/2026), active, and widely available product models in India today. Do NOT select obsolete or discontinued models (e.g., do not recommend GTX 1650 or Ryzen 5500H laptops if RTX 3050 / Ryzen 5600H or newer laptops are widely available within budget).
        - IN-STOCK VERIFICATION: Use the search grounding results to verify that the product is actually active and in stock on major Indian retail platforms (like Amazon India or Flipkart) today. Do NOT select discontinued or out-of-stock models.
-       - CONCISE CANONICAL FORMAT: The "productName" MUST be clean, concise, and optimized for search engine queries. It should contain the brand, model series, processor, and GPU, but do NOT include verbose specifications like dimensions, display refresh rate, exact port lists, year, or release tags (e.g. return "Lenovo IdeaPad Gaming 3 Ryzen 5 6600H RTX 3050" or "HP Victus 15 Ryzen 5 5600H RTX 3050" - NOT "Lenovo IdeaPad Gaming 3 15.6 inch FHD 120Hz (AMD Ryzen 5 6600H, NVIDIA GeForce RTX 3050 4GB, 8GB DDR5, 512GB SSD, Windows 11)"). A clean name is critical for accurate price scraping.
-       - BUDGET CEILING ALIGNMENT RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k", "under 30k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility. Select a superior, spec-dominating product that lands strictly between 80% to 100% of the budget range (e.g., if the budget is 5k, select a superior ₹4,000-₹4,900 option like "Realme Buds Air 6 Pro" or "OnePlus Buds 3", rather than aggressively downgrading the user to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
+       - CONCISE CANONICAL FORMAT: The "productName" MUST be clean, concise, and optimized for search engine queries. It should contain the brand, model series, and variant details, but do NOT include verbose specifications. A clean name is critical for accurate price scraping.
+       - BUDGET CEILING ALIGNMENT RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k", "under 30k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility. Select a superior, spec-dominating product that lands strictly between 80% to 100% of the budget range (e.g., if the budget is 5k, select a superior ₹4,000-₹4,900 option like "Realme Buds Air 6 Pro" for earbuds, or "Sony WH-CH520" for headphones, rather than aggressively downgrading the user to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
        - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
        - If "comparison", return the primary or first product name.
 
@@ -3170,7 +3171,7 @@ You must calculate scores dynamically based on the specific core use case reques
           try {
             await withTimeout(
               setDoc(cacheDocRef, {
-                data: { ...auditData, schemaVersion: "v4" },
+                data: { ...auditData, schemaVersion: "v5" },
                 timestamp: Date.now(),
                 query: parsedQuery,
                 createdAt: serverTimestamp()
@@ -3186,7 +3187,7 @@ You must calculate scores dynamically based on the specific core use case reques
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v4" }, timestamp: Date.now() });
+      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v5" }, timestamp: Date.now() });
       saveCacheToDisk();
     }
   } catch (error: any) {
