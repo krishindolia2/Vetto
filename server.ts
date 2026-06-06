@@ -893,8 +893,8 @@ function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
   // Self-Healing Cache Versioning Gate
-  if (data.schemaVersion !== "v5") {
-    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v5", found: "${data.schemaVersion || "none"}").`);
+  if (data.schemaVersion !== "v6") {
+    console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v6", found: "${data.schemaVersion || "none"}").`);
     return false;
   }
   
@@ -2398,16 +2398,19 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     }
 
     let stableVerdict: "BUY" | "WAIT" | "RUN" = "WAIT";
-    if (llmDecision) {
-      stableVerdict = llmDecision as any;
-      console.log(`[Stability Alignment] Preserving LLM intelligent decision: "${stableVerdict}"`);
+    if (isBudgetCategoryQuery) {
+      // For category and budget queries (e.g. "best phone under 30k"), the goal is to recommend the best available product.
+      // We should not issue a "RUN" (SKIP) signal unless the product is a complete failure (Paisa Vasool Index < 45).
+      if (pvi >= 45 || deal >= 45) {
+        stableVerdict = "BUY";
+      } else {
+        stableVerdict = "WAIT";
+      }
+      console.log(`[Stability Alignment] Category/Budget query detected. Enforcing positive verdict: "${stableVerdict}" (PVI: ${pvi}, Deal Score: ${deal})`);
     } else {
-      if (isBudgetCategoryQuery) {
-        if (deal >= 50) {
-          stableVerdict = "BUY";
-        } else {
-          stableVerdict = "WAIT";
-        }
+      if (llmDecision) {
+        stableVerdict = llmDecision as any;
+        console.log(`[Stability Alignment] Preserving LLM intelligent decision for specific/comparison query: "${stableVerdict}"`);
       } else {
         if (pvi >= 70 && deal >= 60 && risk !== "high") {
           stableVerdict = "BUY";
@@ -3171,7 +3174,7 @@ You must calculate scores dynamically based on the specific core use case reques
           try {
             await withTimeout(
               setDoc(cacheDocRef, {
-                data: { ...auditData, schemaVersion: "v5" },
+                data: { ...auditData, schemaVersion: "v6" },
                 timestamp: Date.now(),
                 query: parsedQuery,
                 createdAt: serverTimestamp()
@@ -3187,7 +3190,7 @@ You must calculate scores dynamically based on the specific core use case reques
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v5" }, timestamp: Date.now() });
+      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v6" }, timestamp: Date.now() });
       saveCacheToDisk();
     }
   } catch (error: any) {
