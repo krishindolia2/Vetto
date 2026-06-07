@@ -348,12 +348,19 @@ export default function App() {
       <main className="max-w-5xl mx-auto px-6 py-12 relative z-10">
         
         {/* Search Framework */}
-        <section className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-light tracking-tight text-slate-900 mb-4 font-display">
-            Verify the Value. <span className="font-serif italic font-normal text-blue-600">Reveal the Truth.</span>
+        <section className="text-center mb-12 flex flex-col items-center">
+          {/* Visual Badge Pill */}
+          <div className="inline-flex items-center space-x-2 bg-slate-50 border border-slate-200/60 text-slate-500 px-4 py-1.5 rounded-full text-[10px] font-mono uppercase tracking-wider mb-6 animate-fade-in shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Sponsor-Free Consumer Shield</span>
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl font-light tracking-tight text-slate-900 mb-5 font-display leading-[1.15] max-w-3xl">
+            Stop paying the <span className="font-serif italic font-normal text-slate-800 border-b-2 border-slate-200">brand tax.</span> <br />
+            Know the <span className="font-medium text-slate-900">real value</span> first.
           </h1>
-          <p className="text-slate-500 max-w-2xl mx-auto text-sm leading-relaxed">
-            An independent consumer shield designed to highlight quality, evaluate brand markup, and uncover actual buyer experiences.
+          <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed font-sans mb-2">
+            Vetto strips away marketing hype, paid sponsorships, and inflated ratings. Get honest audits on real product costs, verified lifetime durability, and raw buyer sentiment.
           </p>
 
           <form onSubmit={handleFormSubmit} className="mt-8 max-w-2xl mx-auto relative group">
@@ -414,65 +421,153 @@ export default function App() {
 
         {/* Quick-Tap Landing Dilemma Cards */}
         {!audit && !loading && (
-          <section className="mt-16 max-w-3xl mx-auto animate-fade-in relative z-10">
-            <h2 className="text-xs font-mono text-slate-400 uppercase tracking-widest text-center mb-8">
-              Select a Decision Dilemma to Analyze
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <>
+            <section className="mt-16 max-w-3xl mx-auto animate-fade-in relative z-10">
+              <h2 className="text-xs font-mono text-slate-400 uppercase tracking-widest text-center mb-8">
+                Select a Decision Dilemma to Analyze
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* Card 1: Comparisons */}
+                <div 
+                  onClick={() => handleAuditRequest("OnePlus 12R vs S24")}
+                  className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-800">Unbiased Comparisons</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      Compare OnePlus 12R vs Samsung Galaxy S24 side-by-side to find the real winner.
+                    </p>
+                  </div>
+                  <div className="flex items-center text-blue-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
+                    <span>Analyze</span>
+                    <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                {/* Card 2: Brand Surcharges */}
+                <div 
+                  onClick={() => handleAuditRequest("Premium Brand Cotton Hoodie")}
+                  className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-800">Expose Brand Markup</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      Is a premium cotton hoodie really worth ₹5,000, or are you just buying a logo?
+                    </p>
+                  </div>
+                  <div className="flex items-center text-indigo-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
+                    <span>Analyze</span>
+                    <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                {/* Card 3: Budget Targets */}
+                <div 
+                  onClick={() => handleAuditRequest("best laptop for office under 40k")}
+                  className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-800">Verify Budget Caps</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      Find the absolute best laptop for office multitasking under a hard ₹40,000 ceiling.
+                    </p>
+                  </div>
+                  <div className="flex items-center text-purple-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
+                    <span>Analyze</span>
+                    <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* Verified Value Deals Section */}
+            <section className="mt-16 max-w-3xl mx-auto animate-fade-in relative z-10">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                <h2 className="text-xs font-mono text-slate-400 uppercase tracking-widest">
+                  Trending Value Deals & Audits
+                </h2>
+                <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200/50">
+                  Verified Sponsor-Free
+                </span>
+              </div>
               
-              {/* Card 1: Comparisons */}
-              <div 
-                onClick={() => handleAuditRequest("OnePlus 12R vs S24")}
-                className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-slate-800">Unbiased Comparisons</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Compare OnePlus 12R vs Samsung Galaxy S24 side-by-side to find the real winner.
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Electronics Deal */}
+                <div 
+                  onClick={() => handleAuditRequest("OnePlus 12R")}
+                  className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Electronics</span>
+                      <span className="text-[9px] font-mono font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        88/100 Value
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">OnePlus 12R</h3>
+                    <p className="text-xs text-slate-500 font-medium">₹39,999</p>
+                    <p className="text-[11px] text-slate-400 leading-normal">
+                      Verified lowest deal on Amazon. Outstanding performance-to-cost ratio.
+                    </p>
+                  </div>
+                  <div className="flex items-center text-slate-500 font-mono text-[9px] uppercase font-bold tracking-wider mt-4 group-hover:text-blue-600 transition-colors">
+                    <span>Check Audit</span>
+                    <ArrowRight className="w-2.5 h-2.5 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
                 </div>
-                <div className="flex items-center text-blue-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
-                  <span>Analyze</span>
-                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+
+                {/* Fashion Deal */}
+                <div 
+                  onClick={() => handleAuditRequest("Pure Cotton Cargo Pants")}
+                  className="bg-white border border-slate-200/60 hover:border-indigo-500/40 rounded-2xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Fashion</span>
+                      <span className="text-[9px] font-mono font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        78/100 Value
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">Cotton Cargo Pants</h3>
+                    <p className="text-xs text-slate-500 font-medium">₹1,299</p>
+                    <p className="text-[11px] text-slate-400 leading-normal">
+                      Verified lowest deal on Ajio. Premium quality fabric without the brand markup.
+                    </p>
+                  </div>
+                  <div className="flex items-center text-slate-500 font-mono text-[9px] uppercase font-bold tracking-wider mt-4 group-hover:text-indigo-600 transition-colors">
+                    <span>Check Audit</span>
+                    <ArrowRight className="w-2.5 h-2.5 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
+
+                {/* Automotive Deal */}
+                <div 
+                  onClick={() => handleAuditRequest("Ather 450X")}
+                  className="bg-white border border-slate-200/60 hover:border-purple-500/40 rounded-2xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group flex flex-col justify-between"
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Automotive</span>
+                      <span className="text-[9px] font-mono font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        88/100 Value
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-semibold text-slate-800 group-hover:text-purple-600 transition-colors">Ather 450X</h3>
+                    <p className="text-xs text-slate-500 font-medium">₹1,40,000</p>
+                    <p className="text-[11px] text-slate-400 leading-normal">
+                      Ex-showroom verified value deal. Lowest projected battery degradation.
+                    </p>
+                  </div>
+                  <div className="flex items-center text-slate-500 font-mono text-[9px] uppercase font-bold tracking-wider mt-4 group-hover:text-purple-600 transition-colors">
+                    <span>Check Audit</span>
+                    <ArrowRight className="w-2.5 h-2.5 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
                 </div>
               </div>
-
-              {/* Card 2: Brand Surcharges */}
-              <div 
-                onClick={() => handleAuditRequest("Premium Brand Cotton Hoodie")}
-                className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-slate-800">Expose Brand Markup</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Is a premium cotton hoodie really worth ₹5,000, or are you just buying a logo?
-                  </p>
-                </div>
-                <div className="flex items-center text-indigo-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
-                  <span>Analyze</span>
-                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
-              {/* Card 3: Budget Targets */}
-              <div 
-                onClick={() => handleAuditRequest("best laptop for office under 40k")}
-                className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-slate-800">Verify Budget Caps</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Find the absolute best laptop for office multitasking under a hard ₹40,000 ceiling.
-                  </p>
-                </div>
-                <div className="flex items-center text-purple-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
-                  <span>Analyze</span>
-                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-
-            </div>
-          </section>
+            </section>
+          </>
         )}
 
         {/* Loading Interface */}
