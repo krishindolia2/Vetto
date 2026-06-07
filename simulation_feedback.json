@@ -5,7 +5,7 @@
     "query": "best phone under 40k",
     "budget": "40000",
     "resolvedProduct": "OnePlus Nord 3 5G (12GB RAM, 256GB Storage)",
-    "latencySec": "1.16",
+    "latencySec": "0.89",
     "score": 80,
     "passedChecks": [
       "Resolved category query to: \"OnePlus Nord 3 5G (12GB RAM, 256GB Storage)\"",
@@ -15,7 +15,7 @@
     "failedChecks": [
       "Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible p...\""
     ],
-    "feedback": "Yo, Rohan here! Checked Vetto for \"best phone under 40k\". The engine recommended the \"OnePlus Nord 3 5G (12GB RAM, 256GB Storage)\". Honestly, the \"aamAadmiSummary\" is total gold, feels like my gym senior or PG roommate giving honest advice. It caught that the marketing specs of this phone don't tell the full story about sustained gaming performance. Pricing-wise, the Croma/Amazon compare was spot on, and I love that they didn't push me to some random third-party sites. Latency was super crisp, only 1.16 seconds! But wait, I spotted a few minor bugs: Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible p...\"",
+    "feedback": "Yo, Rohan here! Checked Vetto for \"best phone under 40k\". The engine recommended the \"OnePlus Nord 3 5G (12GB RAM, 256GB Storage)\". Honestly, the \"aamAadmiSummary\" is total gold, feels like my gym senior or PG roommate giving honest advice. It caught that the marketing specs of this phone don't tell the full story about sustained gaming performance. Pricing-wise, the Croma/Amazon compare was spot on, and I love that they didn't push me to some random third-party sites. Latency was super crisp, only 0.89 seconds! But wait, I spotted a few minor bugs: Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible p...\"",
     "rawOutputSummary": {
       "aamAadmiSummary": "A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible price.",
       "procurementLinksCount": 0
@@ -27,7 +27,7 @@
     "query": "Adidas Samba vs Nike Dunk",
     "budget": "10000",
     "resolvedProduct": "Adidas Samba OG",
-    "latencySec": "0.31",
+    "latencySec": "0.33",
     "score": 80,
     "passedChecks": [
       "Resolved category query to: \"Adidas Samba OG\"",
@@ -49,7 +49,7 @@
     "query": "Royal Enfield Himalayan",
     "budget": "300000",
     "resolvedProduct": "Royal Enfield Himalayan 450 (Sherpa Engine, 6-Speed MT)",
-    "latencySec": "0.32",
+    "latencySec": "0.31",
     "score": 80,
     "passedChecks": [
       "Resolved category query to: \"Royal Enfield Himalayan 450 (Sherpa Engine, 6-Speed MT)\"",

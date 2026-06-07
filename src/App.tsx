@@ -42,6 +42,53 @@ export default function App() {
   const [slashedBuzzwords, setSlashedBuzzwords] = useState<string[]>([]);
   const [activeBuzzwordDetail, setActiveBuzzwordDetail] = useState<any>(null);
 
+  // User Authentication & Guide Modal States
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showUserGuide, setShowUserGuide] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('vetto_is_logged_in') === 'true';
+  });
+  const [userEmail, setUserEmail] = useState(() => {
+    return localStorage.getItem('vetto_user_email') || '';
+  });
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  // Handle Login submission
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userEmail || !userEmail.includes('@')) {
+      setLoginError('Please enter a valid email address.');
+      return;
+    }
+    if (!password || password.length < 6) {
+      setLoginError('Password must be at least 6 characters.');
+      return;
+    }
+    setLoginError('');
+    setIsLoggedIn(true);
+    localStorage.setItem('vetto_is_logged_in', 'true');
+    localStorage.setItem('vetto_user_email', userEmail);
+    setShowLoginModal(false);
+    setPassword('');
+  };
+
+  // Handle Logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserEmail('');
+    localStorage.removeItem('vetto_is_logged_in');
+    localStorage.removeItem('vetto_user_email');
+  };
+
+  // Handle Search Reset
+  const handleReset = () => {
+    setQuery('');
+    setAudit(null);
+    setSlashedBuzzwords([]);
+    setActiveBuzzwordDetail(null);
+  };
+
   // Recursively sanitize Hinglish and overly technical jargon from API data
   const sanitizeAuditData = (data: any): any => {
     if (!data) return null;
@@ -264,7 +311,37 @@ export default function App() {
               Verification Center
             </span>
           </div>
-          <div className="text-[10px] font-mono text-slate-400 tracking-wider">SECURE_VERIFICATION_MATRIX</div>
+          
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setShowUserGuide(true)}
+              className="text-xs font-semibold text-slate-600 hover:text-blue-650 transition-colors flex items-center space-x-1.5 cursor-pointer"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">User Guide</span>
+            </button>
+            
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-3">
+                <span className="text-xs text-slate-600 font-medium hidden sm:inline">
+                  {userEmail.split('@')[0]}
+                </span>
+                <button 
+                  onClick={handleLogout}
+                  className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-full border border-slate-200 transition-all cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setShowLoginModal(true)}
+                className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-full shadow-[0_4px_12px_rgba(0,113,227,0.12)] transition-all cursor-pointer"
+              >
+                Sign In
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -285,22 +362,39 @@ export default function App() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for any laptop, mobile, clothing brand, or vehicle..."
-              className="w-full bg-white border border-slate-200 rounded-full px-8 py-4.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300 pr-40 shadow-[0_12px_40px_rgba(0,0,0,0.03)] group-hover:border-slate-300"
+              className={`w-full bg-white border border-slate-200 rounded-full px-6 sm:px-8 py-4.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300 shadow-[0_12px_40px_rgba(0,0,0,0.03)] group-hover:border-slate-300 ${
+                audit ? 'pr-48 sm:pr-64' : 'pr-36 sm:pr-40'
+              }`}
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs tracking-wider uppercase rounded-full px-8 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2"
-            >
-              {loading ? (
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <Zap className="w-3.5 h-3.5" />
-                  <span>Analyze</span>
-                </>
+            
+            <div className="absolute right-2 top-2 bottom-2 flex items-center space-x-2">
+              {audit && !loading && (
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs tracking-wider uppercase rounded-full px-4 h-full transition-all duration-200 flex items-center space-x-1.5 border border-slate-200 shadow-[0_2px_6px_rgba(0,0,0,0.02)] cursor-pointer"
+                  title="Clear search and audit"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Reset</span>
+                </button>
               )}
-            </button>
+              
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs tracking-wider uppercase rounded-full px-6 sm:px-8 h-full transition-all duration-200 disabled:opacity-50 flex items-center space-x-2 cursor-pointer shadow-[0_4px_12px_rgba(0,113,227,0.15)]"
+              >
+                {loading ? (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>Analyze</span>
+                  </>
+                )}
+              </button>
+            </div>
           </form>
 
           {/* Quick Click Tags */}
@@ -1352,6 +1446,167 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Sign In Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowLoginModal(false)}
+          />
+          <div className="bg-white border border-slate-200/80 w-full max-w-md rounded-3xl p-8 shadow-2xl relative z-10 animate-fade-in">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-650 transition-colors p-1 rounded-full hover:bg-slate-50 cursor-pointer"
+            >
+              <XSign className="w-5 h-5" />
+            </button>
+
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold tracking-tight text-slate-900 font-display">
+                Sign In to Vetto
+              </h3>
+              <p className="text-slate-500 text-xs mt-1.5 leading-relaxed">
+                Enter your credentials to access saved queries and premium verification insights.
+              </p>
+            </div>
+
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  required
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
+
+              {loginError && (
+                <p className="text-xs text-rose-600 font-medium bg-rose-50 border border-rose-100 rounded-lg px-3.5 py-2">
+                  {loginError}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3 rounded-xl shadow-[0_4px_12px_rgba(0,113,227,0.15)] transition-all mt-6 cursor-pointer"
+              >
+                Sign In
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* User Guide Modal */}
+      {showUserGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowUserGuide(false)}
+          />
+          <div className="bg-[#FAFAFA] border border-slate-200/80 w-full max-w-3xl rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 my-8 max-h-[90vh] overflow-y-auto animate-fade-in">
+            <button
+              onClick={() => setShowUserGuide(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-650 transition-colors p-1 rounded-full hover:bg-slate-100 cursor-pointer"
+            >
+              <XSign className="w-5 h-5" />
+            </button>
+
+            <div className="mb-6 border-b border-slate-200/60 pb-4">
+              <span className="text-[9px] uppercase tracking-widest bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full border border-blue-100 font-mono font-bold">
+                Platform Guide
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-display mt-2">
+                How Vetto Works
+              </h3>
+              <p className="text-slate-500 text-xs sm:text-sm mt-1 leading-relaxed">
+                Vetto is your independent verification shield. We analyze specifications, public feedback, and brand markup to give you unbiased purchasing advice.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white border border-slate-200/50 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-2">
+                <div className="flex items-center space-x-2 text-blue-600">
+                  <ShieldCheck className="w-5 h-5" />
+                  <h4 className="text-sm font-semibold text-slate-800">Unbiased Value Verdicts</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Every product gets a final <strong>BUY</strong>, <strong>WAIT</strong>, or <strong>SKIP</strong> decision, plus a score out of 100 based on objective specs instead of sponsored marketing pages.
+                </p>
+              </div>
+
+              <div className="bg-white border border-slate-200/50 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-2">
+                <div className="flex items-center space-x-2 text-indigo-600">
+                  <Activity className="w-5 h-5" />
+                  <h4 className="text-sm font-semibold text-slate-800">Personal Value Estimator</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Adjust the usage sliders to calculate your personal cost-per-use (e.g. per day of use, wash cycle, or kilometer driven) to see if the pricing fits your actual needs.
+                </p>
+              </div>
+
+              <div className="bg-white border border-slate-200/50 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-2">
+                <div className="flex items-center space-x-2 text-rose-600">
+                  <Zap className="w-5 h-5" />
+                  <h4 className="text-sm font-semibold text-slate-800">Marketing Claims Slayer</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Slash hyped buzzwords to reveal their raw, everyday meaning. We highlight what the manufacturer claims versus what buyers actually experience in reality.
+                </p>
+              </div>
+
+              <div className="bg-white border border-slate-200/50 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-2">
+                <div className="flex items-center space-x-2 text-amber-600">
+                  <MessageSquare className="w-5 h-5" />
+                  <h4 className="text-sm font-semibold text-slate-800">Live Public Sentiment Tracker</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  We scan online user discussions, video channels, professional workspaces, and complaints across Reddit, YouTube, LinkedIn, and X to build a clear, real-world consensus.
+                </p>
+              </div>
+
+              <div className="bg-white border border-slate-200/50 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.01)] space-y-2 md:col-span-2">
+                <div className="flex items-center space-x-2 text-emerald-600">
+                  <Cpu className="w-5 h-5" />
+                  <h4 className="text-sm font-semibold text-slate-800">Deep Technical Checkup</h4>
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  We look at verified safety, quality, and structural metrics: slowdown risks on electronics, exact fabric density (GSM) and fit warnings for fashion items, and NCAP crash safety ratings for vehicles.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-200/60 flex justify-end">
+              <button
+                onClick={() => setShowUserGuide(false)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-6 rounded-xl transition-all cursor-pointer shadow-sm"
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
