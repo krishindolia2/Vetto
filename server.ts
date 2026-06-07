@@ -3152,8 +3152,8 @@ You must calculate scores dynamically based on the specific core use case reques
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "deep-research-pro-preview";
-    console.log(`[Audit Req] Initializing model: ${modelToUse}`);
+    const modelToUse = "gemini-3.5-flash";
+    console.log(`[Engine] Upgrading to Gemini 3.5 Flash for product: ${resolvedProduct}...`);
 
     const parts: any[] = [{ text: promptText }];
     if (images && images.length > 0) {
