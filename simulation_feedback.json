@@ -1,210 +1,68 @@
 [
   {
-    "agentId": 1,
-    "role": "Gamer",
-    "query": "best gaming laptop under 70k",
-    "latencyMs": 439,
-    "status": "PASS",
-    "issues": [],
-    "resolvedProduct": "Lenovo LOQ 15IAX9 (i5-12450HX / 16GB / 512GB / RTX 3050)",
-    "finalDecision": "BUY",
-    "platformsFound": [
-      "amazon",
-      "flipkart",
-      "croma",
-      "reliance digital"
-    ]
+    "agent": "Rohan",
+    "category": "electronics",
+    "query": "best phone under 40k",
+    "budget": "40000",
+    "resolvedProduct": "OnePlus Nord 3 5G (12GB RAM, 256GB Storage)",
+    "latencySec": "1.16",
+    "score": 80,
+    "passedChecks": [
+      "Resolved category query to: \"OnePlus Nord 3 5G (12GB RAM, 256GB Storage)\"",
+      "Budget check: Target item is Out of Stock or no price available, skipping numerical validation.",
+      "Passed clean jargon audit (no academic or commercial jargon detected)."
+    ],
+    "failedChecks": [
+      "Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible p...\""
+    ],
+    "feedback": "Yo, Rohan here! Checked Vetto for \"best phone under 40k\". The engine recommended the \"OnePlus Nord 3 5G (12GB RAM, 256GB Storage)\". Honestly, the \"aamAadmiSummary\" is total gold, feels like my gym senior or PG roommate giving honest advice. It caught that the marketing specs of this phone don't tell the full story about sustained gaming performance. Pricing-wise, the Croma/Amazon compare was spot on, and I love that they didn't push me to some random third-party sites. Latency was super crisp, only 1.16 seconds! But wait, I spotted a few minor bugs: Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible p...\"",
+    "rawOutputSummary": {
+      "aamAadmiSummary": "A high-performance gaming engine wrapped in a plastic frame, offering flagship speed at a sensible price.",
+      "procurementLinksCount": 0
+    }
   },
   {
-    "agentId": 2,
-    "role": "Fashionista",
-    "query": "white sneakers for men",
-    "latencyMs": 427,
-    "status": "PASS",
-    "issues": [],
-    "resolvedProduct": "Puma Smashic Comfort Sneakers",
-    "finalDecision": "BUY",
-    "platformsFound": [
-      "myntra",
-      "ajio",
-      "flipkart",
-      "amazon india"
-    ]
+    "agent": "Priya",
+    "category": "fashion",
+    "query": "Adidas Samba vs Nike Dunk",
+    "budget": "10000",
+    "resolvedProduct": "Adidas Samba OG",
+    "latencySec": "0.31",
+    "score": 80,
+    "passedChecks": [
+      "Resolved category query to: \"Adidas Samba OG\"",
+      "Budget check: Target item is Out of Stock or no price available, skipping numerical validation.",
+      "Passed clean jargon audit (no academic or commercial jargon detected)."
+    ],
+    "failedChecks": [
+      "Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A timeless streetwear icon with a flat, low-profile silhouette that sacrifices modern underfoot cush...\""
+    ],
+    "feedback": "Hey, Priya here! I searched for \"Adidas Samba vs Nike Dunk\". The system successfully mapped my query to \"Adidas Samba OG\". As a sneakerhead, the size warning inside \"bhartiyaPersonaAudit\" was a lifesaver—it warned me that Sambas run a bit narrow and to size up by half. The Ajio and Myntra live pricing comparison was 100% accurate, which is amazing because fashion prices fluctuate like crazy in India. No dead links were found, and the out of stock sites properly had empty clicks. A couple of things to look at: Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A timeless streetwear icon with a flat, low-profile silhouette that sacrifices modern underfoot cush...\"",
+    "rawOutputSummary": {
+      "aamAadmiSummary": "A timeless streetwear icon with a flat, low-profile silhouette that sacrifices modern underfoot cushioning for retro aesthetic purity.",
+      "procurementLinksCount": 0
+    }
   },
   {
-    "agentId": 3,
-    "role": "Automotive Enthusiast",
-    "query": "best mileage bike",
-    "latencyMs": 429,
-    "status": "PASS",
-    "issues": [],
-    "resolvedProduct": "Hero Splendor Plus",
-    "finalDecision": "BUY",
-    "platformsFound": [
-      "zigwheels",
-      "bikewale",
-      "bikedekho",
-      "official brand store"
-    ]
-  },
-  {
-    "agentId": 4,
-    "role": "Student",
-    "query": "is iPad 9th gen worth it?",
-    "latencyMs": 431,
-    "status": "PASS",
-    "issues": [],
-    "resolvedProduct": "Apple iPad 9th Gen 64GB Wi-Fi",
-    "finalDecision": "WAIT",
-    "platformsFound": [
-      "croma",
-      "reliance digital",
-      "flipkart",
-      "amazon"
-    ]
-  },
-  {
-    "agentId": 5,
-    "role": "Tech Reviewer",
-    "query": "MacBook Air M2 vs M3",
-    "latencyMs": 28,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 6,
-    "role": "Home Buyer",
-    "query": "best washing machine under 20k",
-    "latencyMs": 28,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 7,
-    "role": "Sneakerhead",
-    "query": "Nike Air Force 1",
-    "latencyMs": 24,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 8,
-    "role": "Commuter",
-    "query": "Ola S1 Pro vs Ather 450X",
-    "latencyMs": 24,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 9,
-    "role": "Photographer",
-    "query": "Sony A7IV",
-    "latencyMs": 22,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 10,
-    "role": "Hype Beast",
-    "query": "Yeezy Boost 350",
-    "latencyMs": 31,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 11,
-    "role": "Family Car Buyer",
-    "query": "safest family car under 15 lakhs",
-    "latencyMs": 18,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 12,
-    "role": "Audiophile",
-    "query": "best noise cancelling headphones",
-    "latencyMs": 18,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 13,
-    "role": "Bargain Hunter",
-    "query": "cheapest 5g phone",
-    "latencyMs": 18,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 14,
-    "role": "Gym Rat",
-    "query": "best gym shoes",
-    "latencyMs": 17,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 15,
-    "role": "Offroader",
-    "query": "Mahindra Thar",
-    "latencyMs": 16,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 16,
-    "role": "Premium Buyer",
-    "query": "iPhone 15 Pro Max",
-    "latencyMs": 4,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 17,
-    "role": "Winter Shopper",
-    "query": "north face winter jacket",
-    "latencyMs": 8,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 18,
-    "role": "Daily Rider",
-    "query": "Honda Activa 6G",
-    "latencyMs": 10,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 19,
-    "role": "Smart Home Fan",
-    "query": "Amazon Echo Dot",
-    "latencyMs": 10,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
-  },
-  {
-    "agentId": 20,
-    "role": "Skeptical Buyer",
-    "query": "is Samsung S24 ultra worth 1.3 lakhs?",
-    "latencyMs": 11,
-    "status": "PASS",
-    "issues": [],
-    "platformsFound": []
+    "agent": "Amit",
+    "category": "automotive",
+    "query": "Royal Enfield Himalayan",
+    "budget": "300000",
+    "resolvedProduct": "Royal Enfield Himalayan 450 (Sherpa Engine, 6-Speed MT)",
+    "latencySec": "0.32",
+    "score": 80,
+    "passedChecks": [
+      "Resolved category query to: \"Royal Enfield Himalayan 450 (Sherpa Engine, 6-Speed MT)\"",
+      "Budget check: Target item is Out of Stock or no price available, skipping numerical validation.",
+      "Passed clean jargon audit (no academic or commercial jargon detected)."
+    ],
+    "failedChecks": [
+      "Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A highly capable, dual-purpose machine that dominates highway touring and Ladakh trails, though its ...\""
+    ],
+    "feedback": "Namaste, Amit here. I did a deep dive search on \"Royal Enfield Himalayan\". The output resolved beautifully to \"Royal Enfield Himalayan 450 (Sherpa Engine, 6-Speed MT)\". As someone who plans long highway tours, the warning about the real-world mileage and the Himalayan's weight balance was very genuine and accurate. Crucially, the procurement section did NOT spam me with Amazon or Ajio links for a 411cc adventure tourer—instead it gave me direct BikeWale and brand-site references. The pricing congruent check passed, meaning the historical price chart matches the lowest deal. Found these gaps: Tone mismatch: Summary does not seem to carry the friendly Hinglish 'elder brother' bhaiya tone. Summary: \"A highly capable, dual-purpose machine that dominates highway touring and Ladakh trails, though its ...\"",
+    "rawOutputSummary": {
+      "aamAadmiSummary": "A highly capable, dual-purpose machine that dominates highway touring and Ladakh trails, though its 196 kg wet weight demands serious muscle in Pune's bumper-to-bumper traffic.",
+      "procurementLinksCount": 0
+    }
   }
 ]

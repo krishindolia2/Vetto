@@ -599,15 +599,15 @@ export default function App() {
                 <div>
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
-                      Value Calculator
+                      Value Estimator
                     </span>
                     <span className="px-2 py-0.5 rounded bg-blue-50 border border-blue-100 text-blue-600 font-mono text-[9px] font-bold uppercase">
-                      Interactive Simulation
+                      Personal Value Estimator
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-semibold text-slate-800 mb-1">Estimate Your Usage</h3>
-                  <p className="text-xs text-slate-400 mb-6">Adjust the inputs to recalculate your cost-per-use value score.</p>
+                  <h3 className="text-sm font-semibold text-slate-800 mb-1">Estimate your actual usage</h3>
+                  <p className="text-xs text-slate-400 mb-6">Adjust the inputs to estimate the value based on how much you will use it.</p>
 
                   {/* Dynamic Sliders based on vertical */}
                   {audit.vertical === 'electronics' && (
@@ -727,9 +727,9 @@ export default function App() {
             <div className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)] space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-semibold text-slate-900 tracking-tight font-display">
-                  Marketing vs. Reality Check
+                  Ad Claims vs. Real Facts
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">Comparing advertised claims and status parameters with objective user experiences.</p>
+                <p className="text-xs text-slate-400 mt-1">Comparing advertised claims with actual user experiences.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
@@ -738,10 +738,10 @@ export default function App() {
                 <div className="md:col-span-3 space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
-                      Claim Strikethrough Board
+                      Marketing Claims Strikethrough
                     </span>
                     <span className="text-[9px] px-2 py-0.5 bg-rose-50 border border-rose-100 text-rose-600 rounded font-mono font-bold uppercase">
-                      Select to Deconstruct
+                      Click to see the truth
                     </span>
                   </div>
 
@@ -964,7 +964,7 @@ export default function App() {
             <div className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)] space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
-                  Forensic Specifications
+                  Technical Checkup
                 </span>
               </div>
 
@@ -972,7 +972,7 @@ export default function App() {
               {audit.vertical === 'electronics' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <h4 className="text-xs text-slate-500 font-medium">Internal Lifespan Limits</h4>
+                    <h4 className="text-xs text-slate-500 font-medium">Expected Lifespan Warnings</h4>
                     <p className="text-sm font-semibold text-rose-600 bg-rose-50/50 border border-rose-100 rounded-xl p-4">
                       {audit.auditData?.bottleneck_warning || "No severe hardware limitations identified."}
                     </p>
@@ -980,8 +980,8 @@ export default function App() {
                   
                   <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
                     <div>
-                      <h4 className="text-xs text-slate-500 font-medium">Estimated Build Longevity</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Software & part life cycle</p>
+                      <h4 className="text-xs text-slate-500 font-medium">Expected Lifespan</h4>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Years of software and hardware use</p>
                     </div>
                     <span className="text-2xl font-bold font-mono text-slate-800">
                       {audit.auditData?.longevity_rating_years || 3} <span className="text-xs text-slate-400 font-sans">Years</span>
@@ -990,7 +990,7 @@ export default function App() {
 
                   <div className="space-y-2 self-center">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-xs text-slate-500 font-medium">Heat & Slowdown Risk</h4>
+                      <h4 className="text-xs text-slate-500 font-medium">Slowdown Risk</h4>
                       <span className="text-sm font-bold font-mono text-purple-600">
                         {audit.auditData?.thermal_throttling_index || 0}%
                       </span>
@@ -1001,7 +1001,7 @@ export default function App() {
                         style={{ width: `${audit.auditData?.thermal_throttling_index || 0}%` }}
                       />
                     </div>
-                    <p className="text-[9px] text-slate-400 text-right">Higher percentage indicates quicker performance throttling</p>
+                    <p className="text-[9px] text-slate-400 text-right">Slowdown risk when running heavy apps</p>
                   </div>
                 </div>
               )}
@@ -1011,7 +1011,7 @@ export default function App() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-xs text-slate-500 font-medium">Material Blend Correctness</h4>
+                      <h4 className="text-xs text-slate-500 font-medium">Material Honesty</h4>
                       <span className="text-sm font-bold font-mono text-blue-600">
                         {audit.auditData?.material_honesty_score || 0}%
                       </span>
@@ -1022,13 +1022,13 @@ export default function App() {
                         style={{ width: `${audit.auditData?.material_honesty_score || 0}%` }}
                       />
                     </div>
-                    <p className="text-[9px] text-slate-400">Honesty score of advertised blend claims vs actual testing</p>
+                    <p className="text-[9px] text-slate-400">How honest the advertised materials are compared to actual quality</p>
                   </div>
 
                   <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
                     <div>
                       <h4 className="text-xs text-slate-500 font-medium">Fabric Density</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Grams per square meter (GSM)</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">GSM (Fabric thickness metric)</p>
                     </div>
                     <span className="text-2xl font-bold font-mono text-slate-800">
                       {audit.auditData?.gsm_weight || 0} <span className="text-xs text-slate-400 font-sans">GSM</span>
@@ -1036,9 +1036,9 @@ export default function App() {
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-xs text-slate-500 font-medium">Sizing Accuracy Alert</h4>
+                    <h4 className="text-xs text-slate-500 font-medium">Fit & Size Advice</h4>
                     <p className="text-xs font-semibold text-amber-600 bg-amber-50/50 border border-amber-100 rounded-xl p-4">
-                      {audit.auditData?.sizing_alert || "True to standard size specs."}
+                      {audit.auditData?.sizing_alert || "True to standard size."}
                     </p>
                   </div>
                 </div>
@@ -1050,7 +1050,7 @@ export default function App() {
                   <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
                     <div>
                       <h4 className="text-xs text-slate-500 font-medium">Crash Safety Rating</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">NCAP and active safety tier</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">NCAP and active safety level</p>
                     </div>
                     <span className="text-xs font-bold text-slate-700 bg-white px-3 py-1.5 rounded border border-slate-200 font-mono shadow-sm">
                       {audit.auditData?.safety_rating_ncap || "Not Evaluated"}
@@ -1060,7 +1060,7 @@ export default function App() {
                   {/* SVG Value Retention Curve Chart */}
                   {chart.points.length > 0 && (
                     <div className="space-y-2 md:col-span-2">
-                      <h4 className="text-xs text-slate-500 font-medium">Value Retention Curve (5 Years)</h4>
+                      <h4 className="text-xs text-slate-500 font-medium">Estimated Value Over Time</h4>
                       <div className="bg-slate-50 border border-slate-150 rounded-xl p-3 flex justify-center">
                         <svg width="290" height="130" className="overflow-visible">
                           <defs>
