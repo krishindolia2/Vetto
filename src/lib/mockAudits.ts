@@ -60,7 +60,37 @@ export const mockElectronicsAudit: MockAuditResponse = {
     sizing_alert: "",
     total_cost_of_ownership_5yr: 0,
     safety_rating_ncap: "",
-    resale_value_retention_curve: []
+    resale_value_retention_curve: [],
+
+    // Extended metrics
+    real_user_metrics: {
+      average_rating: 4.5,
+      total_reviews: 3420,
+      satisfaction_percentage: 86,
+      feedback_summary: "Verified buyers praise the display and cameras, but strongly criticize the lack of included accessories and base storage caps."
+    },
+    social_sentiment: {
+      reddit: {
+        consensus: "Subreddit threads warn that 128GB is inadequate for recording 4K ProRes files, highlighting a functional limitation.",
+        sentiment_label: "Mixed",
+        discussion_volume: "High"
+      },
+      youtube: {
+        consensus: "Reviewers show significant throttling under prolonged GPU rendering, suggesting the thermal design limits peak performance.",
+        sentiment_label: "Mixed",
+        video_reviews_analyzed: 18
+      },
+      linkedin: {
+        consensus: "Discussed primarily as a productivity tool, though users debate the necessity of yearly status-driven upgrades.",
+        sentiment_label: "Positive",
+        professional_relevance: "Status symbol & work tool"
+      },
+      x_platform: {
+        consensus: "Frequent viral tweets concern initial software bugs, battery drain, and screen responsiveness problems.",
+        sentiment_label: "Negative",
+        viral_complaints_noted: true
+      }
+    }
   }
 };
 
@@ -107,7 +137,37 @@ export const mockFashionAudit: MockAuditResponse = {
     jargon_demystifier: [],
     total_cost_of_ownership_5yr: 0,
     safety_rating_ncap: "",
-    resale_value_retention_curve: []
+    resale_value_retention_curve: [],
+
+    // Extended metrics
+    real_user_metrics: {
+      average_rating: 4.7,
+      total_reviews: 840,
+      satisfaction_percentage: 94,
+      feedback_summary: "Highly rated for its dense feel, thick material, and lack of shrinkage after multiple washes."
+    },
+    social_sentiment: {
+      reddit: {
+        consensus: "Streetwear forums praise the thick drape, highlighting it as an excellent alternative to luxury brand hoodies.",
+        sentiment_label: "Positive",
+        discussion_volume: "Moderate"
+      },
+      youtube: {
+        consensus: "Fashion vloggers test fabric density and confirm high cotton content matches marketing claims.",
+        sentiment_label: "Positive",
+        video_reviews_analyzed: 8
+      },
+      linkedin: {
+        consensus: "Rarely discussed in business threads, casual apparel trends are noted for hybrid work setups.",
+        sentiment_label: "Mixed",
+        professional_relevance: "Casual weekend wear"
+      },
+      x_platform: {
+        consensus: "Users share pictures showing fit accuracy and praising structural material quality.",
+        sentiment_label: "Positive",
+        viral_complaints_noted: false
+      }
+    }
   }
 };
 
@@ -161,6 +221,36 @@ export const mockAutomotiveAudit: MockAuditResponse = {
     material_honesty_score: 100,
     gsm_weight: 0,
     wash_durability: "",
-    sizing_alert: ""
+    sizing_alert: "",
+
+    // Extended metrics
+    real_user_metrics: {
+      average_rating: 3.8,
+      total_reviews: 2850,
+      satisfaction_percentage: 68,
+      feedback_summary: "Owners appreciate range and speed, but express severe frustration with service delays and electronic locks."
+    },
+    social_sentiment: {
+      reddit: {
+        consensus: "Frequent warnings about battery management systems locking up and long wait times for spare parts.",
+        sentiment_label: "Negative",
+        discussion_volume: "High"
+      },
+      youtube: {
+        consensus: "Riding reviewers praise acceleration and tech, but caution about mechanical fit and finish.",
+        sentiment_label: "Mixed",
+        video_reviews_analyzed: 14
+      },
+      linkedin: {
+        consensus: "Professional threads discuss corporate green initiatives and the viability of electric commuter fleets.",
+        sentiment_label: "Mixed",
+        professional_relevance: "Daily commuter"
+      },
+      x_platform: {
+        consensus: "Highly vocal complaints tagging brand executives regarding delivery timelines and breakdown issues.",
+        sentiment_label: "Negative",
+        viral_complaints_noted: true
+      }
+    }
   }
 };

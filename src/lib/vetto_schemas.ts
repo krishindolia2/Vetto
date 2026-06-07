@@ -1,6 +1,94 @@
 import { Type } from "@google/genai";
 
 // ============================================================================
+// 0. SHARED SUB-SCHEMAS & INTERFACES FOR SOCIAL & USER METRICS
+// ============================================================================
+
+export interface RealUserMetrics {
+  average_rating: number; // e.g. 4.3
+  total_reviews: number; // count of buyer reviews
+  satisfaction_percentage: number; // 0-100 rating of positive sentiment
+  feedback_summary: string; // smart English feedback summary
+}
+
+export interface SocialSentiment {
+  reddit: {
+    consensus: string;
+    sentiment_label: "Positive" | "Mixed" | "Negative";
+    discussion_volume: "High" | "Moderate" | "Low";
+  };
+  youtube: {
+    consensus: string;
+    sentiment_label: "Positive" | "Mixed" | "Negative";
+    video_reviews_analyzed: number;
+  };
+  linkedin: {
+    consensus: string;
+    sentiment_label: "Positive" | "Mixed" | "Negative";
+    professional_relevance: string;
+  };
+  x_platform: {
+    consensus: string;
+    sentiment_label: "Positive" | "Mixed" | "Negative";
+    viral_complaints_noted: boolean;
+  };
+}
+
+export const RealUserMetricsGenAISchema = {
+  type: Type.OBJECT,
+  properties: {
+    average_rating: { type: Type.NUMBER, description: "Average user review score out of 5 stars (e.g. 4.2)" },
+    total_reviews: { type: Type.INTEGER, description: "Total number of verified buyer reviews analyzed" },
+    satisfaction_percentage: { type: Type.INTEGER, description: "Percentage of positive reviews (0-100)" },
+    feedback_summary: { type: Type.STRING, description: "Concise summary of verified buyer feedback in smart English" }
+  },
+  required: ["average_rating", "total_reviews", "satisfaction_percentage", "feedback_summary"]
+};
+
+export const SocialSentimentGenAISchema = {
+  type: Type.OBJECT,
+  properties: {
+    reddit: {
+      type: Type.OBJECT,
+      properties: {
+        consensus: { type: Type.STRING, description: "Reddit community consensus and main user complaints" },
+        sentiment_label: { type: Type.STRING, enum: ["Positive", "Mixed", "Negative"], description: "Overall Reddit sentiment" },
+        discussion_volume: { type: Type.STRING, enum: ["High", "Moderate", "Low"], description: "Reddit discussion volume" }
+      },
+      required: ["consensus", "sentiment_label", "discussion_volume"]
+    },
+    youtube: {
+      type: Type.OBJECT,
+      properties: {
+        consensus: { type: Type.STRING, description: "YouTube video reviewers consensus and major concerns" },
+        sentiment_label: { type: Type.STRING, enum: ["Positive", "Mixed", "Negative"], description: "Overall YouTube sentiment" },
+        video_reviews_analyzed: { type: Type.INTEGER, description: "Estimated number of video reviews analyzed" }
+      },
+      required: ["consensus", "sentiment_label", "video_reviews_analyzed"]
+    },
+    linkedin: {
+      type: Type.OBJECT,
+      properties: {
+        consensus: { type: Type.STRING, description: "LinkedIn professional discussions and workplace status" },
+        sentiment_label: { type: Type.STRING, enum: ["Positive", "Mixed", "Negative"], description: "Overall LinkedIn sentiment" },
+        professional_relevance: { type: Type.STRING, description: "Workplace relevance description (e.g. status symbol, productivity tool)" }
+      },
+      required: ["consensus", "sentiment_label", "professional_relevance"]
+    },
+    x_platform: {
+      type: Type.OBJECT,
+      properties: {
+        consensus: { type: Type.STRING, description: "X/Twitter quick gripes, viral complaints, or mentions" },
+        sentiment_label: { type: Type.STRING, enum: ["Positive", "Mixed", "Negative"], description: "Overall X sentiment" },
+        viral_complaints_noted: { type: Type.BOOLEAN, description: "True if there are viral complaints/customer issues on X" }
+      },
+      required: ["consensus", "sentiment_label", "viral_complaints_noted"]
+    }
+  },
+  required: ["reddit", "youtube", "linkedin", "x_platform"]
+};
+
+// ============================================================================
 // 1. FASHION VERTICAL SCHEMAS & INTERFACES
 // ============================================================================
 
@@ -8,15 +96,15 @@ export interface FashionAuditData {
   analyzed_item_name: string;
   recommendation: "BUY" | "SKIP";
   material_honesty_score: number; // 0-100 rating of fabric blend claims vs reality
-  gsm_weight: number; // Fabric weight in grams per square meter (GSM)
-  wash_durability: string; // Long-term behavior after multiple washes (shrinkage, bleeding, etc.)
-  sizing_alert: string; // Fit advice (e.g., "Runs 1 size large, order smaller")
+  gsm_weight: number; // Fabric weight in GSM
+  wash_durability: string; // Long-term behavior after multiple washes
+  sizing_alert: string; // Fit advice
   value_for_money_score: number; // 0-100 rating
   brand_tax: number; // Estimated markup for logo status (in INR)
   hook_statement: string; // Engaging 2-sentence summary hook
   reasoning_summary: string; // Detailed logical breakdown of quality
-  ground_truth_wins: string[]; // List of verified positive aspects (pros)
-  potential_risks: string[]; // List of verified negative aspects (cons)
+  ground_truth_wins: string[]; // List of verified positive aspects
+  potential_risks: string[]; // List of verified negative aspects
   smarter_alternative: {
     name: string;
     alternative_value_score: number;
@@ -25,6 +113,8 @@ export interface FashionAuditData {
     justification: string;
   };
   extra_costs_to_watch: string; // Accessories, special wash care, etc.
+  real_user_metrics: RealUserMetrics;
+  social_sentiment: SocialSentiment;
 }
 
 export const FashionAuditGenAISchema = {
@@ -38,7 +128,7 @@ export const FashionAuditGenAISchema = {
     sizing_alert: { type: Type.STRING, description: "Precise sizing alignment guidance (runs small/large/true)" },
     value_for_money_score: { type: Type.INTEGER, description: "Utility vs pricing score, 0-100" },
     brand_tax: { type: Type.INTEGER, description: "Estimated financial premium paid purely for brand logo in INR" },
-    hook_statement: { type: Type.STRING, description: "Sharp, culturally-resonant 2-sentence opening summary hook" },
+    hook_statement: { type: Type.STRING, description: "Sharp, opening summary hook in clean English" },
     reasoning_summary: { type: Type.STRING, description: "Mathematically sound logical truth explaining why it succeeds or fails" },
     ground_truth_wins: {
       type: Type.ARRAY,
@@ -61,13 +151,15 @@ export const FashionAuditGenAISchema = {
       },
       required: ["name", "alternative_value_score", "alternative_brand_surcharge", "alternative_cost_target", "justification"]
     },
-    extra_costs_to_watch: { type: Type.STRING, description: "Hidden costs like dry cleaning, premium accessories, etc." }
+    extra_costs_to_watch: { type: Type.STRING, description: "Hidden costs like dry cleaning, premium accessories, etc." },
+    real_user_metrics: RealUserMetricsGenAISchema,
+    social_sentiment: SocialSentimentGenAISchema
   },
   required: [
     "analyzed_item_name", "recommendation", "material_honesty_score", "gsm_weight",
     "wash_durability", "sizing_alert", "value_for_money_score", "brand_tax",
     "hook_statement", "reasoning_summary", "ground_truth_wins", "potential_risks",
-    "smarter_alternative", "extra_costs_to_watch"
+    "smarter_alternative", "extra_costs_to_watch", "real_user_metrics", "social_sentiment"
   ]
 };
 
@@ -78,7 +170,7 @@ export const FashionAuditGenAISchema = {
 export interface ElectronicsAuditData {
   analyzed_item_name: string;
   recommendation: "BUY" | "SKIP";
-  bottleneck_warning: string; // e.g., "Soldered RAM limits multitasking longevity"
+  bottleneck_warning: string; // e.g., soldered RAM limits multitasking
   thermal_throttling_index: number; // 0-100 score indicating heat generation & slowdown risk
   longevity_rating_years: number; // Expected functional lifespan before replacement
   jargon_demystifier: {
@@ -98,7 +190,9 @@ export interface ElectronicsAuditData {
     alternative_cost_target: number;
     justification: string;
   };
-  extra_costs_to_watch: string; // e.g., mandatory charger, screen replacement costs
+  extra_costs_to_watch: string; // mandatory charger, screen replacement, etc.
+  real_user_metrics: RealUserMetrics;
+  social_sentiment: SocialSentiment;
 }
 
 export const ElectronicsAuditGenAISchema = {
@@ -114,7 +208,7 @@ export const ElectronicsAuditGenAISchema = {
       items: {
         type: Type.OBJECT,
         properties: {
-          buzzword: { type: Type.STRING, description: "Marketing hype buzzword (e.g., Retina, AI-Battery)" },
+          buzzword: { type: Type.STRING, description: "Marketing hype buzzword (e.g. Retina, AI-Battery)" },
           honest_truth: { type: Type.STRING, description: "Brutal reality of what it actually means" }
         },
         required: ["buzzword", "honest_truth"]
@@ -122,7 +216,7 @@ export const ElectronicsAuditGenAISchema = {
     },
     value_for_money_score: { type: Type.INTEGER, description: "Utility vs price score, 0-100" },
     brand_tax: { type: Type.INTEGER, description: "Premium charged purely for marketing/logo in INR" },
-    hook_statement: { type: Type.STRING, description: "Sharp, 2-sentence opening summary hook" },
+    hook_statement: { type: Type.STRING, description: "Sharp, summary opening hook in clean English" },
     reasoning_summary: { type: Type.STRING, description: "Logical explanation showing exact value math" },
     ground_truth_wins: {
       type: Type.ARRAY,
@@ -145,13 +239,15 @@ export const ElectronicsAuditGenAISchema = {
       },
       required: ["name", "alternative_value_score", "alternative_brand_surcharge", "alternative_cost_target", "justification"]
     },
-    extra_costs_to_watch: { type: Type.STRING, description: "Hidden costs like power bricks, cases, repairs" }
+    extra_costs_to_watch: { type: Type.STRING, description: "Hidden costs like power bricks, cases, repairs" },
+    real_user_metrics: RealUserMetricsGenAISchema,
+    social_sentiment: SocialSentimentGenAISchema
   },
   required: [
     "analyzed_item_name", "recommendation", "bottleneck_warning", "thermal_throttling_index",
     "longevity_rating_years", "jargon_demystifier", "value_for_money_score", "brand_tax",
     "hook_statement", "reasoning_summary", "ground_truth_wins", "potential_risks",
-    "smarter_alternative", "extra_costs_to_watch"
+    "smarter_alternative", "extra_costs_to_watch", "real_user_metrics", "social_sentiment"
   ]
 };
 
@@ -162,12 +258,12 @@ export const ElectronicsAuditGenAISchema = {
 export interface AutomotiveAuditData {
   analyzed_item_name: string;
   recommendation: "BUY" | "SKIP";
-  total_cost_of_ownership_5yr: number; // Sum of fuel/charging, insurance, maintenance, and depreciation (in INR)
-  safety_rating_ncap: string; // NCAP rating (e.g., "5-Star Global NCAP", "Not Tested")
+  total_cost_of_ownership_5yr: number; // Sum of fuel, insurance, maintenance, depreciation in INR
+  safety_rating_ncap: string; // NCAP rating (e.g. 5-Star NCAP)
   resale_value_retention_curve: {
     year: number;
     retention_percentage: number;
-  }[]; // Projected value depreciation mapping
+  }[]; // Projected depreciation curve
   value_for_money_score: number;
   brand_tax: number;
   hook_statement: string;
@@ -181,7 +277,9 @@ export interface AutomotiveAuditData {
     alternative_cost_target: number;
     justification: string;
   };
-  extra_costs_to_watch: string; // e.g., battery replacement costs for EV, mandatory logistics charges
+  extra_costs_to_watch: string; // battery replacements, road tax, etc.
+  real_user_metrics: RealUserMetrics;
+  social_sentiment: SocialSentiment;
 }
 
 export const AutomotiveAuditGenAISchema = {
@@ -205,7 +303,7 @@ export const AutomotiveAuditGenAISchema = {
     },
     value_for_money_score: { type: Type.INTEGER, description: "Utility vs capital cost score, 0-100" },
     brand_tax: { type: Type.INTEGER, description: "Estimated markup for badge prestige in INR" },
-    hook_statement: { type: Type.STRING, description: "Sharp, 2-sentence opening summary hook" },
+    hook_statement: { type: Type.STRING, description: "Sharp, opening summary hook in clean English" },
     reasoning_summary: { type: Type.STRING, description: "Logical explanation showing lifecycle math" },
     ground_truth_wins: {
       type: Type.ARRAY,
@@ -228,12 +326,14 @@ export const AutomotiveAuditGenAISchema = {
       },
       required: ["name", "alternative_value_score", "alternative_brand_surcharge", "alternative_cost_target", "justification"]
     },
-    extra_costs_to_watch: { type: Type.STRING, description: "Hidden costs like battery packs, road tax, mandatory dealer add-ons" }
+    extra_costs_to_watch: { type: Type.STRING, description: "Hidden costs like battery packs, road tax, mandatory dealer add-ons" },
+    real_user_metrics: RealUserMetricsGenAISchema,
+    social_sentiment: SocialSentimentGenAISchema
   },
   required: [
     "analyzed_item_name", "recommendation", "total_cost_of_ownership_5yr", "safety_rating_ncap",
     "resale_value_retention_curve", "value_for_money_score", "brand_tax",
     "hook_statement", "reasoning_summary", "ground_truth_wins", "potential_risks",
-    "smarter_alternative", "extra_costs_to_watch"
+    "smarter_alternative", "extra_costs_to_watch", "real_user_metrics", "social_sentiment"
   ]
 };
