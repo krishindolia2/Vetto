@@ -9,6 +9,112 @@ import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { initializeApp as initializeFirebase } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp, runTransaction, increment } from "firebase/firestore";
 import { Agent, setGlobalDispatcher } from "undici";
+import { 
+  FashionAuditGenAISchema, 
+  ElectronicsAuditGenAISchema, 
+  AutomotiveAuditGenAISchema 
+} from "./src/lib/vetto_schemas";
+
+const SYSTEM_INSTRUCTIONS = {
+  electronics: `You are the elite Vetto Consumer Electronics Audit Engine.
+  Your sole mission is to protect consumers from marketing buzzwords (e.g. 'Retina Display', 'AI-power battery') and reveal hardware realities.
+  Core Rules:
+  - Audit CPU/GPU thermal throttling under sustained loads (thermal_throttling_index: 0-100), screen-on time battery capacity, soldered RAM limitations (bottleneck_warning), and software/hardware support life (longevity_rating_years).
+  - Reject all complex tech jargon. Explain diagnostics in simple, clear, household English.
+  - Expose marketing hype in 'jargon_demystifier' array.
+  - Ruthlessly expose high marketing premiums (Status Tax / brand_tax).`,
+
+  fashion: `You are the elite Vetto Apparel & Lifestyle Audit Engine.
+  Your sole mission is to protect consumers from fast-fashion quality traps and synthetic fabric markups.
+  Core Rules:
+  - Audit raw material quality (gsm_weight, fabric blend purity / material_honesty_score 0-100), color fastness, and expected wash shrinkage (wash_durability).
+  - Provide clear warnings on sizing (sizing_alert, e.g. 'Runs small; order one size larger').
+  - Compare fabric utility costs against high brand markups (Status Tax / brand_tax).`,
+
+  automotive: `You are the elite Vetto Automotive Audit Engine.
+  Your sole mission is to protect high-capital vehicle buyers in India.
+  Core Rules:
+  - Prioritize NCAP crash safety ratings (safety_rating_ncap), real-world mileage vs ARAI claims, and 5-year running/maintenance costs (total_cost_of_ownership_5yr) including fuel, insurance, and services in INR.
+  - In EVs, audit battery pack structures (LFP vs NMC thermal limits) and regional charging networks.
+  - Project the 5-year resale value retention curves as an array of objects mapping year (1 to 5) to retention_percentage (0-100).`,
+
+  generic: `You are the Vetto General Consumer Audit Engine.
+  Expose brand tricks, verify actual utility, and summarize Paisa Vasool status in simple household English.`
+};
+
+const defaultElectronicsData = {
+  analyzed_item_name: "",
+  recommendation: "BUY" as "BUY" | "SKIP",
+  bottleneck_warning: "None detected",
+  thermal_throttling_index: 0,
+  longevity_rating_years: 5,
+  jargon_demystifier: [] as { buzzword: string; honest_truth: string }[],
+  value_for_money_score: 50,
+  brand_tax: 0,
+  hook_statement: "",
+  reasoning_summary: "",
+  ground_truth_wins: [] as string[],
+  potential_risks: [] as string[],
+  smarter_alternative: {
+    name: "Standard Alternative",
+    alternative_value_score: 50,
+    alternative_brand_surcharge: 0,
+    alternative_cost_target: 0,
+    justification: "N/A"
+  },
+  extra_costs_to_watch: "None"
+};
+
+const defaultFashionData = {
+  analyzed_item_name: "",
+  recommendation: "BUY" as "BUY" | "SKIP",
+  material_honesty_score: 100,
+  gsm_weight: 180,
+  wash_durability: "Good",
+  sizing_alert: "True to size",
+  value_for_money_score: 50,
+  brand_tax: 0,
+  hook_statement: "",
+  reasoning_summary: "",
+  ground_truth_wins: [] as string[],
+  potential_risks: [] as string[],
+  smarter_alternative: {
+    name: "Standard Alternative",
+    alternative_value_score: 50,
+    alternative_brand_surcharge: 0,
+    alternative_cost_target: 0,
+    justification: "N/A"
+  },
+  extra_costs_to_watch: "None"
+};
+
+const defaultAutomotiveData = {
+  analyzed_item_name: "",
+  recommendation: "BUY" as "BUY" | "SKIP",
+  total_cost_of_ownership_5yr: 0,
+  safety_rating_ncap: "Not Tested",
+  resale_value_retention_curve: [
+    { year: 1, retention_percentage: 90 },
+    { year: 2, retention_percentage: 80 },
+    { year: 3, retention_percentage: 70 },
+    { year: 4, retention_percentage: 60 },
+    { year: 5, retention_percentage: 50 }
+  ] as { year: number; retention_percentage: number }[],
+  value_for_money_score: 50,
+  brand_tax: 0,
+  hook_statement: "",
+  reasoning_summary: "",
+  ground_truth_wins: [] as string[],
+  potential_risks: [] as string[],
+  smarter_alternative: {
+    name: "Standard Alternative",
+    alternative_value_score: 50,
+    alternative_brand_surcharge: 0,
+    alternative_cost_target: 0,
+    justification: "N/A"
+  },
+  extra_costs_to_watch: "None"
+};
 
 dotenv.config();
 
@@ -234,7 +340,13 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay 
       if (is403) {
         console.warn(`[Launch Guard] 403 Permission Denied / Blocked on model ${currentModel}. Blacklisting model and rotating to next fallback.`);
         blacklistedModels.add(currentModel);
-        // Force immediate model rotation on next iteration
+        
+        const allBlacklisted = [targetModel, ...fallbackModels].every(m => blacklistedModels.has(m));
+        if (allBlacklisted) {
+          throw new Error("Resilient callGeminiWithRetry: All models failed or were denied access.");
+        }
+        
+        i--; // Do not consume a retry attempt for a 403 permission/blacklist event
         continue;
       }
 
@@ -893,6 +1005,17 @@ function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
   // Self-Healing Cache Versioning Gate
+  if (data.schemaVersion === "v8") {
+    if (!data.auditData) return false;
+    const serialized = JSON.stringify(data).toLowerCase();
+    if (serialized.includes("trace cut off") || 
+        serialized.includes("interrupted") || 
+        serialized.includes("analysis interrupted")) {
+      return false;
+    }
+    return true;
+  }
+  
   if (data.schemaVersion !== "v7") {
     console.log(`[Cache Engine] Bypassing cache due to schema version mismatch (expected: "v7", found: "${data.schemaVersion || "none"}").`);
     return false;
@@ -1658,11 +1781,11 @@ function extractGroundingUrlForPlatform(response: any, platformName: string, pro
 }
 
 // Ultra-fast pure semantic resolver (Stage 1) to determine exact product specifications without search latency
-async function resolveSpecificProductName(query: string, budget = "", useCase = "", customAi?: GoogleGenAI | null): Promise<{ productName: string, queryType: "category" | "specific" | "comparison", specsSummary?: string, communityGripes?: string }> {
+async function resolveSpecificProductName(query: string, budget = "", useCase = "", customAi?: GoogleGenAI | null): Promise<{ productName: string, queryType: "category" | "specific" | "comparison", vertical: "fashion" | "electronics" | "automotive" | "generic", specsSummary?: string, communityGripes?: string }> {
   const activeAi = customAi || ai;
-  if (!activeAi) return { productName: query, queryType: "specific", specsSummary: "", communityGripes: "" };
+  if (!activeAi) return { productName: query, queryType: "specific", vertical: "generic", specsSummary: "", communityGripes: "" };
   try {
-    const prompt = `You are a precision product semantic resolver and fact-finder. 
+    const prompt = `You are a precision product semantic resolver, categorizer, and fact-finder. 
     Analyze the user's query: "${query}"
     Budget Limit: ${budget ? `₹${budget}` : "Unlimited"}
     Specific Need/Context: "${useCase || "General Use"}"
@@ -1681,12 +1804,18 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
        - BUDGET CEILING ALIGNMENT RULE: If the user provides a budget limit (e.g. "under 5k", "under 40k", "under 30k"), you MUST target the upper-tier of that budget constraint to deliver the maximum premium utility. Select a superior, spec-dominating product that lands strictly between 80% to 100% of the budget range (e.g., if the budget is 5k, select a superior ₹4,000-₹4,900 option like "Realme Buds Air 6 Pro" for earbuds, or "Sony WH-CH520" for headphones, rather than aggressively downgrading the user to a basic ₹2,000 product). Recommending a cheap, under-specced product when the budget allows for a far more premium, spec-dominating choice is a critical failure.
        - If "specific", return the clean, full canonical product name with specific configurations if inferred (e.g. "Royal Enfield Himalayan 450 Standard").
        - If "comparison", return the primary or first product name.
-    3. Use Google Search Grounding to search the web for the actual specifications and real-world user reviews on forums (such as Reddit, Twitter, and TechForums) for the resolved product. Summarize these in the fields below.
+    3. Classify this query into one of these exact vertical categories ("vertical"):
+       - "electronics": Laptops, phones, audio devices, chargers, monitors, appliances.
+       - "fashion": Apparel, sneakers, shirts, watches, bags, perfume.
+       - "automotive": Cars, bikes, electric scooters, tyres, riding gear, engine oils.
+       - "generic": General items not fitting the above three categories.
+    4. Use Google Search Grounding to search the web for the actual specifications and real-world user reviews on forums (such as Reddit, Twitter, and TechForums) for the resolved product. Summarize these in the fields below.
 
     Return strictly a JSON object conforming to this schema:
     {
       "productName": "Resolved full specific product name with specifications",
       "queryType": "category" | "specific" | "comparison",
+      "vertical": "fashion" | "electronics" | "automotive" | "generic",
       "specsSummary": "Concise summary of actual specifications, key hardware details, battery life, design features, fabric GSM, safety ratings, or mechanical features of the resolved product.",
       "communityGripes": "Concise summary of top complaints, real-world user gripes, software bugs, thermal issues, or durability issues from Reddit, YouTube comments, and tech forums."
     }
@@ -1740,11 +1869,13 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       Task:
       Extract or resolve the absolute best specific product model name (e.g. "HP Victus 15 Ryzen 5 5600H / RTX 3050" or "Lenovo IdeaPad Gaming 3 Ryzen 5 6600H / RTX 3050") from the text that fits the user's budget and query. If the text does not contain a specific product name, resolve the user's original query directly to a specific mainstream product available in India.
       Also extract or summarize any specifications and community complaints mentioned in the text.
+      Identify the vertical: "fashion" | "electronics" | "automotive" | "generic".
       
       Return strictly a JSON object conforming to this schema:
       {
         "productName": "Resolved full specific product name with specifications",
         "queryType": "category" | "specific" | "comparison",
+        "vertical": "fashion" | "electronics" | "automotive" | "generic",
         "specsSummary": "Concise summary of specifications extracted from the text, or general specs of the resolved product.",
         "communityGripes": "Concise summary of user complaints or flaws extracted from the text, or general issues of the resolved product."
       }`;
@@ -1781,6 +1912,7 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
 
     let productName = parsed.productName || query;
     let queryType = parsed.queryType || "specific";
+    let vertical = parsed.vertical || "generic";
     let specsSummary = parsed.specsSummary || "";
     let communityGripes = parsed.communityGripes || "";
 
@@ -1794,12 +1926,13 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
     return {
       productName,
       queryType,
+      vertical,
       specsSummary,
       communityGripes
     };
   } catch (e) {
     console.error("[Semantic Resolver] Error resolving query:", e);
-    return { productName: query, queryType: "specific", specsSummary: "", communityGripes: "" };
+    return { productName: query, queryType: "specific", vertical: "generic", specsSummary: "", communityGripes: "" };
   }
 }
 
@@ -2696,6 +2829,28 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           const cached = cacheSnap.data();
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
+            if (cached.data.schemaVersion === "v8") {
+              const payload = {
+                vertical: cached.data.vertical,
+                queryType: cached.data.queryType,
+                resolvedProduct: cached.data.resolvedProduct,
+                auditData: cached.data.auditData
+              };
+              if (req.headers.accept === "text/event-stream") {
+                res.setHeader("Content-Type", "text/event-stream");
+                res.setHeader("Cache-Control", "no-cache");
+                res.setHeader("Connection", "keep-alive");
+                res.setHeader("X-Accel-Buffering", "no");
+                res.flushHeaders();
+                res.write(`data: ${JSON.stringify({ type: "final", ...payload })}\n\n`);
+                res.write("data: [DONE]\n\n");
+                if (typeof (res as any).flush === "function") (res as any).flush();
+                return res.end();
+              } else {
+                return res.json(payload);
+              }
+            }
+            
             const isCategoryQueryForHeal = isGenericCategoryQuery || 
                                            parsedQuery.toLowerCase().includes("best") || 
                                            parsedQuery.toLowerCase().includes("under") ||
@@ -2728,6 +2883,28 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       const cached = auditCache.get(cacheKey)!;
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
+        if (cached.data.schemaVersion === "v8") {
+          const payload = {
+            vertical: cached.data.vertical,
+            queryType: cached.data.queryType,
+            resolvedProduct: cached.data.resolvedProduct,
+            auditData: cached.data.auditData
+          };
+          if (req.headers.accept === "text/event-stream") {
+            res.setHeader("Content-Type", "text/event-stream");
+            res.setHeader("Cache-Control", "no-cache");
+            res.setHeader("Connection", "keep-alive");
+            res.setHeader("X-Accel-Buffering", "no");
+            res.flushHeaders();
+            res.write(`data: ${JSON.stringify({ type: "final", ...payload })}\n\n`);
+            res.write("data: [DONE]\n\n");
+            if (typeof (res as any).flush === "function") (res as any).flush();
+            return res.end();
+          } else {
+            return res.json(payload);
+          }
+        }
+        
         const isCategoryQueryForHeal = isGenericCategoryQuery || 
                                        parsedQuery.toLowerCase().includes("best") || 
                                        parsedQuery.toLowerCase().includes("under") ||
@@ -2799,15 +2976,25 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     let queryType = "specific";
     let specsSummary = "";
     let communityGripes = "";
+    let vertical: 'fashion' | 'electronics' | 'automotive' | 'generic' = "generic";
     try {
       const resolved = await resolveSpecificProductName(parsedQuery, parsedBudget, useCase, requestAi);
       resolvedProduct = resolved.productName;
       queryType = resolved.queryType;
       specsSummary = resolved.specsSummary || "";
       communityGripes = resolved.communityGripes || "";
-      console.log(`[Semantic Resolver] Resolved query "${parsedQuery}" to specific product: "${resolvedProduct}" (Type: ${queryType})`);
+      vertical = resolved.vertical || "generic";
+      console.log(`[Semantic Resolver] Resolved query "${parsedQuery}" to specific product: "${resolvedProduct}" (Type: ${queryType}, Vertical: ${vertical})`);
     } catch (e) {
       console.warn(`[Semantic Resolver] Stage 1 failed. Fallback to raw query.`);
+      const lowerQuery = parsedQuery.toLowerCase();
+      if (lowerQuery.includes("hoodie") || lowerQuery.includes("shirt") || lowerQuery.includes("apparel") || lowerQuery.includes("cotton") || lowerQuery.includes("sneaker")) {
+        vertical = "fashion";
+      } else if (lowerQuery.includes("macbook") || lowerQuery.includes("laptop") || lowerQuery.includes("phone") || lowerQuery.includes("buds") || lowerQuery.includes("earbuds") || lowerQuery.includes("m3") || lowerQuery.includes("pro")) {
+        vertical = "electronics";
+      } else if (lowerQuery.includes("ola") || lowerQuery.includes("s1") || lowerQuery.includes("ev") || lowerQuery.includes("nexon") || lowerQuery.includes("car") || lowerQuery.includes("scooter") || lowerQuery.includes("bike")) {
+        vertical = "automotive";
+      }
     }
 
     // Helper to format/resolve prices with fallbacks
@@ -2943,21 +3130,29 @@ You must calculate scores dynamically based on the specific core use case reques
 - Simple Language: Do NOT use complex technical jargon, marketing buzzwords, or Hinglish/slang words (like 'bhai', 'yaar', etc.). Write all descriptions and reasoning in simple, clear, and straightforward English.
 - Target Keywords: The 'hook_statement' and 'final_advice' fields must naturally incorporate value-oriented English terms like 'value', 'deal', or 'worth' to summarize the product's standing.`;
 
-    let finalSystemPrompt = systemPrompt + 
+    const activeSchema = 
+      vertical === "fashion" ? FashionAuditGenAISchema :
+      vertical === "automotive" ? AutomotiveAuditGenAISchema :
+      ElectronicsAuditGenAISchema;
+
+    const systemInstruction = 
+      SYSTEM_INSTRUCTIONS[vertical] || SYSTEM_INSTRUCTIONS.generic;
+
+    let finalSystemPrompt = systemInstruction + 
       "\n\nCRITICAL OUTPUT DIRECTIVE:\n" +
-      "You MUST output your response strictly in the requested JSON structure. Do not include any introductory or concluding text outside the JSON block. This is critical to maintain sub-10-second system latency.";
+      "You MUST output your response strictly in the requested JSON structure conforming to the specified responseSchema. Do not include any introductory or concluding text outside the JSON block. This is critical to maintain sub-10-second system latency.";
 
     const genConfig: any = {
       systemInstruction: finalSystemPrompt,
-      temperature: 0.0,
+      temperature: 0.1,
       maxOutputTokens: 8192,
       responseMimeType: "application/json",
-      responseSchema: vettoResponseSchema
+      responseSchema: activeSchema
     };
 
     console.log(`[Audit Req] Start: ${query?.substring(0, 50) || "Visual Analysis"} (${images?.length || 0} images)`);
     const startTime = Date.now();
-    const modelToUse = "gemini-2.5-flash";
+    const modelToUse = "deep-research-pro-preview";
     console.log(`[Audit Req] Initializing model: ${modelToUse}`);
 
     const parts: any[] = [{ text: promptText }];
@@ -3099,18 +3294,31 @@ You must calculate scores dynamically based on the specific core use case reques
         
         const repairedJsonString = repairJson(rawJson);
         const parsed = JSON.parse(repairedJsonString);
-        const bridged = bridgeVettoSchema(parsed, preFetchedPrices);
-        auditData = deepMerge(defaultAuditData, bridged);
+        
+        const defaults = 
+          vertical === 'fashion' ? defaultFashionData :
+          vertical === 'automotive' ? defaultAutomotiveData :
+          defaultElectronicsData;
+        
+        auditData = deepMerge(defaults, parsed);
 
-        // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
-        auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
+        if (isBudgetCategoryQuery && auditData.value_for_money_score >= 45) {
+          auditData.recommendation = "BUY";
+        }
+        
         // Apply recursive jargon shield sanitization (Jargon Shield)
         auditData = sanitizeObjectJargon(auditData);
 
         console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
 
         if (heartbeatTimer) clearInterval(heartbeatTimer);
-        res.write(`data: ${JSON.stringify({ type: "final", auditData })}\n\n`);
+        res.write(`data: ${JSON.stringify({ 
+          type: "final", 
+          vertical,
+          queryType,
+          resolvedProduct: resolvedProduct || parsedQuery,
+          auditData 
+        })}\n\n`);
         res.write("data: [DONE]\n\n");
         if (typeof (res as any).flush === "function") (res as any).flush();
         res.end();
@@ -3164,16 +3372,28 @@ You must calculate scores dynamically based on the specific core use case reques
         
         const repairedJsonString = repairJson(rawJson);
         const parsed = JSON.parse(repairedJsonString);
-        const bridged = bridgeVettoSchema(parsed, preFetchedPrices);
-        auditData = deepMerge(defaultAuditData, bridged);
+        
+        const defaults = 
+          vertical === 'fashion' ? defaultFashionData :
+          vertical === 'automotive' ? defaultAutomotiveData :
+          defaultElectronicsData;
+        
+        auditData = deepMerge(defaults, parsed);
 
-        // Programmatic Truth Shield programmatic healing, outlier filtering, and pricing/link synchronization logic
-        auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isBudgetCategoryQuery); 
+        if (isBudgetCategoryQuery && auditData.value_for_money_score >= 45) {
+          auditData.recommendation = "BUY";
+        }
+        
         // Apply recursive jargon shield sanitization (Jargon Shield)
         auditData = sanitizeObjectJargon(auditData);
 
         console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
-        res.status(200).json(auditData);
+        res.status(200).json({
+          vertical,
+          queryType,
+          resolvedProduct: resolvedProduct || parsedQuery,
+          auditData
+        });
       } catch (parseError) {
         console.error("JSON Parse Error:", parseError, "Raw Text:", text);
         res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
@@ -3189,7 +3409,13 @@ You must calculate scores dynamically based on the specific core use case reques
           try {
             await withTimeout(
               setDoc(cacheDocRef, {
-                data: { ...auditData, schemaVersion: "v7" },
+                data: { 
+                  vertical,
+                  queryType,
+                  resolvedProduct: resolvedProduct || parsedQuery,
+                  auditData,
+                  schemaVersion: "v8" 
+                },
                 timestamp: Date.now(),
                 query: parsedQuery,
                 createdAt: serverTimestamp()
@@ -3205,7 +3431,16 @@ You must calculate scores dynamically based on the specific core use case reques
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { data: { ...auditData, schemaVersion: "v7" }, timestamp: Date.now() });
+      auditCache.set(cacheKey, { 
+        data: { 
+          vertical,
+          queryType,
+          resolvedProduct: resolvedProduct || parsedQuery,
+          auditData,
+          schemaVersion: "v8" 
+        }, 
+        timestamp: Date.now() 
+      });
       saveCacheToDisk();
     }
   } catch (error: any) {
