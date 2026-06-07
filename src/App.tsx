@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Shirt, Cpu, Car, ShieldAlert, Sparkles, AlertTriangle, 
   CheckCircle2, DollarSign, MessageSquare, ThumbsUp, 
   HelpCircle, ShieldCheck, ArrowRight, Activity, Zap, Check, RotateCcw
 } from 'lucide-react';
+import { analytics } from './lib/firebase';
+import { logEvent } from 'firebase/analytics';
+import { trackVisit } from './lib/analytics';
 
 const SAMPLE_SEARCHES = [
   { label: "MacBook Air M3", query: "MacBook Air M3" },
@@ -24,6 +27,14 @@ const LOADING_MILESTONES = [
 ];
 
 export default function App() {
+  // Trigger user analytics tracking on initial mount
+  useEffect(() => {
+    trackVisit();
+    if (analytics) {
+      logEvent(analytics, 'page_view');
+    }
+  }, []);
+
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [audit, setAudit] = useState<any>(null);
