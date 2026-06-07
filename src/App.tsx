@@ -1100,7 +1100,7 @@ export default function App() {
               {audit.vertical === 'electronics' && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <h4 className="text-xs text-slate-500 font-medium">Expected Lifespan Warnings</h4>
+                    <h4 className="text-xs text-slate-500 font-medium">Important Things to Watch Out For</h4>
                     <p className="text-sm font-semibold text-rose-600 bg-rose-50/50 border border-rose-100 rounded-xl p-4">
                       {audit.auditData?.bottleneck_warning || "No severe hardware limitations identified."}
                     </p>
@@ -1155,8 +1155,8 @@ export default function App() {
 
                   <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
                     <div>
-                      <h4 className="text-xs text-slate-500 font-medium">Fabric Density</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">GSM (Fabric thickness metric)</p>
+                      <h4 className="text-xs text-slate-500 font-medium">Fabric Thickness & Weight</h4>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Thickness score (higher is heavier)</p>
                     </div>
                     <span className="text-2xl font-bold font-mono text-slate-800">
                       {audit.auditData?.gsm_weight || 0} <span className="text-xs text-slate-400 font-sans">GSM</span>
@@ -1178,16 +1178,26 @@ export default function App() {
                   <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
                     <div>
                       <h4 className="text-xs text-slate-500 font-medium">Crash Safety Rating</h4>
-                      <p className="text-[10px] text-slate-400 mt-0.5">NCAP and active safety level</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Safety rating and crash test score</p>
                     </div>
                     <span className="text-xs font-bold text-slate-700 bg-white px-3 py-1.5 rounded border border-slate-200 font-mono shadow-sm">
                       {audit.auditData?.safety_rating_ncap || "Not Evaluated"}
                     </span>
                   </div>
 
+                  <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
+                    <div>
+                      <h4 className="text-xs text-slate-500 font-medium">5-Year Estimated Running Cost</h4>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Total spent on fuel, service, and insurance</p>
+                    </div>
+                    <span className="text-lg font-bold font-mono text-slate-800">
+                      ₹{(audit.auditData?.total_cost_of_ownership_5yr || 80000).toLocaleString('en-IN')}
+                    </span>
+                  </div>
+
                   {/* SVG Value Retention Curve Chart */}
                   {chart.points.length > 0 && (
-                    <div className="space-y-2 md:col-span-2">
+                    <div className="space-y-2">
                       <h4 className="text-xs text-slate-500 font-medium">Estimated Value Over Time</h4>
                       <div className="bg-slate-50 border border-slate-150 rounded-xl p-3 flex justify-center">
                         <svg width="290" height="130" className="overflow-visible">
