@@ -426,9 +426,6 @@ export default function App() {
                 className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
               >
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform duration-300">
-                    <Activity className="w-5 h-5" />
-                  </div>
                   <h3 className="text-sm font-semibold text-slate-800">Unbiased Comparisons</h3>
                   <p className="text-xs text-slate-500 leading-relaxed">
                     Compare OnePlus 12R vs Samsung Galaxy S24 side-by-side to find the real winner.
@@ -446,9 +443,6 @@ export default function App() {
                 className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
               >
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform duration-300">
-                    <Shirt className="w-5 h-5" />
-                  </div>
                   <h3 className="text-sm font-semibold text-slate-800">Expose Brand Markup</h3>
                   <p className="text-xs text-slate-500 leading-relaxed">
                     Is a premium cotton hoodie really worth ₹5,000, or are you just buying a logo?
@@ -466,9 +460,6 @@ export default function App() {
                 className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
               >
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform duration-300">
-                    <DollarSign className="w-5 h-5" />
-                  </div>
                   <h3 className="text-sm font-semibold text-slate-800">Verify Budget Caps</h3>
                   <p className="text-xs text-slate-500 leading-relaxed">
                     Find the absolute best laptop for office multitasking under a hard ₹40,000 ceiling.
