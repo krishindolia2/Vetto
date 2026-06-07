@@ -100,23 +100,67 @@ export default function App() {
     setActiveBuzzwordDetail(null);
   };
 
-  // Recursively sanitize Hinglish and overly technical jargon from API data
+  // Recursively sanitize Hinglish and overly technical jargon from API data values (preserving keys)
   const sanitizeAuditData = (data: any): any => {
     if (!data) return null;
-    const serialized = JSON.stringify(data);
-    const sanitized = serialized
-      .replace(/paisa\s*vasool/gi, "Value for Money")
-      .replace(/brand\s*tax/gi, "Brand Markup")
-      .replace(/aam\s*aadmi/gi, "everyday consumer")
-      .replace(/bharatiya/gi, "Indian")
-      .replace(/bhartiya/gi, "Indian")
-      .replace(/bhai\s*note/gi, "Note")
-      .replace(/thermal\s*throttling/gi, "heat slowdown")
-      .replace(/ncap/gi, "Crash Safety")
-      .replace(/gsm\s*weight/gi, "Fabric Density")
-      .replace(/jargon\s*demystifier/gi, "Marketing Hype Slayer")
-      .replace(/smarter\s*alternative/gi, "Better Value Alternative");
-    return JSON.parse(sanitized);
+
+    const sanitizeString = (text: string): string => {
+      if (!text) return "";
+      let clean = text;
+      
+      const jargonReplacements: { pattern: RegExp, replacement: string }[] = [
+        { pattern: /paisa\s*vasool/gi, replacement: "Value for Money" },
+        { pattern: /brand\s*tax/gi, replacement: "Brand Markup" },
+        { pattern: /aam\s*aadmi/gi, replacement: "everyday consumer" },
+        { pattern: /bharatiya/gi, replacement: "Indian" },
+        { pattern: /bhartiya/gi, replacement: "Indian" },
+        { pattern: /bhai\s*note/gi, replacement: "Note" },
+        { pattern: /thermal\s*throttling/gi, replacement: "heat-induced slowdown" },
+        { pattern: /\bthrottling\b/gi, replacement: "heat slowdown" },
+        { pattern: /\bncap\b/gi, replacement: "Crash Safety Rating" },
+        { pattern: /\bgsm\s*weight\b/gi, replacement: "Fabric Thickness & Weight" },
+        { pattern: /\bgsm\b/gi, replacement: "fabric thickness" },
+        { pattern: /jargon\s*demystifier/gi, replacement: "Marketing Hype Slayer" },
+        { pattern: /smarter\s*alternative/gi, replacement: "Better Value Alternative" },
+        { pattern: /\bcpu\b/gi, replacement: "processor (computer brain)" },
+        { pattern: /\bgpu\b/gi, replacement: "graphics processor" },
+        { pattern: /\bram\b/gi, replacement: "running memory (for multitasking)" },
+        { pattern: /\bssd\b/gi, replacement: "fast storage space" },
+        { pattern: /\brom\b/gi, replacement: "storage space" },
+        { pattern: /\btco\b/gi, replacement: "long-term running cost" },
+        { pattern: /\bevs?\b/gi, replacement: "electric vehicle" },
+        { pattern: /\blfp\b/gi, replacement: "lithium iron phosphate (safer battery)" },
+        { pattern: /\bnmc\b/gi, replacement: "nickel manganese cobalt (hotter running battery)" },
+        { pattern: /\barai\s+mileage\b/gi, replacement: "lab-tested mileage" },
+        { pattern: /\bex-showroom\b/gi, replacement: "factory price" },
+        { pattern: /\bon-road\b/gi, replacement: "on-road final price" }
+      ];
+      
+      jargonReplacements.forEach(({ pattern, replacement }) => {
+        clean = clean.replace(pattern, replacement);
+      });
+      
+      return clean;
+    };
+
+    const walk = (obj: any): any => {
+      if (typeof obj === "string") {
+        return sanitizeString(obj);
+      }
+      if (Array.isArray(obj)) {
+        return obj.map(item => walk(item));
+      }
+      if (obj !== null && typeof obj === "object") {
+        const cleaned: any = {};
+        for (const key in obj) {
+          cleaned[key] = walk(obj[key]);
+        }
+        return cleaned;
+      }
+      return obj;
+    };
+
+    return walk(data);
   };
 
   const handleAuditRequest = async (searchQuery: string) => {

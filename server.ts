@@ -19,8 +19,8 @@ const SYSTEM_INSTRUCTIONS = {
   electronics: `You are the elite Vetto Consumer Electronics Audit Engine.
   Your sole mission is to protect consumers from marketing buzzwords (e.g. 'Retina Display', 'AI-power battery') and reveal hardware realities.
   Core Rules:
-  - Audit CPU/GPU thermal throttling under sustained loads (thermal_throttling_index: 0-100), screen-on time battery capacity, soldered RAM limitations (bottleneck_warning), and software/hardware support life (longevity_rating_years).
-  - Reject all complex tech jargon. Explain diagnostics in simple, clear, household English.
+  - Audit processor slowdown due to heat under sustained workloads (thermal_throttling_index: 0-100), screen-on time battery capacity, soldered memory limitations that cannot be upgraded (bottleneck_warning), and software/hardware support life (longevity_rating_years).
+  - Reject all complex tech jargon and acronyms (like CPU, GPU, RAM, SSD, Hz, mAh, MP, etc.) in user-facing texts. Explain diagnostics in simple, clear, household English (e.g. 'running memory (for multitasking)' instead of 'RAM', 'processor (computer brain)' instead of 'CPU').
   - Expose marketing hype in 'jargon_demystifier' array.
   - Ruthlessly expose high marketing premiums (Status Tax / brand_tax).`,
 
@@ -29,17 +29,19 @@ const SYSTEM_INSTRUCTIONS = {
   Core Rules:
   - Audit raw material quality (gsm_weight, fabric blend purity / material_honesty_score 0-100), color fastness, and expected wash shrinkage (wash_durability).
   - Provide clear warnings on sizing (sizing_alert, e.g. 'Runs small; order one size larger').
-  - Compare fabric utility costs against high brand markups (Status Tax / brand_tax).`,
+  - Compare fabric utility costs against high brand markups (Status Tax / brand_tax).
+  - Reject technical jargon in user-facing descriptions. Instead of 'GSM', say 'fabric weight and thickness'.`,
 
   automotive: `You are the elite Vetto Automotive Audit Engine.
   Your sole mission is to protect high-capital vehicle buyers in India.
   Core Rules:
-  - Prioritize NCAP crash safety ratings (safety_rating_ncap), real-world mileage vs ARAI claims, and 5-year running/maintenance costs (total_cost_of_ownership_5yr) including fuel, insurance, and services in INR.
-  - In EVs, audit battery pack structures (LFP vs NMC thermal limits) and regional charging networks.
-  - Project the 5-year resale value retention curves as an array of objects mapping year (1 to 5) to retention_percentage (0-100).`,
+  - Prioritize crash safety ratings (safety_rating_ncap), real-world mileage vs company-claimed mileage, and 5-year running/maintenance costs (total_cost_of_ownership_5yr) including fuel, insurance, and services in INR.
+  - In electric cars, audit battery pack structures (lithium iron phosphate vs nickel manganese cobalt heat limits) and regional charging networks. Explain these chemistry differences in plain terms of safety and life.
+  - Project the 5-year resale value retention curves as an array of objects mapping year (1 to 5) to retention_percentage (0-100).
+  - Reject all technical abbreviations in user-facing descriptions. Instead of 'NCAP', say 'crash safety rating'. Instead of 'TCO', say 'long-term running cost'.`,
 
   generic: `You are the Vetto General Consumer Audit Engine.
-  Expose brand tricks, verify actual utility, and summarize value for money status in simple household English.`
+  Expose brand tricks, verify actual utility, and summarize value for money status in simple household English. Avoid all technical jargon.`
 };
 
 const defaultElectronicsData = {
@@ -1330,7 +1332,22 @@ function sanitizeBannedJargon(text: string): string {
     { pattern: /\bmarket correction\b/gi, replacement: "price adjustment" },
     { pattern: /\bportfolio\b/gi, replacement: "collection" },
     { pattern: /\barbitrage\b/gi, replacement: "saving difference" },
-    { pattern: /\bprice elasticity\b/gi, replacement: "price sensitivity" }
+    { pattern: /\bprice elasticity\b/gi, replacement: "price sensitivity" },
+    { pattern: /\bcpu\b/gi, replacement: "processor (computer brain)" },
+    { pattern: /\bgpu\b/gi, replacement: "graphics processor (for gaming/video)" },
+    { pattern: /\bram\b/gi, replacement: "running memory (for multitasking)" },
+    { pattern: /\bssd\b/gi, replacement: "fast storage space" },
+    { pattern: /\brom\b/gi, replacement: "storage space" },
+    { pattern: /\btco\b/gi, replacement: "long-term running cost" },
+    { pattern: /\bncap\b/gi, replacement: "crash safety rating" },
+    { pattern: /\bgsm\b/gi, replacement: "fabric thickness and weight" },
+    { pattern: /\bthermal\s+throttling\b/gi, replacement: "heat-induced performance slowdown" },
+    { pattern: /\bevs?\b/gi, replacement: "electric vehicle" },
+    { pattern: /\blfp\b/gi, replacement: "lithium iron phosphate (safer battery)" },
+    { pattern: /\bnmc\b/gi, replacement: "nickel manganese cobalt (hotter running battery)" },
+    { pattern: /\barai\s+mileage\b/gi, replacement: "lab-tested mileage" },
+    { pattern: /\bex-showroom\b/gi, replacement: "factory price" },
+    { pattern: /\bon-road\b/gi, replacement: "on-road final price" }
   ];
   
   jargonReplacements.forEach(({ pattern, replacement }) => {
