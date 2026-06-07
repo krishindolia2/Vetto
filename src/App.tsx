@@ -18,6 +18,7 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [audit, setAudit] = useState<any>(null);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('vetto_api_key') || '');
   
   // Interactive Calculator States
   const [usageYears, setUsageYears] = useState(3);
@@ -57,9 +58,13 @@ export default function App() {
     setActiveBuzzwordDetail(null);
     
     try {
+      const headers: any = { 'Content-Type': 'application/json' };
+      if (apiKey) {
+        headers['x-gemini-api-key'] = apiKey;
+      }
       const response = await fetch('/api/audit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ query: searchQuery }),
       });
       const data = await response.json();
@@ -241,7 +246,20 @@ export default function App() {
               Verification Center
             </span>
           </div>
-          <div className="text-[10px] font-mono text-slate-400 tracking-wider">SECURE_VERIFICATION_MATRIX</div>
+          <div className="flex items-center space-x-2">
+            <span className="text-[10px] font-mono text-slate-400 tracking-wider hidden md:inline">GEMINI API KEY:</span>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => {
+                const val = e.target.value;
+                setApiKey(val);
+                localStorage.setItem('vetto_api_key', val);
+              }}
+              placeholder="Enter custom key (optional)"
+              className="bg-slate-100 border border-slate-200 text-[10px] font-mono rounded-full px-3 py-1 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 w-36 sm:w-48 transition-all duration-200"
+            />
+          </div>
         </div>
       </header>
 

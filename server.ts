@@ -1041,7 +1041,7 @@ function isValidCachedData(data: any): boolean {
   if (!data) return false;
   
   // Self-Healing Cache Versioning Gate
-  if (data.schemaVersion === "v9") {
+  if (data.schemaVersion === "v10") {
     if (!data.auditData) return false;
     const serialized = JSON.stringify(data).toLowerCase();
     if (serialized.includes("trace cut off") || 
@@ -2929,7 +2929,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           const cached = cacheSnap.data();
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
-            if (cached.data.schemaVersion === "v9") {
+            if (cached.data.schemaVersion === "v10") {
               const payload = {
                 vertical: cached.data.vertical,
                 queryType: cached.data.queryType,
@@ -2983,7 +2983,7 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       const cached = auditCache.get(cacheKey)!;
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
-        if (cached.data.schemaVersion === "v9") {
+        if (cached.data.schemaVersion === "v10") {
           const payload = {
             vertical: cached.data.vertical,
             queryType: cached.data.queryType,
@@ -3541,7 +3541,7 @@ You must calculate scores dynamically based on the specific core use case reques
                   queryType,
                   resolvedProduct: resolvedProduct || parsedQuery,
                   auditData,
-                  schemaVersion: "v9" 
+                  schemaVersion: "v10" 
                 },
                 timestamp: Date.now(),
                 query: parsedQuery,
@@ -3564,7 +3564,7 @@ You must calculate scores dynamically based on the specific core use case reques
           queryType,
           resolvedProduct: resolvedProduct || parsedQuery,
           auditData,
-          schemaVersion: "v9" 
+          schemaVersion: "v10" 
         }, 
         timestamp: Date.now() 
       });
