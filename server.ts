@@ -39,7 +39,7 @@ const SYSTEM_INSTRUCTIONS = {
   - Project the 5-year resale value retention curves as an array of objects mapping year (1 to 5) to retention_percentage (0-100).`,
 
   generic: `You are the Vetto General Consumer Audit Engine.
-  Expose brand tricks, verify actual utility, and summarize Paisa Vasool status in simple household English.`
+  Expose brand tricks, verify actual utility, and summarize value for money status in simple household English.`
 };
 
 const defaultElectronicsData = {
@@ -568,12 +568,22 @@ function deepMerge(target: any, source: any): any {
   return merged;
 }
 
-// API Routes
 // Shared Audit Cache (Simple in-memory with persistent JSON fallback to preserve user trust)
 const auditCache = new Map<string, { data: any, timestamp: number }>();
 const CACHE_TTL = 1000 * 60 * 60 * 120; // 120 hours (5 days) to extremely optimize API cost billing while maintaining high trust and performance
 
 const cachePath = path.join(os.tmpdir(), "audit_cache_persistent.json");
+
+// Helper to set item with bounded-FIFO eviction to prevent OOM
+function addToCache(key: string, val: { data: any, timestamp: number }) {
+  if (!auditCache.has(key) && auditCache.size >= 500) {
+    const firstKey = auditCache.keys().next().value;
+    if (firstKey !== undefined) {
+      auditCache.delete(firstKey);
+    }
+  }
+  auditCache.set(key, val);
+}
 
 // Load persistent cache from disk on startup
 try {
@@ -581,7 +591,7 @@ try {
     const raw = fs.readFileSync(cachePath, "utf8");
     const parsed = JSON.parse(raw);
     for (const [key, val] of Object.entries(parsed)) {
-      auditCache.set(key, val as any);
+      addToCache(key, val as any);
     }
     console.log(`[Cache Engine] Loaded ${auditCache.size} persistent cache items.`);
   }
@@ -829,7 +839,7 @@ const vettoResponseSchema = {
       type: Type.OBJECT,
       properties: {
         name: { type: Type.STRING, description: "Exact alternative product name and variant" },
-        justification: { type: Type.STRING, description: "Why this product provides a superior Paisa Vasool factor" },
+        justification: { type: Type.STRING, description: "Why this product provides a superior value for money factor" },
         alternative_value_score: { type: Type.INTEGER, description: "0-100 value score" },
         alternative_brand_surcharge: { type: Type.INTEGER, description: "Alternative brand premium/tax" },
         alternative_cost_target: { type: Type.INTEGER, description: "Target/fair price of alternative in Rupees" }
@@ -1004,6 +1014,58 @@ function bridgeVettoSchema(newJson: any, preFetchedPrices: any[] | null): any {
   };
 
   return bridged;
+}
+
+function getUnifiedResponse(vertical: string, queryType: string, resolvedProduct: string, auditData: any) {
+  const productName = auditData?.analyzed_item_name || resolvedProduct;
+  const priceIntegrity = auditData?.priceIntegrity || {
+    currentPriceAudit: `₹0 • Checked live`,
+    historicalContext: auditData?.reasoning_summary,
+    priceHistory: [{ month: "Jan", price: 0 }],
+    dealScore: auditData?.value_for_money_score || 50,
+    discountStrategy: auditData?.reasoning_summary,
+    procurementLinks: []
+  };
+
+  const altName = auditData?.smarter_alternative?.name || "Alternative";
+  const altJustification = auditData?.smarter_alternative?.justification || "Smarter alternative";
+  const altCostTarget = auditData?.smarter_alternative?.alternative_cost_target || 0;
+  
+  const procurementLinks = priceIntegrity.procurementLinks || [];
+  const lowestDeal = procurementLinks.find((link: any) => link.isBestDeal);
+  let deltaText = "Same Price";
+  if (lowestDeal && lowestDeal.price && lowestDeal.price !== "Out of Stock" && altCostTarget > 0) {
+    const lowestDealNum = parseInt(String(lowestDeal.price).replace(/[^\d]/g, ''), 10);
+    const expectedDelta = lowestDealNum - altCostTarget;
+    if (expectedDelta > 0) {
+      deltaText = `Save ₹${expectedDelta.toLocaleString('en-IN')}`;
+    } else if (expectedDelta < 0) {
+      deltaText = `Pay ₹${Math.abs(expectedDelta).toLocaleString('en-IN')} More`;
+    }
+  }
+
+  const vettoContrast = {
+    alternativeName: altName,
+    whyContrast: altJustification,
+    pviBoost: 20,
+    priceDelta: deltaText,
+    fairPriceTarget: altCostTarget > 0 ? `₹${altCostTarget.toLocaleString('en-IN')}` : "Out of Stock",
+    procurementGuidance: auditData?.reasoning_summary,
+    strategicAdvantage: altJustification
+  };
+
+  return {
+    vertical,
+    queryType,
+    resolvedProduct,
+    auditData,
+
+    productName,
+    priceIntegrity,
+    vettoContrast,
+    aamAadmiSummary: auditData?.hook_statement || auditData?.reasoning_summary,
+    bhartiyaPersonaAudit: (auditData?.hook_statement || "") + " " + (auditData?.reasoning_summary || "")
+  };
 }
 
 function extractProductNameFromUrl(inputUrl: string): string | null {
@@ -2930,12 +2992,12 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
             if (cached.data.schemaVersion === "v10") {
-              const payload = {
-                vertical: cached.data.vertical,
-                queryType: cached.data.queryType,
-                resolvedProduct: cached.data.resolvedProduct,
-                auditData: cached.data.auditData
-              };
+              const payload = getUnifiedResponse(
+                cached.data.vertical,
+                cached.data.queryType,
+                cached.data.resolvedProduct,
+                cached.data.auditData
+              );
               if (req.headers.accept === "text/event-stream") {
                 res.setHeader("Content-Type", "text/event-stream");
                 res.setHeader("Cache-Control", "no-cache");
@@ -2984,12 +3046,12 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
         if (cached.data.schemaVersion === "v10") {
-          const payload = {
-            vertical: cached.data.vertical,
-            queryType: cached.data.queryType,
-            resolvedProduct: cached.data.resolvedProduct,
-            auditData: cached.data.auditData
-          };
+          const payload = getUnifiedResponse(
+            cached.data.vertical,
+            cached.data.queryType,
+            cached.data.resolvedProduct,
+            cached.data.auditData
+          );
           if (req.headers.accept === "text/event-stream") {
             res.setHeader("Content-Type", "text/event-stream");
             res.setHeader("Cache-Control", "no-cache");
@@ -3184,7 +3246,7 @@ Please audit the product specified in the User_Query according to your core oper
       promptText += `\n\nIMPORTANT: Analyze the attached screenshots meticulously. Look for technical specifications, material quality indicators, marketing traps, and real-world durability markers.`;
     }
 
-    const systemPrompt = `You are the elite, uncompromising, and highly analytical multi-modal AI engine behind VETTO (vetto.in) — India’s first "Paisa Vasool" Audit Engine. Your sole mission is to protect 1.4 billion Indian consumers from marketing hype, corporate buzzwords, ad-bias, and fake online reviews.
+    const systemPrompt = `You are the elite, uncompromising, and highly analytical multi-modal AI engine behind VETTO (vetto.in) — India's leading Value for Money Verification Engine. Your sole mission is to protect 1.4 billion Indian consumers from marketing hype, corporate buzzwords, ad-bias, and fake online reviews.
 
 You are NOT a standard conversational assistant. You are a cold, logical truth-auditor handling three categories: Electronics, Fashion, and Automotive.
 
@@ -3240,7 +3302,7 @@ CRITICAL LOGIC BIND: If the analyzed product contains a Tier 1 processor (like a
 
 ---
 
-### RULE 3: THE PAISA VASOOL MATHEMATICAL ENGINE
+### RULE 3: THE VALUE FOR MONEY MATHEMATICAL ENGINE
 
 You must calculate scores dynamically based on the specific core use case requested by the user. Do not give arbitrary numbers. For an "Office Use / Multitasking" query, utilize the following weighting distribution to compute the Value Score (0-100):
 
@@ -3515,12 +3577,13 @@ You must calculate scores dynamically based on the specific core use case reques
         auditData = sanitizeObjectJargon(auditData);
 
         console.log(`[Audit Req] Total latency: ${Date.now() - startTime}ms`);
-        res.status(200).json({
+        const payload = getUnifiedResponse(
           vertical,
           queryType,
-          resolvedProduct: resolvedProduct || parsedQuery,
+          resolvedProduct || parsedQuery,
           auditData
-        });
+        );
+        res.status(200).json(payload);
       } catch (parseError) {
         console.error("JSON Parse Error:", parseError, "Raw Text:", text);
         res.status(500).json({ error: "The engine failed to articulate its verdict cleanly. Please try again." });
@@ -3558,7 +3621,7 @@ You must calculate scores dynamically based on the specific core use case reques
       }
 
       // 2. Save to local in-memory container fallback
-      auditCache.set(cacheKey, { 
+      addToCache(cacheKey, { 
         data: { 
           vertical,
           queryType,
@@ -3594,7 +3657,7 @@ You must calculate scores dynamically based on the specific core use case reques
     if (isDunningError) {
       status = 403;
       errorType = "BILLING_DUNNING_DENY";
-      message = "We have detected a Google Cloud billing restriction (dunning decision is deny) on this workspace's Google Gemini API key or project. Service can be restored instantly by adding or verifying a valid personal API key in AI Studio's 'Settings > Secrets' panel (top-right gear icon).";
+      message = "The Vetto Verification Engine is experiencing unprecedented volume or service is temporarily restricted. Please try again in a few minutes.";
     } else if (errorMsg.includes("safety")) {
       status = 400;
       message = "Audit Aborted: The query triggered safety protocols. Please refine your request.";

@@ -14,10 +14,23 @@ const SAMPLE_SEARCHES = [
   { label: "Hatchback Car", query: "Hatchback Car" }
 ];
 
+const LOADING_MILESTONES = [
+  "Reading verified product specifications...",
+  "Scanning online customer communities and forums...",
+  "Detecting marketing hype and brand markup costs...",
+  "Running value-for-money calculations...",
+  "Cross-referencing specs and alternatives...",
+  "Finalizing decision audit report..."
+];
+
 export default function App() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [audit, setAudit] = useState<any>(null);
+  
+  // Loading milestones states
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const [loadingProgress, setLoadingProgress] = useState(10);
   
   // Interactive Calculator States
   const [usageYears, setUsageYears] = useState(3);
@@ -52,9 +65,17 @@ export default function App() {
     if (!searchQuery) return;
     setQuery(searchQuery);
     setLoading(true);
-    setAudit(null);
     setSlashedBuzzwords([]);
     setActiveBuzzwordDetail(null);
+    setLoadingProgress(10);
+    setLoadingMessage(LOADING_MILESTONES[0]);
+
+    let milestoneIdx = 0;
+    const interval = setInterval(() => {
+      milestoneIdx = (milestoneIdx + 1) % LOADING_MILESTONES.length;
+      setLoadingMessage(LOADING_MILESTONES[milestoneIdx]);
+      setLoadingProgress(prev => Math.min(95, prev + 15));
+    }, 1500);
     
     try {
       const response = await fetch('/api/audit', {
@@ -74,6 +95,8 @@ export default function App() {
     } catch (error) {
       console.error("Vetto Dashboard Pipeline Error:", error);
     } finally {
+      clearInterval(interval);
+      setLoadingProgress(100);
       setLoading(false);
     }
   };
@@ -295,17 +318,192 @@ export default function App() {
           </div>
         </section>
 
+        {/* Quick-Tap Landing Dilemma Cards */}
+        {!audit && !loading && (
+          <section className="mt-16 max-w-3xl mx-auto animate-fade-in relative z-10">
+            <h2 className="text-xs font-mono text-slate-400 uppercase tracking-widest text-center mb-8">
+              Select a Decision Dilemma to Analyze
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Card 1: Comparisons */}
+              <div 
+                onClick={() => handleAuditRequest("OnePlus 12R vs S24")}
+                className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform duration-300">
+                    <Activity className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-800">Unbiased Comparisons</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Compare OnePlus 12R vs Samsung Galaxy S24 side-by-side to find the real winner.
+                  </p>
+                </div>
+                <div className="flex items-center text-blue-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
+                  <span>Analyze</span>
+                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
+              {/* Card 2: Brand Surcharges */}
+              <div 
+                onClick={() => handleAuditRequest("Premium Brand Cotton Hoodie")}
+                className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform duration-300">
+                    <Shirt className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-800">Expose Brand Markup</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Is a premium cotton hoodie really worth ₹5,000, or are you just buying a logo?
+                  </p>
+                </div>
+                <div className="flex items-center text-indigo-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
+                  <span>Analyze</span>
+                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
+              {/* Card 3: Budget Targets */}
+              <div 
+                onClick={() => handleAuditRequest("best laptop for office under 40k")}
+                className="bg-white border border-slate-200/60 hover:border-blue-500/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform duration-300">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-slate-800">Verify Budget Caps</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Find the absolute best laptop for office multitasking under a hard ₹40,000 ceiling.
+                  </p>
+                </div>
+                <div className="flex items-center text-purple-600 font-mono text-[10px] uppercase font-bold tracking-wider mt-4">
+                  <span>Analyze</span>
+                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
+            </div>
+          </section>
+        )}
+
         {/* Loading Interface */}
         {loading && (
-          <div className="py-20 text-center space-y-6 max-w-sm mx-auto">
-            <div className="w-12 h-12 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-            <div className="space-y-2">
-              <p className="text-xs font-mono text-blue-600 tracking-wider uppercase animate-pulse">
-                Running Verification Engine
-              </p>
-              <p className="text-xs text-slate-400">
-                Checking details, scanning reviews, and calculating value scores...
-              </p>
+          <div className="space-y-8 animate-pulse relative z-10">
+            {/* Top Loading Progress Banner */}
+            <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/20 border border-slate-200/60 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-2.5 flex-1">
+                <span className="text-[10px] uppercase font-mono tracking-widest bg-blue-100/60 text-blue-600 px-3 py-1 rounded-full border border-blue-200/50 font-bold">
+                  Verification Active
+                </span>
+                <h2 className="text-xl sm:text-2xl font-semibold text-slate-800 tracking-tight">
+                  {loadingMessage}
+                </h2>
+                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden max-w-xl">
+                  <div 
+                    className="bg-blue-600 h-full rounded-full transition-all duration-500" 
+                    style={{ width: `${loadingProgress}%` }} 
+                  />
+                </div>
+              </div>
+              <div className="shrink-0 flex items-center space-x-3 bg-white border border-slate-200/65 p-4.5 rounded-2xl shadow-sm">
+                <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Analyzing</span>
+              </div>
+            </div>
+
+            {/* Row 1: Primary Verdict & Dynamic Calculator Skeletons */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              {/* Verdict Overview Card Placeholder */}
+              <div className="md:col-span-3 bg-white border border-slate-200/60 rounded-3xl p-8 h-[340px] flex flex-col justify-between">
+                <div>
+                  <div className="h-3.5 bg-slate-100 rounded w-1/4 mb-4" />
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="h-8 bg-slate-200 rounded w-1/2" />
+                    <div className="h-6 bg-slate-100 rounded w-16" />
+                  </div>
+                </div>
+                <div className="my-8 border-l-2 border-slate-200 pl-4 py-1 space-y-2">
+                  <div className="h-4 bg-slate-100 rounded w-5/6" />
+                  <div className="h-4 bg-slate-100 rounded w-2/3" />
+                </div>
+                <div className="h-10 bg-slate-150 rounded w-full" />
+              </div>
+
+              {/* Interactive Calculator Card Placeholder */}
+              <div className="md:col-span-2 bg-white border border-slate-200/60 rounded-3xl p-8 h-[340px] flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="h-3.5 bg-slate-100 rounded w-1/3" />
+                    <div className="h-4.5 bg-slate-100 rounded w-1/4" />
+                  </div>
+                  <div className="h-4 bg-slate-200 rounded w-1/2 mb-1.5" />
+                  <div className="h-3 bg-slate-100 rounded w-2/3 mb-6" />
+                  
+                  <div className="space-y-5">
+                    <div>
+                      <div className="h-3 bg-slate-100 rounded w-1/4 mb-2" />
+                      <div className="h-2 bg-slate-200 rounded w-full" />
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-8 pt-6 border-t border-slate-100 space-y-4">
+                  <div className="flex justify-between items-end">
+                    <div className="space-y-1">
+                      <div className="h-2.5 bg-slate-100 rounded w-16" />
+                      <div className="h-6 bg-slate-200 rounded w-24" />
+                    </div>
+                    <div className="space-y-1 text-right">
+                      <div className="h-2.5 bg-slate-100 rounded w-16" />
+                      <div className="h-6 bg-slate-200 rounded w-16" />
+                    </div>
+                  </div>
+                  <div className="h-10 bg-slate-100 rounded w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 2: Jargon Slayer & Ratings Card Placeholders */}
+            <div className="bg-white border border-slate-200/60 rounded-3xl p-8 h-[260px] flex flex-col justify-between">
+              <div className="h-4 bg-slate-200 rounded w-1/4 mb-4" />
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6 flex-1">
+                <div className="md:col-span-3 space-y-4">
+                  <div className="h-3 bg-slate-100 rounded w-1/3" />
+                  <div className="flex flex-wrap gap-2 py-2">
+                    <div className="h-8 bg-slate-150 rounded-full w-24" />
+                    <div className="h-8 bg-slate-150 rounded-full w-32" />
+                    <div className="h-8 bg-slate-150 rounded-full w-28" />
+                  </div>
+                  <div className="h-16 bg-slate-100 rounded-2xl w-full" />
+                </div>
+                <div className="md:col-span-2 bg-slate-100/70 rounded-2xl p-6 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="h-3 bg-slate-200 rounded w-1/2" />
+                    <div className="h-8 bg-slate-350 rounded w-1/3" />
+                  </div>
+                  <div className="h-3 bg-slate-200 rounded w-2/3" />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 3: Sentiment Hub Placeholder */}
+            <div className="space-y-4">
+              <div className="h-4 bg-slate-200 rounded w-1/6" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map(idx => (
+                  <div key={idx} className="bg-white border border-slate-200/60 rounded-2xl p-6 h-[170px] flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                      <div className="h-4 bg-slate-200 rounded w-1/2" />
+                      <div className="h-3.5 bg-slate-100 rounded w-1/4" />
+                    </div>
+                    <div className="h-10 bg-slate-100 rounded w-full" />
+                    <div className="h-3 bg-slate-150 rounded w-1/3" />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
