@@ -38,6 +38,8 @@ export default function App() {
       .replace(/brand\s*tax/gi, "Brand Markup")
       .replace(/aam\s*aadmi/gi, "everyday consumer")
       .replace(/bharatiya/gi, "Indian")
+      .replace(/bhartiya/gi, "Indian")
+      .replace(/bhai\s*note/gi, "Note")
       .replace(/thermal\s*throttling/gi, "heat slowdown")
       .replace(/ncap/gi, "Crash Safety")
       .replace(/gsm\s*weight/gi, "Fabric Density")
@@ -312,6 +314,51 @@ export default function App() {
         {!loading && audit && (
           <div className="space-y-8 animate-fade-in">
             
+            {/* Dynamic Verdict Header Banner */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-slate-200/60 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-mono tracking-widest bg-blue-100/60 text-blue-600 px-3 py-1 rounded-full border border-blue-200/50 font-bold">
+                  {audit.queryType === "comparison" ? "Comparison Analysis" : audit.queryType === "category" ? "Budget Pick Verification" : "Specific Model Audit"}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-display">
+                  {audit.queryType === "comparison" ? (
+                    <>
+                      Product Comparison: <span className="text-blue-600 font-bold">{audit.auditData?.analyzed_item_name || audit.resolvedProduct}</span> vs <span className="text-slate-700 font-bold">{audit.auditData?.smarter_alternative?.name || "Alternative"}</span>
+                    </>
+                  ) : audit.queryType === "category" ? (
+                    (() => {
+                      const budgetMatch = query.match(/(?:under|below|less than|budget|₹|rs\.?)\s*(\d+\s*k|\d+[\d,]*)/i);
+                      const budgetStr = budgetMatch ? budgetMatch[1] : "";
+                      return (
+                        <>
+                          Top Value Pick {budgetStr ? `under ${budgetStr.toUpperCase()}` : "for Budget"}: <span className="text-blue-600 font-bold">{audit.auditData?.analyzed_item_name || audit.resolvedProduct}</span>
+                        </>
+                      );
+                    })()
+                  ) : (
+                    <>
+                      Value Verdict: <span className="text-blue-600 font-bold">{audit.auditData?.analyzed_item_name || audit.resolvedProduct}</span>
+                    </>
+                  )}
+                </h2>
+                <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">
+                  {audit.queryType === "comparison" ? (
+                    "Vetto analyzed both options side-by-side. Our comparison winner is highlighted below."
+                  ) : audit.queryType === "category" ? (
+                    "Our verification engine scoured the market to isolate the absolute best option for your budget."
+                  ) : (
+                    `Deep-dive quality analysis, pricing audit, and long-term ownership evaluation for ${audit.auditData?.analyzed_item_name || audit.resolvedProduct}.`
+                  )}
+                </p>
+              </div>
+              <div className="flex flex-col items-start md:items-end shrink-0">
+                <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">Vetto Score</span>
+                <div className="text-3xl font-extrabold text-blue-650 font-mono mt-0.5">
+                  {audit.auditData?.value_for_money_score || 50}<span className="text-sm font-normal text-slate-400">/100</span>
+                </div>
+              </div>
+            </div>
+
             {/* Row 1: Primary Verdict & Dynamic Calculator */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
               
@@ -912,7 +959,13 @@ export default function App() {
             <div className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)] space-y-6">
               <div className="flex items-center space-x-2 text-xs font-mono text-blue-600 uppercase tracking-widest border-b border-slate-100 pb-4">
                 <ShieldCheck className="w-4.5 h-4.5" />
-                <span>Smart Value Suggestion</span>
+                <span>
+                  {audit.queryType === "comparison" 
+                    ? "Vetto Comparison Winner" 
+                    : audit.queryType === "category" && audit.auditData?.recommendation === "BUY"
+                      ? "Backup Value Choice for Comparison"
+                      : "Smart Value Suggestion"}
+                </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
@@ -920,10 +973,32 @@ export default function App() {
                 {/* Alternative Justification */}
                 <div className="md:col-span-3 space-y-4">
                   <h3 className="text-xl font-medium text-slate-900 tracking-tight font-display">
-                    Consider This Alternative: <span className="text-blue-600 font-semibold">{audit.auditData?.smarter_alternative?.name}</span>
+                    {audit.queryType === "comparison" ? (
+                      <>
+                        Vetto Analysis Winner: <span className="text-blue-600 font-semibold">{audit.auditData?.recommendation === "BUY" ? (audit.auditData?.analyzed_item_name || audit.resolvedProduct) : (audit.auditData?.smarter_alternative?.name)}</span>
+                      </>
+                    ) : audit.queryType === "category" && audit.auditData?.recommendation === "BUY" ? (
+                      <>
+                        Backup Recommendation: <span className="text-blue-600 font-semibold">{audit.auditData?.smarter_alternative?.name}</span>
+                      </>
+                    ) : (
+                      <>
+                        Consider This Alternative: <span className="text-blue-600 font-semibold">{audit.auditData?.smarter_alternative?.name}</span>
+                      </>
+                    )}
                   </h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">
-                    {audit.auditData?.smarter_alternative?.justification}
+                  <p className="text-sm text-slate-500 leading-relaxed font-sans">
+                    {audit.queryType === "comparison" ? (
+                      <>
+                        {audit.auditData?.smarter_alternative?.justification} Our assessment shows that {audit.auditData?.recommendation === "BUY" ? (audit.auditData?.analyzed_item_name || audit.resolvedProduct) : (audit.auditData?.smarter_alternative?.name)} is the superior choice for your needs.
+                      </>
+                    ) : audit.queryType === "category" && audit.auditData?.recommendation === "BUY" ? (
+                      <>
+                        {audit.auditData?.smarter_alternative?.justification} The primary recommendation is the best choice, and this alternative is a viable secondary option.
+                      </>
+                    ) : (
+                      audit.auditData?.smarter_alternative?.justification
+                    )}
                   </p>
                   
                   {audit.auditData?.extra_costs_to_watch && (
@@ -975,16 +1050,32 @@ export default function App() {
               
               <div className="flex items-center space-x-2 text-xs font-mono text-blue-400 uppercase tracking-widest border-b border-slate-700 pb-4 mb-6">
                 <ShieldCheck className="w-5 h-5 text-blue-500" />
-                <span>Vetto Final Decision & Advisory Guide</span>
+                <span>
+                  {audit.queryType === "comparison"
+                    ? "Vetto Final Comparison Decision & Advisory Guide"
+                    : audit.queryType === "category"
+                      ? "Vetto Final Budget Pick Decision & Advisory Guide"
+                      : "Vetto Final Decision & Advisory Guide"}
+                </span>
               </div>
 
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-3 md:max-w-2xl">
                   <h3 className="text-2xl font-bold tracking-tight font-display">
-                    Our Final Recommendation: Buy or Skip?
+                    {audit.queryType === "comparison"
+                      ? "Which Product Should You Choose?"
+                      : audit.queryType === "category"
+                        ? "Vetto Budget Recommendation"
+                        : "Our Final Recommendation: Buy or Skip?"}
                   </h3>
-                  <p className="text-sm text-slate-350 leading-relaxed">
-                    Based on verified hardware longevity, raw material blends, projected cost of ownership, and comprehensive social media reviews, we advise you to:
+                  <p className="text-sm text-slate-350 leading-relaxed font-sans">
+                    {audit.queryType === "comparison" ? (
+                      `Comparing both options side-by-side, analyzing real user sentiment volume, materials/spec authenticity, and brand premium, we recommend selecting the winner:`
+                    ) : audit.queryType === "category" ? (
+                      `After reviewing all available models within your specified target budget and scanning user ratings, our final decision is:`
+                    ) : (
+                      `Based on verified hardware longevity, raw material blends, projected cost of ownership, and comprehensive social media reviews, we advise you to:`
+                    )}
                   </p>
                   
                   <div className="flex flex-wrap gap-2 pt-2">
@@ -997,16 +1088,21 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 text-center shrink-0 w-full md:w-64 shadow-lg backdrop-blur-sm">
+                <div className="flex flex-col items-center bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 text-center shrink-0 w-full md:w-72 shadow-lg backdrop-blur-sm">
                   <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
-                    VETTO DECISION
+                    {audit.queryType === "comparison" ? "COMPARISON WINNER" : "VETTO DECISION"}
                   </span>
-                  <div className={`text-4xl font-black font-display tracking-tight mt-2.5 ${
-                    audit.auditData?.recommendation === 'BUY' ? 'text-emerald-400' : 'text-rose-400'
+                  <div className={`text-2xl sm:text-3xl font-black font-display tracking-tight mt-2.5 max-w-full truncate text-center ${
+                    audit.queryType === "comparison"
+                      ? 'text-blue-400'
+                      : audit.auditData?.recommendation === 'BUY' ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
-                    {audit.auditData?.recommendation === 'BUY' ? 'BUY' : 'WAIT / SKIP'}
+                    {audit.queryType === "comparison"
+                      ? (audit.auditData?.recommendation === 'BUY' ? (audit.auditData?.analyzed_item_name || audit.resolvedProduct) : (audit.auditData?.smarter_alternative?.name))
+                      : (audit.auditData?.recommendation === 'BUY' ? 'BUY' : 'WAIT / SKIP')
+                    }
                   </div>
-                  <span className="text-[10px] text-slate-400 font-mono mt-1">
+                  <span className="text-[10px] text-slate-400 font-mono mt-2">
                     Value score: {audit.auditData?.value_for_money_score || 50}/100
                   </span>
                 </div>

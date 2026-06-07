@@ -2626,7 +2626,7 @@ function healsAndSynchronizeAuditData(auditData: any, parsedQuery: string, parse
     }
 
     // 4. Force synchronization on high-level textual summaries to eradicate mismatching numbers
-    data.priceIntegrity.currentPriceAudit = `₹${lowestPrice.toLocaleString('en-IN')} • Verified lowest available online deal. Bhai note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!`;
+    data.priceIntegrity.currentPriceAudit = `₹${lowestPrice.toLocaleString('en-IN')} • Verified lowest available online deal. Note: online prices fluctuate dynamically depending on lightning flash offers and active bank credit card discounts. Click to check live price!`;
 
     // 5. Enforce strict, stable, mathematical alignment for "marketTiming" and "finalDecision" to eliminate random flipping
     const pvi = Number(data.paisaVasoolIndex || 0);
@@ -2746,11 +2746,13 @@ app.post("/api/audit", securityGuard, async (req, res) => {
   // 1. Process and sanitize input
   let parsedQuery = (query || "").trim();
   let hasUrl = false;
+  let originalUrl = "";
   
   if (/https?:\/\/[^\s]+/i.test(parsedQuery)) {
     hasUrl = true;
     const urlMatch = parsedQuery.match(/(https?:\/\/[^\s]+)/i);
     if (urlMatch) {
+      originalUrl = urlMatch[1];
       const extracted = extractProductNameFromUrl(urlMatch[1]);
       if (extracted) {
         console.log(`[Parser Resilience] Extracted "${extracted}" from URL: ${urlMatch[1]}`);
@@ -3084,7 +3086,8 @@ app.post("/api/audit", securityGuard, async (req, res) => {
     let satisfactionRate = 80;
     
     try {
-      const resolved = await resolveSpecificProductName(parsedQuery, parsedBudget, useCase, requestAi);
+      const queryForResolver = parsedQuery + (originalUrl ? " (URL: " + originalUrl + ")" : "");
+      const resolved = await resolveSpecificProductName(queryForResolver, parsedBudget, useCase, requestAi);
       resolvedProduct = resolved.productName;
       queryType = resolved.queryType;
       specsSummary = resolved.specsSummary || "";
