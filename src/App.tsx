@@ -26,6 +26,55 @@ const LOADING_MILESTONES = [
   "Finalizing decision audit report..."
 ];
 
+const SPEC_GLOSSARY: Record<string, string> = {
+  "CPU": "Computer Brain (Handles speed and multitasking)",
+  "GPU": "Graphics Processor (Handles gaming and video smoothly)",
+  "RAM": "Running Memory (Allows running multiple apps together)",
+  "SSD": "Fast Storage Space (Saves your photos, apps, and files)",
+  "ROM": "Fast Storage Space (Saves your photos, apps, and files)",
+  "NCAP": "Crash safety test score (How safe it is in an accident)",
+  "GSM": "Fabric thickness and weight",
+  "TCO": "Long-term running cost (Total money spent over 5 years)",
+  "ARAI": "Company-claimed mileage (Tested in clean labs, not roads)",
+  "LFP": "Safer battery chemistry (Lithium Iron Phosphate - longer cycle life)",
+  "NMC": "Longer-range battery chemistry (Nickel Manganese Cobalt - runs hotter)"
+};
+
+interface SpecTooltipProps {
+  term: string;
+  children: React.ReactNode;
+}
+
+function SpecTooltip({ term, children }: SpecTooltipProps) {
+  const [visible, setVisible] = useState(false);
+  const matchedKey = Object.keys(SPEC_GLOSSARY).find(
+    k => term.toUpperCase().includes(k)
+  );
+  
+  if (!matchedKey) return <>{children}</>;
+  
+  const explanation = SPEC_GLOSSARY[matchedKey];
+  
+  return (
+    <span className="relative inline-block">
+      <span 
+        onClick={() => setVisible(!visible)}
+        onMouseEnter={() => setVisible(true)}
+        onMouseLeave={() => setVisible(false)}
+        className="underline decoration-dotted decoration-blue-500 hover:text-blue-600 cursor-pointer transition-all"
+      >
+        {children}
+      </span>
+      {visible && (
+        <span className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-slate-900 text-white text-[11px] p-3 rounded-lg shadow-xl leading-relaxed text-center font-sans normal-case tracking-normal">
+          <span className="font-bold block text-blue-300 mb-1">{matchedKey} explained:</span>
+          {explanation}
+        </span>
+      )}
+    </span>
+  );
+}
+
 export default function App() {
   // Trigger user analytics tracking on initial mount
   useEffect(() => {
@@ -52,6 +101,9 @@ export default function App() {
   // Buzzword Slaying Board State
   const [slashedBuzzwords, setSlashedBuzzwords] = useState<string[]>([]);
   const [activeBuzzwordDetail, setActiveBuzzwordDetail] = useState<any>(null);
+
+  // Trust Ledger & Community Radar States
+  const [showTrustLedger, setShowTrustLedger] = useState(false);
 
   // User Authentication & Guide Modal States
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -403,28 +455,28 @@ export default function App() {
       <main className="max-w-5xl mx-auto px-6 py-12 relative z-10">
         
         {/* Search Framework */}
-        <section className="text-center mb-12 flex flex-col items-center">
+        <section className="text-center mb-14 flex flex-col items-center bg-white/40 border border-slate-100 rounded-[3rem] p-8 sm:p-12 shadow-[0_24px_80px_rgba(0,0,0,0.015)] backdrop-blur-md">
           {/* Visual Badge Pill */}
-          <div className="inline-flex items-center space-x-2 bg-slate-50 border border-slate-200/60 text-slate-500 px-4 py-1.5 rounded-full text-[10px] font-mono uppercase tracking-wider mb-6 animate-fade-in shadow-sm">
+          <div className="inline-flex items-center space-x-2 bg-white border border-slate-200/80 text-slate-600 px-4 py-2 rounded-full text-[10px] font-mono uppercase tracking-[0.2em] mb-6 animate-fade-in shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span>Sponsor-Free Consumer Shield</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-light tracking-tight text-slate-900 mb-5 font-display leading-[1.15] max-w-3xl">
-            Stop paying the <span className="font-serif italic font-normal text-slate-800 border-b-2 border-slate-200">brand tax.</span> <br />
-            Know the <span className="font-medium text-slate-900">real value</span> first.
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 mb-5 font-display leading-[1.15] max-w-3xl premium-text-gradient-indigo">
+            Stop paying the brand tax. <br />
+            Know the real value first.
           </h1>
           <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed font-sans mb-2">
             Vetto strips away marketing hype, paid sponsorships, and inflated ratings. Get honest audits on real product costs, verified lifetime durability, and raw buyer sentiment.
           </p>
 
-          <form onSubmit={handleFormSubmit} className="mt-8 max-w-2xl mx-auto relative group">
+          <form onSubmit={handleFormSubmit} className="mt-8 w-full max-w-2xl mx-auto relative group">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for any laptop, mobile, clothing brand, or vehicle..."
-              className={`w-full bg-white border border-slate-200 rounded-full px-6 sm:px-8 py-4.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300 shadow-[0_12px_40px_rgba(0,0,0,0.03)] group-hover:border-slate-300 ${
+              className={`w-full bg-white border border-slate-200/80 rounded-full px-6 sm:px-8 py-5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all duration-400 shadow-[0_12px_48px_rgba(0,0,0,0.02)] group-hover:border-slate-350 ${
                 audit ? 'pr-48 sm:pr-64' : 'pr-36 sm:pr-40'
               }`}
             />
@@ -434,7 +486,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs tracking-wider uppercase rounded-full px-4 h-full transition-all duration-200 flex items-center space-x-1.5 border border-slate-200 shadow-[0_2px_6px_rgba(0,0,0,0.02)] cursor-pointer"
+                  className="bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs tracking-wider uppercase rounded-full px-4 h-full transition-all duration-200 flex items-center space-x-1.5 border border-slate-200/60 shadow-sm cursor-pointer"
                   title="Clear search and audit"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -445,13 +497,13 @@ export default function App() {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs tracking-wider uppercase rounded-full px-6 sm:px-8 h-full transition-all duration-200 disabled:opacity-50 flex items-center space-x-2 cursor-pointer shadow-[0_4px_12px_rgba(0,113,227,0.15)]"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs tracking-wider uppercase rounded-full px-6 sm:px-8 h-full transition-all duration-300 disabled:opacity-50 flex items-center space-x-2 cursor-pointer shadow-[0_4px_16px_rgba(0,113,227,0.18)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,113,227,0.22)] active:translate-y-0"
               >
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <>
-                    <Zap className="w-3.5 h-3.5" />
+                    <Zap className="w-3.5 h-3.5 fill-white" />
                     <span>Analyze</span>
                   </>
                 )}
@@ -461,12 +513,12 @@ export default function App() {
 
           {/* Quick Click Tags */}
           <div className="mt-6 flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
-            <span className="text-[10px] text-slate-400 font-mono self-center mr-1 uppercase tracking-wider">Try Example:</span>
+            <span className="text-[10px] text-slate-400 font-mono self-center mr-1 uppercase tracking-widest font-semibold">Try Example:</span>
             {SAMPLE_SEARCHES.map((item, idx) => (
               <button
                 key={idx}
                 onClick={() => handleAuditRequest(item.query)}
-                className="text-xs bg-white border border-slate-200/60 hover:border-blue-500/40 text-slate-600 hover:text-blue-600 px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:-translate-y-0.5"
+                className="text-xs bg-white border border-slate-200/60 hover:border-blue-500/40 text-slate-655 hover:text-blue-600 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.015)] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,113,227,0.04)]"
               >
                 {item.label}
               </button>
@@ -685,15 +737,15 @@ export default function App() {
           <div className="space-y-8 animate-fade-in">
             
             {/* Dynamic Verdict Header Banner */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-slate-200/60 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-2">
-                <span className="text-[10px] uppercase font-mono tracking-widest bg-blue-100/60 text-blue-600 px-3 py-1 rounded-full border border-blue-200/50 font-bold">
+            <div className="bg-gradient-to-r from-white via-white to-slate-50 border-[1.5px] border-slate-100 rounded-[2.5rem] p-8 shadow-[0_24px_80px_rgba(0,0,0,0.015)] flex flex-col md:flex-row md:items-center justify-between gap-6 border-l-4 border-l-blue-600 relative overflow-hidden">
+              <div className="space-y-3">
+                <span className="text-[9px] uppercase font-mono tracking-widest bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-full border border-blue-100/50 font-bold w-max block">
                   {audit.queryType === "comparison" ? "Comparison Analysis" : audit.queryType === "category" ? "Budget Pick Verification" : "Specific Model Audit"}
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-display">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-display leading-tight">
                   {audit.queryType === "comparison" ? (
                     <>
-                      Product Comparison: <span className="text-blue-600 font-bold">{audit.auditData?.analyzed_item_name || audit.resolvedProduct}</span> vs <span className="text-slate-700 font-bold">{audit.auditData?.smarter_alternative?.name || "Alternative"}</span>
+                      Product Comparison: <span className="text-blue-600 font-bold">{audit.auditData?.analyzed_item_name || audit.resolvedProduct}</span> vs <span className="text-slate-500 font-bold">{audit.auditData?.smarter_alternative?.name || "Alternative"}</span>
                     </>
                   ) : audit.queryType === "category" ? (
                     (() => {
@@ -711,7 +763,7 @@ export default function App() {
                     </>
                   )}
                 </h2>
-                <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">
+                <p className="text-sm text-slate-500 leading-relaxed max-w-2xl font-sans">
                   {audit.queryType === "comparison" ? (
                     "Vetto analyzed both options side-by-side. Our comparison winner is highlighted below."
                   ) : audit.queryType === "category" ? (
@@ -721,10 +773,11 @@ export default function App() {
                   )}
                 </p>
               </div>
-              <div className="flex flex-col items-start md:items-end shrink-0">
-                <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">Vetto Score</span>
-                <div className="text-3xl font-extrabold text-blue-650 font-mono mt-0.5">
-                  {audit.auditData?.value_for_money_score || 50}<span className="text-sm font-normal text-slate-400">/100</span>
+              <div className="flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-xl shadow-slate-900/10 px-8 py-5.5 rounded-3xl border border-slate-700/20 shrink-0 select-none">
+                <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest font-bold">Vetto Score</span>
+                <div className="text-4xl font-black font-mono mt-1 text-white flex items-baseline">
+                  {audit.auditData?.value_for_money_score || 50}
+                  <span className="text-xs font-semibold text-slate-400 ml-0.5">/100</span>
                 </div>
               </div>
             </div>
@@ -733,19 +786,19 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
               
               {/* Verdict Overview (3/5 Columns) */}
-              <div className="md:col-span-3 bg-white border border-slate-200/60 rounded-3xl p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)] relative overflow-hidden flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-3">
+              <div className="md:col-span-3 bg-white border-[1.5px] border-slate-100 rounded-[2.5rem] p-8 shadow-[0_24px_80px_rgba(0,0,0,0.015)] flex flex-col justify-between relative hover:shadow-[0_32px_96px_rgba(0,0,0,0.03)] transition-all duration-400">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2 text-[10px] font-mono text-slate-400 uppercase tracking-widest">
                     <Activity className="w-3.5 h-3.5 text-blue-600" />
                     <span>Real-time Value Verdict ({audit.vertical})</span>
                   </div>
                   
-                  <div className="flex items-center justify-between gap-4 mt-2">
-                    <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-display">
+                  <div className="flex items-center justify-between gap-4">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-display">
                       {audit.auditData?.analyzed_item_name || audit.resolvedProduct}
                     </h2>
                     
-                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase font-mono border shrink-0 ${
+                    <span className={`px-4.5 py-2 rounded-full text-xs font-bold tracking-widest uppercase font-mono border shadow-sm shrink-0 select-none ${
                       audit.auditData?.recommendation === 'BUY' 
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200/60' 
                         : 'bg-rose-50 text-rose-700 border-rose-200/60'
@@ -755,39 +808,91 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="my-8 border-l-2 border-blue-500/20 pl-4 py-1">
-                  <p className="text-base sm:text-lg font-serif italic text-slate-800 leading-relaxed">
+                <div className="my-6 bg-slate-50 border-l-4 border-l-blue-600 rounded-r-2xl p-5.5 shadow-[0_4px_12px_rgba(0,0,0,0.015)]">
+                  <p className="text-sm sm:text-base font-serif italic text-slate-700 leading-relaxed">
                     "{audit.auditData?.hook_statement}"
                   </p>
                 </div>
 
-                <div className="text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-6">
+                <div className="text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-6 font-sans">
                   {audit.auditData?.reasoning_summary}
+                </div>
+
+                {/* Trust Ledger (Math Transparency Card) */}
+                <div className="mt-6 border-t border-slate-100 pt-5">
+                  <button 
+                    onClick={() => setShowTrustLedger(!showTrustLedger)}
+                    className="flex items-center justify-between w-full text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer select-none"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <ShieldCheck className="w-4 h-4 text-blue-600" />
+                      <span>{showTrustLedger ? "Hide Math & Weights" : "Show Math & Weights (Trust Ledger)"}</span>
+                    </div>
+                    <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest font-normal">Collapsible Formula</span>
+                  </button>
+                  
+                  {showTrustLedger && (
+                    <div className="mt-4 bg-slate-50/80 border border-slate-100 rounded-2xl p-6 space-y-4 animate-fade-in text-xs text-slate-600 leading-relaxed font-sans shadow-[inset_0_2px_8px_rgba(0,0,0,0.015)]">
+                      <div className="flex justify-between items-center border-b border-slate-200/40 pb-2.5">
+                        <span className="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">Value Calculation Formula</span>
+                        <span className="font-mono text-blue-600 text-[10px] font-bold">Paisa Vasool Score</span>
+                      </div>
+                      
+                      <div className="bg-white p-3 rounded-xl border border-slate-150 font-mono text-[9px] text-center text-slate-700 shadow-sm leading-relaxed">
+                        Value Score = Utility Score - Brand Surcharge (Paying for the Logo)
+                      </div>
+
+                      <div className="space-y-3 pt-2">
+                        <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-[0_2px_6px_rgba(0,0,0,0.01)]">
+                          <span className="font-semibold text-slate-700">Raw Utility (Quality & Engineering):</span>
+                          <span className="font-bold font-mono text-slate-800 text-[10px] bg-slate-50 border border-slate-200/50 px-2.5 py-1 rounded-md">
+                            {audit.vertical === 'electronics' ? "40% Processor + 25% Screen + 20% Memory + 15% Cooling" :
+                             audit.vertical === 'fashion' ? "50% Material + 30% Thickness + 20% Wash Strength" :
+                             "40% Safety + 30% Mileage + 30% Maintenance"}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-[0_2px_6px_rgba(0,0,0,0.01)]">
+                          <span className="font-semibold text-slate-700">Brand Premium (Logo Markup):</span>
+                          <span className="font-bold font-mono text-rose-600 text-[10px] bg-rose-50 border border-rose-100 px-2.5 py-1 rounded-md">
+                            -₹{(audit.auditData?.brand_tax || 0).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center border-t border-slate-200/60 pt-3 font-extrabold text-sm">
+                          <span className="text-slate-850 font-display">Final Value Score:</span>
+                          <span className="text-blue-600 font-mono bg-blue-50 border border-blue-100 px-3 py-1 rounded-lg">
+                            {audit.auditData?.value_for_money_score || 50}/100
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Interactive Calculator (2/5 Columns) */}
-              <div className="md:col-span-2 bg-white border border-slate-200/60 rounded-3xl p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)] flex flex-col justify-between">
+              <div className="md:col-span-2 bg-white border-[1.5px] border-slate-100 rounded-[2.5rem] p-8 shadow-[0_24px_80px_rgba(0,0,0,0.015)] flex flex-col justify-between hover:shadow-[0_32px_96px_rgba(0,0,0,0.03)] transition-all duration-400">
                 <div>
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
                       Value Estimator
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-blue-50 border border-blue-100 text-blue-600 font-mono text-[9px] font-bold uppercase">
-                      Personal Value Estimator
+                    <span className="px-2.5 py-1 rounded bg-blue-50 border border-blue-100/50 text-blue-600 font-mono text-[9px] font-bold uppercase tracking-wider select-none">
+                      Interactive Simulator
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-semibold text-slate-800 mb-1">Estimate your actual usage</h3>
-                  <p className="text-xs text-slate-400 mb-6">Adjust the inputs to estimate the value based on how much you will use it.</p>
+                  <h3 className="text-sm font-bold text-slate-800 mb-1">Estimate your actual usage</h3>
+                  <p className="text-xs text-slate-400 mb-6 leading-relaxed">Adjust the inputs to estimate the value based on how much you will use it.</p>
 
                   {/* Dynamic Sliders based on vertical */}
                   {audit.vertical === 'electronics' && (
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                       <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-600 mb-1.5">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700 mb-2">
                           <span>Target Lifespan</span>
-                          <span className="text-blue-600 font-mono">{usageYears} Years</span>
+                          <span className="text-blue-600 font-mono font-bold">{usageYears} Years</span>
                         </div>
                         <input 
                           type="range" 
@@ -795,13 +900,13 @@ export default function App() {
                           max="7" 
                           value={usageYears} 
                           onChange={(e) => setUsageYears(parseInt(e.target.value))}
-                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all"
+                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all duration-300"
                         />
                       </div>
                       <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-600 mb-1.5">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700 mb-2">
                           <span>Usage Frequency</span>
-                          <span className="text-blue-600 font-mono">{useFrequency} Days / Week</span>
+                          <span className="text-blue-600 font-mono font-bold">{useFrequency} Days / Week</span>
                         </div>
                         <input 
                           type="range" 
@@ -809,18 +914,18 @@ export default function App() {
                           max="7" 
                           value={useFrequency} 
                           onChange={(e) => setUseFrequency(parseInt(e.target.value))}
-                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all"
+                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all duration-300"
                         />
                       </div>
                     </div>
                   )}
 
                   {audit.vertical === 'fashion' && (
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                       <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-600 mb-1.5">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700 mb-2">
                           <span>Wash Lifespan Limit</span>
-                          <span className="text-blue-600 font-mono">{expectedWashes} Wash Cycles</span>
+                          <span className="text-blue-600 font-mono font-bold">{expectedWashes} Wash Cycles</span>
                         </div>
                         <input 
                           type="range" 
@@ -829,18 +934,18 @@ export default function App() {
                           step="10"
                           value={expectedWashes} 
                           onChange={(e) => setExpectedWashes(parseInt(e.target.value))}
-                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all"
+                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all duration-300"
                         />
                       </div>
                     </div>
                   )}
 
                   {audit.vertical === 'automotive' && (
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                       <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-600 mb-1.5">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700 mb-2">
                           <span>Distance Intended</span>
-                          <span className="text-blue-600 font-mono">{(intendedKM).toLocaleString()} KM</span>
+                          <span className="text-blue-600 font-mono font-bold">{(intendedKM).toLocaleString()} KM</span>
                         </div>
                         <input 
                           type="range" 
@@ -849,13 +954,13 @@ export default function App() {
                           step="5000"
                           value={intendedKM} 
                           onChange={(e) => setIntendedKM(parseInt(e.target.value))}
-                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all"
+                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all duration-300"
                         />
                       </div>
                       <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-600 mb-1.5">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700 mb-2">
                           <span>Ownership Period</span>
-                          <span className="text-blue-600 font-mono">{usageYears} Years</span>
+                          <span className="text-blue-600 font-mono font-bold">{usageYears} Years</span>
                         </div>
                         <input 
                           type="range" 
@@ -863,7 +968,7 @@ export default function App() {
                           max="5" 
                           value={usageYears} 
                           onChange={(e) => setUsageYears(parseInt(e.target.value))}
-                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all"
+                          className="w-full h-1.5 bg-slate-100 accent-blue-600 rounded-lg cursor-pointer transition-all duration-300"
                         />
                       </div>
                     </div>
@@ -872,48 +977,47 @@ export default function App() {
 
                 {/* Calculation Output Panel */}
                 <div className="mt-8 pt-6 border-t border-slate-100 space-y-4">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <span className="text-[10px] uppercase font-mono text-slate-400 tracking-wider">Estimated Cost / {calc.unit}</span>
-                      <p className="text-2xl font-bold font-mono text-slate-800 mt-0.5">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4.5 flex flex-col justify-center">
+                      <span className="text-[9px] uppercase font-mono text-slate-400 tracking-wider font-semibold block">Cost / {calc.unit}</span>
+                      <p className="text-xl font-bold font-mono text-slate-800 mt-1">
                         ₹{calc.costPerUse.toFixed(2)}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-[10px] uppercase font-mono text-slate-400 tracking-wider">Adjusted Score</span>
-                      <p className="text-2xl font-bold font-mono text-blue-600 mt-0.5">
-                        {calc.adjustedScore}<span className="text-xs text-slate-400">/100</span>
+                    
+                    <div className="bg-blue-50/30 border border-blue-100/50 rounded-2xl p-4.5 flex flex-col justify-center">
+                      <span className="text-[9px] uppercase font-mono text-slate-400 tracking-wider font-semibold block">Adjusted Score</span>
+                      <p className="text-xl font-bold font-mono text-blue-600 mt-1">
+                        {calc.adjustedScore}<span className="text-xs text-slate-400 font-sans font-medium">/100</span>
                       </p>
                     </div>
                   </div>
                   
-                  <div className="bg-slate-50 border border-slate-200/50 rounded-2xl p-4 text-xs text-slate-600 leading-relaxed font-sans">
+                  <div className="bg-slate-50 border border-slate-200/50 rounded-2xl p-4 text-xs text-slate-600 leading-relaxed font-sans shadow-[inset_0_2px_6px_rgba(0,0,0,0.015)]">
                     {calc.feedback}
                   </div>
                 </div>
               </div>
-
             </div>
 
             {/* Marketing vs Reality Dashboard */}
-            <div className="bg-white border border-slate-200/60 rounded-3xl p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)] space-y-6">
+            <div className="bg-white border-[1.5px] border-slate-100 rounded-[2.5rem] p-8 shadow-[0_24px_80px_rgba(0,0,0,0.015)] space-y-6 hover:shadow-[0_32px_96px_rgba(0,0,0,0.03)] transition-all duration-400">
               <div className="border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-semibold text-slate-900 tracking-tight font-display">
                   Ad Claims vs. Real Facts
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">Comparing advertised claims with actual user experiences.</p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6">
                 
                 {/* Jargon Slayer Board (3/5 Columns) */}
-                <div className="md:col-span-3 space-y-4">
+                <div className="md:col-span-3 space-y-5">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
+                    <span className="text-[10px] font-mono tracking-widest text-slate-400 font-extrabold uppercase">
                       Marketing Claims Strikethrough
                     </span>
-                    <span className="text-[9px] px-2 py-0.5 bg-rose-50 border border-rose-100 text-rose-600 rounded font-mono font-bold uppercase">
-                      Click to see the truth
+                    <span className="text-[9px] px-2.5 py-1 bg-rose-50 border border-rose-100 text-rose-600 rounded-full font-mono font-bold uppercase tracking-wider select-none">
+                      Click to Slay Hype
                     </span>
                   </div>
 
@@ -927,13 +1031,13 @@ export default function App() {
                             toggleSlashedBuzzword(item.buzzword);
                             setActiveBuzzwordDetail(item);
                           }}
-                          className={`text-xs px-4.5 py-2.5 rounded-full border transition-all duration-300 flex items-center space-x-2 cursor-pointer ${
+                          className={`text-xs px-4 py-2.5 rounded-full border transition-all duration-300 flex items-center space-x-2 cursor-pointer select-none font-medium ${
                             isSlashed 
-                              ? 'bg-rose-50 border-rose-200 text-rose-600 line-through decoration-rose-500 decoration-2' 
+                              ? 'bg-rose-50 border-rose-200 text-rose-700 line-through decoration-rose-500 decoration-2 shadow-sm' 
                               : 'bg-white border-slate-200 text-slate-700 hover:border-slate-350 shadow-[0_2px_6px_rgba(0,0,0,0.01)] hover:-translate-y-0.5'
                           }`}
                         >
-                          {isSlashed && <Check className="w-3 h-3 text-rose-500 shrink-0" />}
+                          {isSlashed && <Check className="w-3.5 h-3.5 text-rose-600 shrink-0" />}
                           <span>{item.buzzword}</span>
                         </button>
                       );
@@ -941,43 +1045,66 @@ export default function App() {
                   </div>
 
                   {activeBuzzwordDetail && (
-                    <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-5 space-y-2 animate-fade-in">
+                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5.5 space-y-3 animate-fade-in shadow-[inset_0_2px_6px_rgba(0,0,0,0.015)]">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-slate-800">{activeBuzzwordDetail.buzzword}</span>
-                        <span className={`text-[9px] px-2 py-0.5 rounded font-mono font-semibold ${
+                        <span className={`text-[9px] px-2.5 py-0.5 rounded-full font-mono font-bold select-none ${
                           slashedBuzzwords.includes(activeBuzzwordDetail.buzzword) 
-                            ? 'bg-rose-100 text-rose-700' 
-                            : 'bg-blue-100 text-blue-700'
+                            ? 'bg-rose-100 text-rose-750' 
+                            : 'bg-blue-100 text-blue-750'
                         }`}>
                           {slashedBuzzwords.includes(activeBuzzwordDetail.buzzword) ? 'HYPED' : 'CLAIMED'}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed font-sans pt-1">
+                      <p className="text-xs text-slate-650 leading-relaxed font-sans pt-0.5">
                         {activeBuzzwordDetail.honest_truth}
                       </p>
                     </div>
                   )}
                 </div>
 
-                {/* Verified Buyer Ratings Card (2/5 Columns) */}
-                <div className="md:col-span-2 bg-slate-50/70 border border-slate-200/50 rounded-2xl p-6 flex flex-col justify-between">
+                {/* Community Trust Dashboard (2/5 Columns) */}
+                <div className="md:col-span-2 bg-slate-50/80 border border-slate-100 rounded-[2rem] p-6 flex flex-col justify-between space-y-4 shadow-[0_12px_40px_rgba(0,0,0,0.01)]">
                   <div>
                     <span className="text-[10px] font-mono tracking-widest text-slate-400 font-bold uppercase">
-                      Verified Buyer Summary
+                      Community Trust & Fake-Filter
                     </span>
                     
-                    <div className="flex items-baseline space-x-2 mt-4">
-                      <span className="text-4xl font-extrabold font-mono text-slate-800">
-                        {realUser.average_rating.toFixed(1)}
-                      </span>
-                      <span className="text-sm text-slate-400 font-sans">/ 5.0 Rating</span>
+                    {/* Comparative Ratings */}
+                    <div className="grid grid-cols-2 gap-4 mt-4 border-b border-slate-200/40 pb-4">
+                      <div className="bg-white/80 p-3 rounded-2xl border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+                        <span className="text-[9px] font-mono text-slate-400 uppercase block font-semibold">Market Rating</span>
+                        <div className="flex items-baseline space-x-1 mt-1">
+                          <span className="text-xl font-bold font-mono text-slate-400 line-through">
+                            {realUser.average_rating.toFixed(1)}
+                          </span>
+                          <span className="text-[10px] text-slate-400">/5</span>
+                        </div>
+                        <span className="text-[8px] font-bold text-rose-600 bg-rose-50 border border-rose-100/50 px-2 py-0.5 rounded-md block w-max mt-1.5 font-mono uppercase tracking-wider">
+                          Unfiltered
+                        </span>
+                      </div>
+                      
+                      <div className="bg-white/80 p-3 rounded-2xl border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+                        <span className="text-[9px] font-mono text-blue-600 uppercase block font-semibold">Vetto Adjusted</span>
+                        <div className="flex items-baseline space-x-1 mt-1">
+                          <span className="text-2xl font-black font-mono text-emerald-600">
+                            {Math.min(realUser.average_rating, parseFloat((realUser.average_rating * (realUser.satisfaction_percentage / 100) + 0.3).toFixed(1)))}
+                          </span>
+                          <span className="text-xs text-slate-500 font-bold">/5</span>
+                        </div>
+                        <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100/50 px-2 py-0.5 rounded-md block w-max mt-1.5 font-mono uppercase tracking-wider">
+                          Fakes Cleaned
+                        </span>
+                      </div>
                     </div>
 
                     {/* Star Rating Display */}
-                    <div className="flex items-center space-x-1 mt-2">
+                    <div className="flex items-center space-x-1 mt-4.5">
                       {[1, 2, 3, 4, 5].map((starValue) => {
-                        const isFilled = starValue <= Math.floor(realUser.average_rating);
-                        const isHalf = !isFilled && (starValue - 0.5 <= realUser.average_rating);
+                        const trueScore = Math.min(realUser.average_rating, parseFloat((realUser.average_rating * (realUser.satisfaction_percentage / 100) + 0.3).toFixed(1)));
+                        const isFilled = starValue <= Math.floor(trueScore);
+                        const isHalf = !isFilled && (starValue - 0.5 <= trueScore);
                         return (
                           <svg 
                             key={starValue} 
@@ -990,15 +1117,15 @@ export default function App() {
                         );
                       })}
                       <span className="text-[10px] text-slate-400 font-mono ml-2">
-                        ({realUser.total_reviews.toLocaleString()} verified buyers)
+                        ({realUser.total_reviews.toLocaleString()} real buyers)
                       </span>
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-slate-200/60 space-y-4">
-                    <div className="space-y-1">
+                  <div className="pt-4 border-t border-slate-200/50 space-y-3">
+                    <div className="space-y-1.5">
                       <div className="flex justify-between text-xs font-semibold text-slate-700">
-                        <span>User Satisfaction</span>
+                        <span>Genuine Reviews Ratio</span>
                         <span className="text-blue-600 font-mono">{realUser.satisfaction_percentage}%</span>
                       </div>
                       <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
@@ -1009,60 +1136,57 @@ export default function App() {
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-500 leading-relaxed italic">
+                    <p className="text-[11px] text-slate-500 leading-relaxed italic bg-white p-3.5 rounded-2xl border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.01)] font-sans">
                       "{realUser.feedback_summary}"
                     </p>
                   </div>
                 </div>
-
               </div>
             </div>
 
-            {/* Live Public Sentiment Hub (Reddit, YouTube, LinkedIn, X) */}
             <div className="space-y-4">
               <h3 className="text-xs font-mono text-slate-400 uppercase tracking-widest flex items-center space-x-2">
                 <Activity className="w-4 h-4 text-blue-600" />
                 <span>Live Public Sentiment Tracker</span>
               </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
                 
                 {/* Reddit Sentiment */}
-                <div className="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4 hover:border-orange-500/20 transition-all duration-300">
+                <div className="bg-white border-[1.5px] border-slate-100 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.01)] flex flex-col justify-between space-y-4 hover:border-orange-500/20 hover:shadow-[0_16px_48px_rgba(255,87,34,0.04)] transition-all duration-400 hover:-translate-y-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-orange-600">
                       {/* Reddit Icon SVG */}
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M24 11.5c0-1.65-1.35-3-3-3-.96 0-1.86.48-2.42 1.24-1.64-1-3.85-1.64-6.23-1.72l1.3-4.14 4.22.9c.04.93.8 1.67 1.75 1.67 1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8c-.9 0-1.64.66-1.77 1.5l-4.7-1c-.22-.04-.45.08-.5.3l-1.5 4.8c-2.46.06-4.75.7-6.42 1.74-.56-.74-1.46-1.22-2.4-1.22-1.65 0-3 1.35-3 3 0 1.2.7 2.22 1.7 2.73-.08.35-.12.72-.12 1.1 0 3.97 4.7 7.2 10.5 7.2 5.77 0 10.5-3.23 10.5-7.2 0-.37-.04-.74-.13-1.1 1-.5 1.7-1.53 1.7-2.73zM6 14.5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm10.83 4.26c-1.32 1.32-3.82 1.4-4.83 1.4s-3.5-.08-4.83-1.4c-.16-.16-.16-.42 0-.58.16-.16.42-.16.58 0 1.14 1.14 3.23 1.22 4.25 1.22s3.1-.08 4.25-1.22c.15-.16.4-.16.56 0 .17.16.17.43.02.58zm-.83-2.26c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
                       </svg>
-                      <span className="font-semibold text-slate-800 text-sm">Reddit</span>
+                      <span className="font-bold text-slate-800 text-sm font-display">Reddit</span>
                     </div>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold border rounded uppercase font-mono ${getSentimentBadgeColor(sentiment.reddit.sentiment_label)}`}>
+                    <span className={`px-2.5 py-0.5 text-[8px] font-bold border rounded-full uppercase font-mono tracking-wider select-none ${getSentimentBadgeColor(sentiment.reddit.sentiment_label)}`}>
                       {sentiment.reddit.sentiment_label}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-650 leading-relaxed font-sans flex-1">
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans flex-1">
                     {sentiment.reddit.consensus}
                   </p>
 
-                  <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400 font-mono">
-                    <span>VOLUME</span>
-                    <span className="font-bold text-slate-600">{sentiment.reddit.discussion_volume}</span>
+                  <div className="pt-2.5 border-t border-slate-100 flex justify-between items-center text-[9px] text-slate-400 font-mono font-semibold">
+                    <span>DISCUSSION VOLUME</span>
+                    <span className="font-bold text-slate-600 uppercase bg-slate-50 border border-slate-200/50 px-2 py-0.5 rounded">{sentiment.reddit.discussion_volume}</span>
                   </div>
                 </div>
 
                 {/* YouTube Sentiment */}
-                <div className="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4 hover:border-red-500/20 transition-all duration-300">
+                <div className="bg-white border-[1.5px] border-slate-100 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.01)] flex flex-col justify-between space-y-4 hover:border-red-500/20 hover:shadow-[0_16px_48px_rgba(239,68,68,0.04)] transition-all duration-400 hover:-translate-y-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-red-650">
                       {/* YouTube Icon SVG */}
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.108C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.555A3.002 3.002 0 00.5 6.163C0 8.024 0 12 0 12s0 3.976.5 5.837a3.003 3.003 0 002.11 2.108c1.858.555 9.388.555 9.388.555s7.53 0 9.388-.555a3.002 3.002 0 002.11-2.108c.5-1.861.5-5.837.5-5.837s0-3.976-.5-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                       </svg>
-                      <span className="font-semibold text-slate-800 text-sm">YouTube</span>
+                      <span className="font-bold text-slate-800 text-sm font-display">YouTube</span>
                     </div>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold border rounded uppercase font-mono ${getSentimentBadgeColor(sentiment.youtube.sentiment_label)}`}>
+                    <span className={`px-2.5 py-0.5 text-[8px] font-bold border rounded-full uppercase font-mono tracking-wider select-none ${getSentimentBadgeColor(sentiment.youtube.sentiment_label)}`}>
                       {sentiment.youtube.sentiment_label}
                     </span>
                   </div>
@@ -1071,23 +1195,23 @@ export default function App() {
                     {sentiment.youtube.consensus}
                   </p>
 
-                  <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400 font-mono">
-                    <span>REVIEWS</span>
-                    <span className="font-bold text-slate-600">{sentiment.youtube.video_reviews_analyzed} Channels</span>
+                  <div className="pt-2.5 border-t border-slate-100 flex justify-between items-center text-[9px] text-slate-400 font-mono font-semibold">
+                    <span>TEARDOWNS</span>
+                    <span className="font-bold text-slate-650 bg-slate-50 border border-slate-200/50 px-2 py-0.5 rounded">{sentiment.youtube.video_reviews_analyzed} Channels</span>
                   </div>
                 </div>
 
                 {/* LinkedIn Sentiment */}
-                <div className="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4 hover:border-blue-500/20 transition-all duration-300">
+                <div className="bg-white border-[1.5px] border-slate-100 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.01)] flex flex-col justify-between space-y-4 hover:border-blue-500/20 hover:shadow-[0_16px_48px_rgba(59,130,246,0.04)] transition-all duration-400 hover:-translate-y-1">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-blue-700">
+                    <div className="flex items-center space-x-2 text-blue-750">
                       {/* LinkedIn Icon SVG */}
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M22.23 0H1.77C.8 0 0 .77 0 1.72v20.56C0 23.23.8 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.2 0 22.23 0zM7.12 20.45H3.56V9H7.12v11.45zM5.34 7.43c-1.14 0-2.06-.92-2.06-2.06 0-1.14.92-2.06 2.06-2.06 1.14 0 2.06.92 2.06 2.06 0 1.14-.92 2.06-2.06 2.06zm15.11 13.02h-3.56v-5.6c0-1.34-.03-3.05-1.86-3.05-1.86 0-2.14 1.45-2.14 2.95v5.7h-3.56V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29z"/>
                       </svg>
-                      <span className="font-semibold text-slate-800 text-sm">LinkedIn</span>
+                      <span className="font-bold text-slate-800 text-sm font-display">LinkedIn</span>
                     </div>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold border rounded uppercase font-mono ${getSentimentBadgeColor(sentiment.linkedin.sentiment_label)}`}>
+                    <span className={`px-2.5 py-0.5 text-[8px] font-bold border rounded-full uppercase font-mono tracking-wider select-none ${getSentimentBadgeColor(sentiment.linkedin.sentiment_label)}`}>
                       {sentiment.linkedin.sentiment_label}
                     </span>
                   </div>
@@ -1096,35 +1220,39 @@ export default function App() {
                     {sentiment.linkedin.consensus}
                   </p>
 
-                  <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400 font-mono">
-                    <span>RELEVANCE</span>
-                    <span className="font-bold text-slate-600 truncate max-w-[100px] text-right">{sentiment.linkedin.professional_relevance}</span>
+                  <div className="pt-2.5 border-t border-slate-100 flex justify-between items-center text-[9px] text-slate-400 font-mono font-semibold">
+                    <span>WORKSPACE RATIO</span>
+                    <span className="font-bold text-slate-650 truncate max-w-[100px] text-right bg-slate-50 border border-slate-200/50 px-2 py-0.5 rounded">{sentiment.linkedin.professional_relevance}</span>
                   </div>
                 </div>
 
                 {/* X Sentiment */}
-                <div className="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4 hover:border-slate-800/20 transition-all duration-300">
+                <div className="bg-white border-[1.5px] border-slate-100 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.01)] flex flex-col justify-between space-y-4 hover:border-slate-800/20 hover:shadow-[0_16px_48px_rgba(0,0,0,0.04)] transition-all duration-400 hover:-translate-y-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-slate-900">
                       {/* X Icon SVG */}
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                       </svg>
-                      <span className="font-semibold text-slate-800 text-sm">X Platform</span>
+                      <span className="font-bold text-slate-800 text-sm font-display">X Platform</span>
                     </div>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold border rounded uppercase font-mono ${getSentimentBadgeColor(sentiment.x_platform.sentiment_label)}`}>
+                    <span className={`px-2.5 py-0.5 text-[8px] font-bold border rounded-full uppercase font-mono tracking-wider select-none ${getSentimentBadgeColor(sentiment.x_platform.sentiment_label)}`}>
                       {sentiment.x_platform.sentiment_label}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-650 leading-relaxed font-sans flex-1">
+                  <p className="text-xs text-slate-655 leading-relaxed font-sans flex-1">
                     {sentiment.x_platform.consensus}
                   </p>
 
-                  <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400 font-mono">
-                    <span>WARNINGS</span>
-                    <span className={`font-bold ${sentiment.x_platform.viral_complaints_noted ? 'text-rose-600' : 'text-slate-600'}`}>
-                      {sentiment.x_platform.viral_complaints_noted ? 'Active Alerts' : 'No Alerts'}
+                  <div className="pt-2.5 border-t border-slate-100 flex justify-between items-center text-[9px] text-slate-400 font-mono font-semibold">
+                    <span>ALERTS</span>
+                    <span className={`font-bold uppercase px-2 py-0.5 rounded border ${
+                      sentiment.x_platform.viral_complaints_noted 
+                        ? 'text-rose-600 bg-rose-50 border-rose-100' 
+                        : 'text-slate-500 bg-slate-50 border-slate-200/50'
+                    }`}>
+                      {sentiment.x_platform.viral_complaints_noted ? 'Active Warning' : 'No Warnings'}
                     </span>
                   </div>
                 </div>
@@ -1203,7 +1331,7 @@ export default function App() {
                       <p className="text-[10px] text-slate-400 mt-0.5">Thickness score (higher is heavier)</p>
                     </div>
                     <span className="text-2xl font-bold font-mono text-slate-800">
-                      {audit.auditData?.gsm_weight || 0} <span className="text-xs text-slate-400 font-sans">GSM</span>
+                      {audit.auditData?.gsm_weight || 0} <span className="text-xs text-slate-400 font-sans"><SpecTooltip term="GSM">GSM</SpecTooltip></span>
                     </span>
                   </div>
 
@@ -1225,13 +1353,13 @@ export default function App() {
                       <p className="text-[10px] text-slate-400 mt-0.5">Safety rating and crash test score</p>
                     </div>
                     <span className="text-xs font-bold text-slate-700 bg-white px-3 py-1.5 rounded border border-slate-200 font-mono shadow-sm">
-                      {audit.auditData?.safety_rating_ncap || "Not Evaluated"}
+                      <SpecTooltip term="NCAP">{audit.auditData?.safety_rating_ncap || "Not Evaluated"}</SpecTooltip>
                     </span>
                   </div>
 
                   <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-150 h-max self-center">
                     <div>
-                      <h4 className="text-xs text-slate-500 font-medium">5-Year Estimated Running Cost</h4>
+                      <h4 className="text-xs text-slate-500 font-medium"><SpecTooltip term="TCO">5-Year Estimated Running Cost</SpecTooltip></h4>
                       <p className="text-[10px] text-slate-400 mt-0.5">Total spent on fuel, service, and insurance</p>
                     </div>
                     <span className="text-lg font-bold font-mono text-slate-800">

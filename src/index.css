@@ -128,4 +128,24 @@ input, textarea, button {
     color: #94A3B8 !important;
     transition: all 0.5s ease-in-out;
   }
+
+  /* Premium border & card visual helpers */
+  .premium-glow-hover {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .premium-glow-hover:hover {
+    box-shadow: 0 20px 48px rgba(0, 113, 227, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .premium-card-border {
+    border: 1.5px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .premium-text-gradient-indigo {
+    background: linear-gradient(135deg, #1D1D1F 0%, #0071E3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }

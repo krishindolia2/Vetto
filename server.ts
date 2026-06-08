@@ -1,10 +1,12 @@
 import express from "express";
-import path from "path";
+import cors from "cors";
+import dotenv from "dotenv";
 import fs from "fs";
+import path from "path";
+import pg from "pg";
 import os from "os";
 import crypto from "crypto";
 import { createServer as createViteServer } from "vite";
-import dotenv from "dotenv";
 import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { initializeApp as initializeFirebase } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp, runTransaction, increment } from "firebase/firestore";
@@ -195,6 +197,363 @@ if (fs.existsSync(CONFIG_PATH)) {
   console.warn("[Launch Guard] firebase-applet-config.json not found on backend. Persistence disabled.");
 }
 
+// Initialize PostgreSQL Pool (Phase 2 Upgrade)
+let pgPool: pg.Pool | null = null;
+const dbUrl = process.env.DATABASE_URL || process.env.DATABASE_URI;
+if (dbUrl) {
+  try {
+    pgPool = new pg.Pool({
+      connectionString: dbUrl,
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false
+    });
+    console.log("[Launch Guard] PostgreSQL Pool initialized successfully.");
+    initPgTables();
+  } catch (err) {
+    console.error("[Launch Guard] Failed to initialize PostgreSQL Pool:", err);
+  }
+} else {
+  console.warn("[Launch Guard] DATABASE_URL not found on backend. PostgreSQL caching disabled.");
+}
+
+async function initPgTables() {
+  if (!pgPool) return;
+  try {
+    const schemaPath = path.join(process.cwd(), "schema.sql");
+    if (fs.existsSync(schemaPath)) {
+      const schemaSql = fs.readFileSync(schemaPath, "utf8");
+      await pgPool.query(schemaSql);
+      console.log("[Launch Guard] PostgreSQL database schemas successfully synchronized.");
+    }
+  } catch (err) {
+    console.error("[Launch Guard] Failed to run schema.sql migrations:", err);
+  }
+}
+
+async function saveAuditToPg(userQuery: string, data: any) {
+  if (!pgPool) return;
+  try {
+    const { vertical, queryType, resolvedProduct, auditData } = data;
+    if (!auditData) return;
+
+    const client = await pgPool.connect();
+    try {
+      await client.query("BEGIN");
+
+      // 1. Insert into audits
+      const auditRes = await client.query(
+        `INSERT INTO audits (user_query, resolved_product, category, recommendation, value_for_money_score, brand_markup_inr, hook_statement, reasoning_summary, extra_costs_to_watch)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         ON CONFLICT (user_query) DO UPDATE 
+         SET resolved_product = EXCLUDED.resolved_product,
+             category = EXCLUDED.category,
+             recommendation = EXCLUDED.recommendation,
+             value_for_money_score = EXCLUDED.value_for_money_score,
+             brand_markup_inr = EXCLUDED.brand_markup_inr,
+             hook_statement = EXCLUDED.hook_statement,
+             reasoning_summary = EXCLUDED.reasoning_summary,
+             extra_costs_to_watch = EXCLUDED.extra_costs_to_watch,
+             updated_at = NOW()
+         RETURNING id`,
+        [
+          userQuery,
+          resolvedProduct || userQuery,
+          vertical,
+          auditData.recommendation || "BUY",
+          auditData.value_for_money_score || 50,
+          auditData.brand_tax || 0,
+          auditData.hook_statement || "",
+          auditData.reasoning_summary || "",
+          auditData.extra_costs_to_watch || ""
+        ]
+      );
+      const auditId = auditRes.rows[0].id;
+
+      // 2. Insert into category-specific audits
+      await client.query("DELETE FROM electronics_audits WHERE audit_id = $1", [auditId]);
+      await client.query("DELETE FROM fashion_audits WHERE audit_id = $1", [auditId]);
+      await client.query("DELETE FROM automotive_audits WHERE audit_id = $1", [auditId]);
+
+      if (vertical === "electronics") {
+        await client.query(
+          `INSERT INTO electronics_audits (audit_id, bottleneck_warning, heat_slowdown_index, longevity_rating_years)
+           VALUES ($1, $2, $3, $4)`,
+          [
+            auditId,
+            auditData.bottleneck_warning || "",
+            auditData.thermal_throttling_index || 0,
+            auditData.longevity_rating_years || 5
+          ]
+        );
+      } else if (vertical === "fashion") {
+        await client.query(
+          `INSERT INTO fashion_audits (audit_id, material_honesty_score, fabric_thickness_gsm, wash_durability, sizing_alert)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [
+            auditId,
+            auditData.material_honesty_score || 100,
+            auditData.gsm_weight || 180,
+            auditData.wash_durability || "",
+            auditData.sizing_alert || ""
+          ]
+        );
+      } else if (vertical === "automotive") {
+        await client.query(
+          `INSERT INTO automotive_audits (audit_id, running_cost_5yr_inr, crash_safety_rating)
+           VALUES ($1, $2, $3)`,
+          [
+            auditId,
+            auditData.total_cost_of_ownership_5yr || 0,
+            auditData.safety_rating_ncap || "Not Evaluated"
+          ]
+        );
+
+        await client.query("DELETE FROM resale_retention_curves WHERE audit_id = $1", [auditId]);
+        if (Array.isArray(auditData.resale_value_retention_curve)) {
+          for (const point of auditData.resale_value_retention_curve) {
+            await client.query(
+              `INSERT INTO resale_retention_curves (audit_id, year, retention_percentage)
+               VALUES ($1, $2, $3)`,
+              [auditId, point.year || 1, point.retention_percentage || 50]
+            );
+          }
+        }
+      }
+
+      // 3. Insert into jargon demystifier
+      await client.query("DELETE FROM jargon_demystifier WHERE audit_id = $1", [auditId]);
+      if (Array.isArray(auditData.jargon_demystifier)) {
+        for (const item of auditData.jargon_demystifier) {
+          await client.query(
+            `INSERT INTO jargon_demystifier (audit_id, buzzword, honest_truth)
+             VALUES ($1, $2, $3)`,
+            [auditId, item.buzzword || item.term || "", item.honest_truth || ""]
+          );
+        }
+      }
+
+      // 4. Insert into community sentiment
+      await client.query("DELETE FROM community_sentiment WHERE audit_id = $1", [auditId]);
+      const reddit = auditData.social_sentiment?.reddit || {};
+      const youtube = auditData.social_sentiment?.youtube || {};
+      const x = auditData.social_sentiment?.x_platform || {};
+      await client.query(
+        `INSERT INTO community_sentiment (audit_id, reddit_consensus, reddit_sentiment_label, youtube_consensus, youtube_sentiment_label, x_consensus, x_sentiment_label)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          auditId,
+          reddit.consensus || "",
+          reddit.sentiment_label || "Mixed",
+          youtube.consensus || "",
+          youtube.sentiment_label || "Mixed",
+          x.consensus || "",
+          x.sentiment_label || "Mixed"
+        ]
+      );
+
+      // 5. Insert user metrics
+      await client.query("DELETE FROM user_metrics WHERE audit_id = $1", [auditId]);
+      const uMetrics = auditData.real_user_metrics || {};
+      await client.query(
+        `INSERT INTO user_metrics (audit_id, average_rating, total_reviews, satisfaction_percentage, feedback_summary)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [
+          auditId,
+          uMetrics.average_rating || 4.0,
+          uMetrics.total_reviews || 100,
+          uMetrics.satisfaction_percentage || 80,
+          uMetrics.feedback_summary || ""
+        ]
+      );
+
+      // 6. Insert procurement deals
+      await client.query("DELETE FROM procurement_deals WHERE audit_id = $1", [auditId]);
+      const links = auditData.price_integrity?.procurementLinks || auditData.price_integrity?.procurement_links || [];
+      if (Array.isArray(links)) {
+        for (const link of links) {
+          await client.query(
+            `INSERT INTO procurement_deals (audit_id, platform, price_inr, deal_url, stock_status, is_best_deal)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [
+              auditId,
+              link.platform || "",
+              parseFloat(String(link.price || "0").replace(/[^\d.]/g, "")) || 0,
+              link.url || "",
+              link.stockStatus || link.stock_status || "In Stock",
+              !!link.isBestDeal
+            ]
+          );
+        }
+      }
+
+      // 7. Insert price history
+      await client.query("DELETE FROM price_history_nodes WHERE audit_id = $1", [auditId]);
+      const hist = auditData.price_integrity?.priceHistory || auditData.price_integrity?.price_history || [];
+      if (Array.isArray(hist)) {
+        for (let i = 0; i < hist.length; i++) {
+          const node = hist[i];
+          await client.query(
+            `INSERT INTO price_history_nodes (audit_id, month_name, price_inr, node_order)
+             VALUES ($1, $2, $3, $4)`,
+            [
+              auditId,
+              node.month || "",
+              node.price || 0,
+              i
+            ]
+          );
+        }
+      }
+
+      await client.query("COMMIT");
+      console.log(`[Cache Engine] Successfully stored audit in PostgreSQL for: ${userQuery}`);
+    } catch (txErr) {
+      await client.query("ROLLBACK");
+      throw txErr;
+    } finally {
+      client.release();
+    }
+  } catch (err: any) {
+    console.error("[Cache Engine] PostgreSQL write failed:", err.message);
+  }
+}
+
+async function fetchAuditFromPg(userQuery: string): Promise<any | null> {
+  if (!pgPool) return null;
+  try {
+    const auditRes = await pgPool.query("SELECT * FROM audits WHERE user_query = $1", [userQuery]);
+    if (auditRes.rows.length === 0) return null;
+
+    const auditRow = auditRes.rows[0];
+    const auditId = auditRow.id;
+
+    // Fetch category-specific
+    let categoryData: any = {};
+    if (auditRow.category === "electronics") {
+      const elRes = await pgPool.query("SELECT * FROM electronics_audits WHERE audit_id = $1", [auditId]);
+      if (elRes.rows.length > 0) {
+        const row = elRes.rows[0];
+        categoryData = {
+          bottleneck_warning: row.bottleneck_warning,
+          thermal_throttling_index: row.heat_slowdown_index,
+          longevity_rating_years: row.longevity_rating_years
+        };
+      }
+    } else if (auditRow.category === "fashion") {
+      const faRes = await pgPool.query("SELECT * FROM fashion_audits WHERE audit_id = $1", [auditId]);
+      if (faRes.rows.length > 0) {
+        const row = faRes.rows[0];
+        categoryData = {
+          material_honesty_score: row.material_honesty_score,
+          gsm_weight: row.fabric_thickness_gsm,
+          wash_durability: row.wash_durability,
+          sizing_alert: row.sizing_alert
+        };
+      }
+    } else if (auditRow.category === "automotive") {
+      const auRes = await pgPool.query("SELECT * FROM automotive_audits WHERE audit_id = $1", [auditId]);
+      const retRes = await pgPool.query("SELECT * FROM resale_retention_curves WHERE audit_id = $1 ORDER BY year", [auditId]);
+      if (auRes.rows.length > 0) {
+        categoryData = {
+          total_cost_of_ownership_5yr: parseFloat(auRes.rows[0].running_cost_5yr_inr),
+          safety_rating_ncap: auRes.rows[0].crash_safety_rating,
+          resale_value_retention_curve: retRes.rows.map((r: any) => ({
+            year: r.year,
+            retention_percentage: r.retention_percentage
+          }))
+        };
+      }
+    }
+
+    // Fetch jargon demystifier
+    const jdRes = await pgPool.query("SELECT * FROM jargon_demystifier WHERE audit_id = $1", [auditId]);
+    const jargon_demystifier = jdRes.rows.map((r: any) => ({
+      buzzword: r.buzzword,
+      honest_truth: r.honest_truth
+    }));
+
+    // Fetch community sentiment
+    const csRes = await pgPool.query("SELECT * FROM community_sentiment WHERE audit_id = $1", [auditId]);
+    let social_sentiment = {};
+    if (csRes.rows.length > 0) {
+      const row = csRes.rows[0];
+      social_sentiment = {
+        reddit: { consensus: row.reddit_consensus, sentiment_label: row.reddit_sentiment_label, discussion_volume: "Moderate" },
+        youtube: { consensus: row.youtube_consensus, sentiment_label: row.youtube_sentiment_label, video_reviews_analyzed: 5 },
+        linkedin: { consensus: "Professional standard utility.", sentiment_label: "Mixed", professional_relevance: "Standard utility" },
+        x_platform: { consensus: row.x_consensus, sentiment_label: row.x_sentiment_label, viral_complaints_noted: false }
+      };
+    }
+
+    // Fetch user metrics
+    const umRes = await pgPool.query("SELECT * FROM user_metrics WHERE audit_id = $1", [auditId]);
+    let real_user_metrics = {};
+    if (umRes.rows.length > 0) {
+      const row = umRes.rows[0];
+      real_user_metrics = {
+        average_rating: parseFloat(row.average_rating),
+        total_reviews: row.total_reviews,
+        satisfaction_percentage: row.satisfaction_percentage,
+        feedback_summary: row.feedback_summary
+      };
+    }
+
+    // Fetch procurement deals
+    const pdRes = await pgPool.query("SELECT * FROM procurement_deals WHERE audit_id = $1", [auditId]);
+    const procurement_links = pdRes.rows.map((r: any) => ({
+      platform: r.platform,
+      price: `₹${parseFloat(r.price_inr).toLocaleString("en-IN")}`,
+      url: r.deal_url,
+      stockStatus: r.stock_status,
+      isBestDeal: r.is_best_deal
+    }));
+
+    // Fetch price history
+    const phRes = await pgPool.query("SELECT * FROM price_history_nodes WHERE audit_id = $1 ORDER BY node_order", [auditId]);
+    const price_history = phRes.rows.map((r: any) => ({
+      month: r.month_name,
+      price: parseFloat(r.price_inr)
+    }));
+
+    const auditData: any = {
+      analyzed_item_name: auditRow.resolved_product,
+      recommendation: auditRow.recommendation,
+      value_for_money_score: auditRow.value_for_money_score,
+      brand_tax: parseFloat(auditRow.brand_markup_inr),
+      hook_statement: auditRow.hook_statement,
+      reasoning_summary: auditRow.reasoning_summary,
+      extra_costs_to_watch: auditRow.extra_costs_to_watch,
+      ground_truth_wins: [],
+      potential_risks: [],
+      smarter_alternative: {
+        name: "Better Value Alternative",
+        alternative_value_score: 85,
+        alternative_brand_surcharge: 0,
+        alternative_cost_target: 0,
+        justification: "N/A"
+      },
+      ...categoryData,
+      jargon_demystifier,
+      real_user_metrics,
+      social_sentiment,
+      price_integrity: {
+        procurement_links,
+        price_history
+      }
+    };
+
+    return {
+      vertical: auditRow.category,
+      queryType: "specific",
+      resolvedProduct: auditRow.resolved_product,
+      auditData,
+      schemaVersion: "v10"
+    };
+  } catch (err: any) {
+    console.error("[Cache Engine] PostgreSQL read failed:", err.message);
+    return null;
+  }
+}
+
 // Custom in-memory rate limit Map
 const ipRequestHistory = new Map<string, { count: number; lastReset: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
@@ -299,11 +658,12 @@ async function callGeminiWithRetry(params: GeminiParams, retries = 3, baseDelay 
   
   // Standard production stable models to maximize availability and optimize cost billing
   const fallbackModels = [
+    "gemini-3.5-flash",
     "gemini-2.5-flash",
-    "gemini-1.5-flash"
+    "gemini-2.0-flash"
   ];
 
-  const targetModel = params.model || "gemini-2.5-flash";
+  const targetModel = params.model || "gemini-3.5-flash";
   let currentModel = targetModel;
   
   // Track models that have failed with permissions / 403 to prevent infinite loops
@@ -1065,7 +1425,7 @@ function getUnifiedResponse(vertical: string, queryType: string, resolvedProduct
     productName,
     priceIntegrity,
     vettoContrast,
-    aamAadmiSummary: auditData?.hook_statement || auditData?.reasoning_summary,
+    aamAadmiSummary: auditData?.aamAadmiSummary || auditData?.hook_statement || auditData?.reasoning_summary,
     bhartiyaPersonaAudit: (auditData?.hook_statement || "") + " " + (auditData?.reasoning_summary || "")
   };
 }
@@ -1975,7 +2335,7 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
     No explanation, no markdown.`;
 
     const response = await callGeminiWithRetry({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.5-flash",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
         temperature: 0.0,
@@ -2038,7 +2398,7 @@ async function resolveSpecificProductName(query: string, budget = "", useCase = 
       }`;
 
       const fallbackResponse = await callGeminiWithRetry({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.5-flash",
         contents: [{ role: "user", parts: [{ text: fallbackPrompt }] }],
         config: {
           responseMimeType: "application/json",
@@ -2995,6 +3355,42 @@ app.post("/api/audit", securityGuard, async (req, res) => {
 
   // Live Real-Time Grounding: Using versioned persistent cache to optimize response latency under 150ms
   if (cacheKey) {
+    // 0. Primary attempt to fetch from PostgreSQL Cache (Phase 2 Upgrade)
+    if (pgPool) {
+      try {
+        const cached = await fetchAuditFromPg(parsedQuery);
+        if (cached && isValidCachedData(cached)) {
+          console.log(`[Cache Engine] Serving PostgreSQL cached verdict for: ${parsedQuery}`);
+          const isCategoryQueryForHeal = isGenericCategoryQuery || 
+                                         parsedQuery.toLowerCase().includes("best") || 
+                                         parsedQuery.toLowerCase().includes("under") ||
+                                         (cached.auditData && cached.auditData.analyzed_item_name && parsedQuery.toLowerCase().trim() !== cached.auditData.analyzed_item_name.toLowerCase().trim());
+          const healedAuditData = healsAndSynchronizeAuditData(cached.auditData, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
+          const payload = getUnifiedResponse(
+            cached.vertical,
+            cached.queryType,
+            cached.resolvedProduct,
+            healedAuditData
+          );
+          if (req.headers.accept === "text/event-stream") {
+            res.setHeader("Content-Type", "text/event-stream");
+            res.setHeader("Cache-Control", "no-cache");
+            res.setHeader("Connection", "keep-alive");
+            res.setHeader("X-Accel-Buffering", "no");
+            res.flushHeaders();
+            res.write(`data: ${JSON.stringify({ type: "final", ...payload })}\n\n`);
+            res.write("data: [DONE]\n\n");
+            if (typeof (res as any).flush === "function") (res as any).flush();
+            return res.end();
+          } else {
+            return res.json(payload);
+          }
+        }
+      } catch (pgCacheErr: any) {
+        console.error("[Cache Engine] PostgreSQL cache read failure. Bypassing to Firestore...", pgCacheErr.message);
+      }
+    }
+
     // 1. First attempt to fetch from persistent, global Firestore-based Shared Cache
     if (backendDb) {
       try {
@@ -3009,11 +3405,16 @@ app.post("/api/audit", securityGuard, async (req, res) => {
           if (Date.now() - (cached.timestamp || 0) < CACHE_TTL && isValidCachedData(cached.data)) {
             console.log(`[Cache Engine] Serving global Firestore cached verdict for: ${query} (ID: ${cacheKey})`);
             if (cached.data.schemaVersion === "v10") {
+              const isCategoryQueryForHeal = isGenericCategoryQuery || 
+                                             parsedQuery.toLowerCase().includes("best") || 
+                                             parsedQuery.toLowerCase().includes("under") ||
+                                             (cached.data.auditData && cached.data.auditData.analyzed_item_name && parsedQuery.toLowerCase().trim() !== cached.data.auditData.analyzed_item_name.toLowerCase().trim());
+              const healedAuditData = healsAndSynchronizeAuditData(cached.data.auditData, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
               const payload = getUnifiedResponse(
                 cached.data.vertical,
                 cached.data.queryType,
                 cached.data.resolvedProduct,
-                cached.data.auditData
+                healedAuditData
               );
               if (req.headers.accept === "text/event-stream") {
                 res.setHeader("Content-Type", "text/event-stream");
@@ -3063,11 +3464,16 @@ app.post("/api/audit", securityGuard, async (req, res) => {
       if (Date.now() - cached.timestamp < CACHE_TTL && isValidCachedData(cached.data)) {
         console.log(`[Cache Engine] Serving local in-memory container cached verdict for: ${query} (Key: ${cacheKey})`);
         if (cached.data.schemaVersion === "v10") {
+          const isCategoryQueryForHeal = isGenericCategoryQuery || 
+                                         parsedQuery.toLowerCase().includes("best") || 
+                                         parsedQuery.toLowerCase().includes("under") ||
+                                         (cached.data.auditData && cached.data.auditData.analyzed_item_name && parsedQuery.toLowerCase().trim() !== cached.data.auditData.analyzed_item_name.toLowerCase().trim());
+          const healedAuditData = healsAndSynchronizeAuditData(cached.data.auditData, parsedQuery, parsedBudget, null, isCategoryQueryForHeal);
           const payload = getUnifiedResponse(
             cached.data.vertical,
             cached.data.queryType,
             cached.data.resolvedProduct,
-            cached.data.auditData
+            healedAuditData
           );
           if (req.headers.accept === "text/event-stream") {
             res.setHeader("Content-Type", "text/event-stream");
@@ -3352,8 +3758,9 @@ You must calculate scores dynamically based on the specific core use case reques
       SYSTEM_INSTRUCTIONS[vertical] || SYSTEM_INSTRUCTIONS.generic;
 
     let finalSystemPrompt = systemInstruction + 
+      "\n\n" + systemPrompt +
       "\n\nCRITICAL OUTPUT DIRECTIVE:\n" +
-      "You MUST output your response strictly in the requested JSON structure conforming to the specified responseSchema. Do not include any introductory or concluding text outside the JSON block. This is critical to maintain sub-10-second system latency.";
+      "You MUST output your response strictly in the requested JSON structure conforming to the specified responseSchema. Do not include any introductory or concluding text outside the JSON block. You MUST keep all descriptions, justifications, reasoning, and summaries extremely concise (1-2 sentences max). This is critical to maintain sub-10-second system latency.";
 
     const genConfig: any = {
       systemInstruction: finalSystemPrompt,
@@ -3441,7 +3848,7 @@ You must calculate scores dynamically based on the specific core use case reques
       try {
         let stream: any;
         let lastErr: any;
-        const streamFallbackModels = ["gemini-2.5-flash", "gemini-1.5-flash"];
+        const streamFallbackModels = ["gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"];
         let activeStreamModel = modelToUse;
 
         // Resilient retry with model fallback rotation
@@ -3597,6 +4004,10 @@ You must calculate scores dynamically based on the specific core use case reques
           auditData.recommendation = "BUY";
         }
         
+        // Apply healing before returning and caching
+        const isCategoryQueryForHeal = isBudgetCategoryQuery;
+        auditData = healsAndSynchronizeAuditData(auditData, parsedQuery, parsedBudget, preFetchedPrices, isCategoryQueryForHeal);
+
         // Apply recursive jargon shield sanitization (Jargon Shield)
         auditData = sanitizeObjectJargon(auditData);
 
@@ -3616,6 +4027,18 @@ You must calculate scores dynamically based on the specific core use case reques
 
     // Live Real-Time Grounding: Persisting versioned cache for sub-second repeat responses
     if (cacheKey && auditData) {
+      // 0. Save to PostgreSQL Cache (Phase 2 Upgrade)
+      if (pgPool) {
+        (async () => {
+          await saveAuditToPg(parsedQuery, {
+            vertical,
+            queryType,
+            resolvedProduct: resolvedProduct || parsedQuery,
+            auditData
+          });
+        })();
+      }
+
       // 1. Save to global persistent Firestore Cache
       if (backendDb) {
         const cacheDocRef = doc(backendDb, "audit_cache", cacheKey);
